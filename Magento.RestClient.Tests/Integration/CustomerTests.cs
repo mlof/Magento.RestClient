@@ -1,18 +1,17 @@
-using System.Runtime.InteropServices;
-using MagentoApi.Models;
+using Magento.RestClient.Models;
 using NUnit.Framework;
 
-namespace MagentoApi.Tests.Integration
+namespace Magento.RestClient.Tests.Integration
 {
     public class CustomerTests : AbstractIntegrationTest
     {
-        private Customer shouldBeCreated = new Customer()
+        private readonly Customer _shouldBeCreated = new()
         {
             Id = 30000, Firstname = "SHOULD", Lastname = "BE CREATED"
 
 
         };
-        private Customer shouldExist = new Customer()
+        private readonly Customer _shouldExist = new()
         {
             Id = 50000,
             Firstname = "SHOULD",
@@ -25,33 +24,33 @@ namespace MagentoApi.Tests.Integration
         public void SetupCustomers()
         {
             
-            client.Customers.DeleteById(shouldBeCreated.Id);
+            Client.Customers.DeleteById(_shouldBeCreated.Id);
         }
         
         [Test]
         public void CanCreateCustomer()
         {
-            var c = this.client.Customers.Create(shouldBeCreated, "ThisIsThePassword1");
+            var c = this.Client.Customers.Create(_shouldBeCreated, "ThisIsThePassword1");
         }
 
 
         [Test]
         public void CanValidateCustomer()
         {
-            var c = this.client.Customers.Validate(new Customer());
+            var c = this.Client.Customers.Validate(new Customer());
             
         }
 
         [Test]
         public void CanGetBillingAddressForCustomerId()
         {
-            this.client.Customers.GetBillingAddress(shouldExist.Id);
+            this.Client.Customers.GetBillingAddress(_shouldExist.Id);
 
         }
         [Test]
         public void CanGetShippingAddressForCustomerId()
         {
-            this.client.Customers.GetShippingAddress(shouldExist.Id);
+            this.Client.Customers.GetShippingAddress(_shouldExist.Id);
 
         }
 

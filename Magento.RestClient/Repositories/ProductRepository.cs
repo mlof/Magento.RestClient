@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using MagentoApi.Exceptions;
-using MagentoApi.Extensions;
-using MagentoApi.Models;
-using MagentoApi.Repositories.Abstractions;
+using Magento.RestClient.Extensions;
+using Magento.RestClient.Models;
+using Magento.RestClient.Repositories.Abstractions;
 using RestSharp;
 
-namespace MagentoApi.Repositories
+namespace Magento.RestClient.Repositories
 {
     public class ProductRepository : IProductRepository
     {
@@ -40,8 +39,8 @@ namespace MagentoApi.Repositories
 
         public Product CreateProduct(Product product, bool saveOptions = true)
         {
-            var request = new RestRequest("products");
-            request.Method = Method.POST;
+            var request = new RestRequest("products") {Method = Method.POST};
+            // ReSharper disable once RedundantAnonymousTypePropertyName
             request.AddJsonBody(new {product = product});
             var response = _client.Execute<Product>(request);
             if (response.IsSuccessful)
@@ -59,6 +58,7 @@ namespace MagentoApi.Repositories
             var request = new RestRequest("products/{sku}");
             request.AddOrUpdateParameter("sku", sku, ParameterType.UrlSegment);
             request.Method = Method.PUT;
+            // ReSharper disable once RedundantAnonymousTypePropertyName
             request.AddJsonBody(new {product = product});
 
             var response = _client.Execute<Product>(request);
@@ -75,8 +75,7 @@ namespace MagentoApi.Repositories
 
         public void DeleteProduct(string sku)
         {
-            var request = new RestRequest("products/{sku}");
-            request.Method = Method.DELETE;
+            var request = new RestRequest("products/{sku}") {Method = Method.DELETE};
             request.AddOrUpdateParameter("sku", sku, ParameterType.UrlSegment);
 
 

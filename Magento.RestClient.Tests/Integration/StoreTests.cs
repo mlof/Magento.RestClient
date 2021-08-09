@@ -1,35 +1,34 @@
-using System.Runtime.InteropServices;
 using NUnit.Framework;
 
-namespace MagentoApi.Tests.Integration
+namespace Magento.RestClient.Tests.Integration
 {
     public class StoreTests : AbstractIntegrationTest
     {
         [Test]
         public void CanGetWebsites()
         {
-            var websites = this.client.Stores.GetWebsites();
+            var websites = this.Client.Stores.GetWebsites();
             Assert.IsNotEmpty(websites);
         }
 
         [Test]
         public void CanGetStoreViews()
         {
-            var storeViews = this.client.Stores.GetStoreViews();
+            var storeViews = this.Client.Stores.GetStoreViews();
             Assert.IsNotEmpty(storeViews);
         }
 
         [Test]
         public void CanGetStoreConfigs()
         {
-            var storeConfigs = this.client.Stores.GetStoreConfigs();
+            var storeConfigs = this.Client.Stores.GetStoreConfigs();
             Assert.IsNotEmpty(storeConfigs);
         }
 
         [Test]
         public void CanGetStoreGroups()
         {
-            var storeGroups = this.client.Stores.GetStoreGroups();
+            var storeGroups = this.Client.Stores.GetStoreGroups();
             Assert.IsNotEmpty(storeGroups);
         }
     }

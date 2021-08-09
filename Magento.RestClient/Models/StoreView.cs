@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace MagentoApi.Models
+namespace Magento.RestClient.Models
 {
-    public partial class StoreView
+    public class StoreView
     {
         [JsonProperty("id")]
         public long Id { get; set; }

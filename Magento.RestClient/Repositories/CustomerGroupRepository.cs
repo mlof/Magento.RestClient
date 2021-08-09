@@ -1,8 +1,7 @@
-﻿using MagentoApi.Abstractions;
-using MagentoApi.Repositories.Abstractions;
+﻿using Magento.RestClient.Repositories.Abstractions;
 using RestSharp;
 
-namespace MagentoApi.Repositories
+namespace Magento.RestClient.Repositories
 {
     public class CustomerGroupRepository : ICustomerGroupRepository
     {

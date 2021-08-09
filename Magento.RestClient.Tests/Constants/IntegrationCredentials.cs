@@ -1,4 +1,4 @@
-namespace MagentoApi.Tests.Constants
+namespace Magento.RestClient.Tests.Constants
 {
     public static class IntegrationCredentials
     {

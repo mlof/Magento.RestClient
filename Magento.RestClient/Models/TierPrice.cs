@@ -1,7 +1,7 @@
-﻿using MagentoApi.Converters;
+﻿using Magento.RestClient.Converters;
 using Newtonsoft.Json;
 
-namespace MagentoApi.Models
+namespace Magento.RestClient.Models
 {
     [JsonConverter(typeof(JsonPathConverter))]
     public class TierPrice

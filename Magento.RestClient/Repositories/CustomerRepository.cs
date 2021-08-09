@@ -1,9 +1,9 @@
-﻿using MagentoApi.Abstractions;
-using MagentoApi.Models;
-using MagentoApi.Repositories.Abstractions;
+﻿using Magento.RestClient.Models;
+using Magento.RestClient.Repositories.Abstractions;
+using Magento.RestClient.Repositories.Abstractions.Customers;
 using RestSharp;
 
-namespace MagentoApi.Repositories
+namespace Magento.RestClient.Repositories
 {
     public class CustomerRepository : ICustomerRepository
     {
@@ -12,7 +12,11 @@ namespace MagentoApi.Repositories
             throw new System.NotImplementedException();
         }
 
-        public Customer GetById { get; }
+        Customer IReadCustomerRepository.GetById(long customerId)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public ValidationResult Validate(Customer customer)
         {
             throw new System.NotImplementedException();

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace MagentoApi.Models
+namespace Magento.RestClient.Models
 {
-    public partial class Customer
+    public class Customer
     {
         [JsonProperty("id")] public long Id { get; set; }
 

@@ -1,6 +1,6 @@
-﻿using MagentoApi.Models;
+﻿using Magento.RestClient.Models;
 
-namespace MagentoApi.Repositories.Abstractions.Customers
+namespace Magento.RestClient.Repositories.Abstractions.Customers
 {
     public interface IWriteCustomerRepository
     {

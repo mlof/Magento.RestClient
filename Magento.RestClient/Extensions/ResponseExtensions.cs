@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net;
-using MagentoApi.Exceptions;
+using Magento.RestClient.Exceptions;
 using RestSharp;
 
-namespace MagentoApi.Extensions
+namespace Magento.RestClient.Extensions
 {
     public static class ResponseExtensions
     {

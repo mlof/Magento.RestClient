@@ -1,6 +1,6 @@
-﻿using MagentoApi.Models;
+﻿using Magento.RestClient.Models;
 
-namespace MagentoApi.Repositories.Abstractions
+namespace Magento.RestClient.Repositories.Abstractions
 {
     public interface IReadOrderRepository
     {

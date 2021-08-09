@@ -1,9 +1,8 @@
-﻿using MagentoApi.Abstractions;
-using MagentoApi.Models;
-using MagentoApi.Repositories.Abstractions;
+﻿using Magento.RestClient.Models;
+using Magento.RestClient.Repositories.Abstractions;
 using RestSharp;
 
-namespace MagentoApi.Repositories
+namespace Magento.RestClient.Repositories
 {
     public class OrderRepository : IOrderRepository
     {

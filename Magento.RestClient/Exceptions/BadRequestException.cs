@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MagentoApi.Exceptions
+namespace Magento.RestClient.Exceptions
 {
     public class BadRequestException : Exception
     {

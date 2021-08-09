@@ -1,7 +1,6 @@
-using System.Runtime.InteropServices;
 using NUnit.Framework;
 
-namespace MagentoApi.Tests.Integration
+namespace Magento.RestClient.Tests.Integration
 {
     public class OrderTests: AbstractIntegrationTest
     {

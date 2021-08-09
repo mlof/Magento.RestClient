@@ -1,6 +1,6 @@
-﻿using MagentoApi.Repositories.Abstractions.Customers;
+﻿using Magento.RestClient.Repositories.Abstractions.Customers;
 
-namespace MagentoApi.Repositories.Abstractions
+namespace Magento.RestClient.Repositories.Abstractions
 {
     public interface ICustomerGroupRepository : IReadCustomerGroupRepository, IWriteCustomerGroupRepository
     {

@@ -1,9 +1,8 @@
-﻿using MagentoApi.Abstractions;
-using MagentoApi.Repositories;
-using MagentoApi.Repositories.Abstractions;
+﻿using Magento.RestClient.Repositories;
+using Magento.RestClient.Repositories.Abstractions;
 using RestSharp;
 
-namespace MagentoApi
+namespace Magento.RestClient
 {
     internal class IntegrationClient : IIntegrationClient
     {

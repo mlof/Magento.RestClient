@@ -1,11 +1,11 @@
-using MagentoApi.Models;
+using Magento.RestClient.Models;
 using NUnit.Framework;
 
-namespace MagentoApi.Tests.Integration
+namespace Magento.RestClient.Tests.Integration
 {
     public class CustomerGroupTests : AbstractIntegrationTest
     {
-        private CustomerGroup shouldBeCreated = new CustomerGroup()
+        private CustomerGroup _shouldBeCreated = new()
         {
          
 

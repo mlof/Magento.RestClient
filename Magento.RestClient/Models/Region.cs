@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace MagentoApi.Models
+namespace Magento.RestClient.Models
 {
-    public partial class Region
+    public class Region
     {
         [JsonProperty("region_code")] public string RegionCode { get; set; }
 

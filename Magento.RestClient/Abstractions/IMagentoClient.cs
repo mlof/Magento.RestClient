@@ -1,7 +1,6 @@
-﻿using MagentoApi.Models;
-using MagentoApi.Repositories.Abstractions;
+﻿using Magento.RestClient.Repositories.Abstractions;
 
-namespace MagentoApi.Abstractions
+namespace Magento.RestClient.Abstractions
 {
     public interface IMagentoClient
     {

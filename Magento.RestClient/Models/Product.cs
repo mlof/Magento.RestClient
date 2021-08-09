@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace MagentoApi.Models
+namespace Magento.RestClient.Models
 {
     public class Product
     {

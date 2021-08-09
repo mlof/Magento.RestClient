@@ -1,4 +1,4 @@
-﻿namespace MagentoApi.Repositories.Abstractions
+﻿namespace Magento.RestClient.Repositories.Abstractions
 {
     public interface IInvoiceRepository
     {

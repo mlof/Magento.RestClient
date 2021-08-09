@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using MagentoApi.Abstractions;
-using MagentoApi.Exceptions;
-using MagentoApi.Extensions;
-using MagentoApi.Models;
-using MagentoApi.Repositories.Abstractions;
+using Magento.RestClient.Abstractions;
+using Magento.RestClient.Repositories.Abstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.NewtonsoftJson;
 
-namespace MagentoApi
+namespace Magento.RestClient
 {
     public class MagentoClient : IMagentoClient
     {
@@ -20,7 +17,7 @@ namespace MagentoApi
 
         public MagentoClient(string baseUrl)
         {
-            this._client = new RestClient(baseUrl);
+            this._client = new RestSharp.RestClient(baseUrl);
             
 
             _client.UseNewtonsoftJson(new JsonSerializerSettings()
@@ -43,7 +40,6 @@ namespace MagentoApi
             _client.Authenticator = OAuth1Authenticator.ForProtectedResource(consumerKey,
                 consumerSecret, accessToken,
                 accessTokenSecret);
-            ;
 
             return new IntegrationClient(_client);
         }

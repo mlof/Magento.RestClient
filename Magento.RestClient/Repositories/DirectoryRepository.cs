@@ -7,9 +7,11 @@ namespace Magento.RestClient.Repositories
 {
     public class DirectoryRepository : IDirectoryRepository
     {
+        private readonly IRestClient _client;
+
         public DirectoryRepository(IRestClient client)
         {
-            throw new System.NotImplementedException();
+            this._client = client;
         }
 
         public List<Country> GetCountries()

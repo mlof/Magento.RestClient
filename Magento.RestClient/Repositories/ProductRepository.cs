@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using Magento.RestClient.Extensions;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
@@ -31,8 +32,11 @@ namespace Magento.RestClient.Repositories
             {
                 return response.Data;
             }
-            else
+            else if (response.StatusCode == HttpStatusCode.NotFound)
             {
+                return null;
+            }
+            else {
                 throw response.GetException();
             }
         }

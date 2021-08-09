@@ -6,9 +6,11 @@ namespace Magento.RestClient.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
+        private readonly IRestClient _client;
+
         public OrderRepository(IRestClient client)
         {
-            throw new System.NotImplementedException();
+            this._client = client;
         }
 
         public SearchResponse<Order> Search()

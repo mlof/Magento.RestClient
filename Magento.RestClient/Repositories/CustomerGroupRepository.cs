@@ -5,9 +5,11 @@ namespace Magento.RestClient.Repositories
 {
     public class CustomerGroupRepository : ICustomerGroupRepository
     {
+        private readonly IRestClient _client;
+
         public CustomerGroupRepository(IRestClient client)
         {
-            throw new System.NotImplementedException();
+            this._client = client;
         }
     }
 }

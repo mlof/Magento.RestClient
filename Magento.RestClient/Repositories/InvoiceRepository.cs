@@ -5,9 +5,11 @@ namespace Magento.RestClient.Repositories
 {
     public class InvoiceRepository : IInvoiceRepository
     {
+        private readonly IRestClient _client;
+
         public InvoiceRepository(IRestClient client)
         {
-            throw new System.NotImplementedException();
+            this._client = client;
         }
     }
 }

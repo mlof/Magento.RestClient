@@ -5,9 +5,11 @@ namespace Magento.RestClient.Repositories
 {
     public class AttributeSetRepository : IAttributeSetRepository
     {
+        private readonly IRestClient _client;
+
         public AttributeSetRepository(IRestClient client)
         {
-            throw new System.NotImplementedException();
+            this._client = client;
         }
     }
 }

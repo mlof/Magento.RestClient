@@ -7,9 +7,11 @@ namespace Magento.RestClient.Repositories
 {
     public class CustomerRepository : ICustomerRepository
     {
+        private readonly IRestClient _client;
+
         public CustomerRepository(IRestClient client)
         {
-            throw new System.NotImplementedException();
+            this._client = client;
         }
 
         Customer IReadCustomerRepository.GetById(long customerId)

@@ -21,6 +21,11 @@ namespace Magento.RestClient.Tests.Integration
             Sku = "SKU-SHOULDBEUPDATED", Name = "Should Be Updated", Price = 30
         };
 
+        private readonly Product _shouldNotExist = new() {
+            // ReSharper disable once StringLiteralTypo
+            Sku = "SKU-SHOULDNOTEXIST", Name = "Should Be Updated", Price = 30
+        };
+
         [SetUp]
         public void SetupProducts()
         {
@@ -37,25 +42,37 @@ namespace Magento.RestClient.Tests.Integration
         }
 
         [Test]
-        public void CanGetProduct()
+        public void GetProductBySku_ProductExists()
         {
             var p = Client.Products.GetProductBySku(_shouldExist.Sku);
+
+            p.Should().NotBeNull();
 
             p.Name.Should().BeEquivalentTo(_shouldExist.Name);
             p.Sku.Should().BeEquivalentTo(_shouldExist.Sku);
         }
 
         [Test]
-        public void CanCreateProduct()
+        public void GetProduct_ProductDoesNotExist()
         {
-            var p = Client.Products.CreateProduct(_shouldBeCreated);
+            var p = Client.Products.GetProductBySku(_shouldNotExist.Sku);
 
-            p.Name.Should().BeEquivalentTo(_shouldBeCreated.Name);
-            p.Sku.Should().BeEquivalentTo(_shouldBeCreated.Sku);
+            p.Should().BeNull();
         }
 
         [Test]
-        public void UpdateProduct()
+        public void CreateProduct_WhenProductIsValid()
+        {
+            var p = Client.Products.CreateProduct(_shouldBeCreated);
+
+            
+            p.Name.Should().BeEquivalentTo(_shouldBeCreated.Name);
+            p.Sku.Should().BeEquivalentTo(_shouldBeCreated.Sku);
+            
+        }
+
+        [Test ]
+        public void UpdateProduct_WhenProductIsValid()
         {
             var updatedTitle = "Has Been Updated";
             _shouldBeUpdated.Name = updatedTitle;

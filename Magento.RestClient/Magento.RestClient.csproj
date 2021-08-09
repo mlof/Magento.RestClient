@@ -9,6 +9,7 @@
     <PackageLicenseExpression />
     <RepositoryUrl>https://github.com/mlof/Magento.RestClient</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

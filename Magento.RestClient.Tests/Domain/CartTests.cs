@@ -1,15 +1,19 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Magento.RestClient.Domain;
-using Magento.RestClient.Exceptions;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories;
+using Magento.RestClient.Tests.Integration;
 using NUnit.Framework;
-using Order = Magento.RestClient.Models.Order;
 
-namespace Magento.RestClient.Tests.Integration
+namespace Magento.RestClient.Tests.Domain
 {
+    public class ProductTest : AbstractIntegrationTest
+    {
+    }
+
     public class CartTests : AbstractIntegrationTest
     {
         public static Address ScunthorpePostOffice => new Address() {
@@ -48,8 +52,7 @@ namespace Magento.RestClient.Tests.Integration
         [Test]
         public void Cart_AssignCustomer_ValidCustomer()
         {
-            var cart = GetCart();
-
+            var cart = Cart.CreateNew(Client.Carts);
 
             cart.AssignCustomer(1);
 
@@ -62,7 +65,7 @@ namespace Magento.RestClient.Tests.Integration
         [Test]
         public void Cart_AssignCustomer_InvalidCustomer()
         {
-            var cart = GetCart();
+            var cart = Cart.CreateNew(Client.Carts);
 
 
             Assert.Throws<EntityNotFoundException>(
@@ -72,14 +75,6 @@ namespace Magento.RestClient.Tests.Integration
                     cart.Customer.Should().BeNull();
                 }
             );
-        }
-
-        private Cart GetCart()
-        {
-            var cart = Cart.CreateNew(Client.Carts);
-            cart.ShippingAddress = ScunthorpePostOffice;
-            cart.BillingAddress = ScunthorpePostOffice;
-            return cart;
         }
 
 
@@ -101,10 +96,111 @@ namespace Magento.RestClient.Tests.Integration
             });
         }
 
-        public void Car()
+        [Test]
+        public void ShippingMethods_GetMethods_ShippingAddressSet()
+        {
+            var cart = Cart.CreateNew(Client.Carts);
+            cart.AddItem("TESTPRODUCT", 3);
+
+            cart.BillingAddress = ScunthorpePostOffice;
+            cart.ShippingAddress = ScunthorpePostOffice;
+            var shippingMethods = cart.EstimateShippingMethods();
+
+            Assert.IsNotEmpty(shippingMethods);
+        }
+        [Test]
+        public void ShippingMethods_GetMethods_ShippingAddressSet_ItemsEmpty()
         {
             var cart = Cart.CreateNew(Client.Carts);
 
+            cart.BillingAddress = ScunthorpePostOffice;
+            cart.ShippingAddress = ScunthorpePostOffice;
+
+            Assert.Throws<ArgumentNullException>(() => {
+                var shippingMethods = cart.EstimateShippingMethods();
+
+            });
+
+        }
+        [Test]
+        public void ShippingMethods_GetMethods_ShippingAddressNotSet()
+        {
+            var cart = Cart.CreateNew(Client.Carts);
+            cart.AddItem("TESTPRODUCT", 3);
+
+            Assert.Throws<ArgumentNullException>(() =>
+                cart.EstimateShippingMethods());
+        }
+        [Test]
+        public void ShippingMethods_SetShippingMethod_Cheapest()
+        {
+            var cart = Cart.CreateNew(Client.Carts);
+            cart.AddItem("TESTPRODUCT", 3);
+
+            cart.ShippingAddress = ScunthorpePostOffice;
+            var shippingMethods = cart.EstimateShippingMethods();
+            var cheapestShipping = cart.EstimateShippingMethods()
+                .OrderByDescending(method => method.PriceInclTax)
+                .First();
+
+            cart.SetShippingMethod(cheapestShipping);
+        }
+
+        /// <summary>
+        /// ShippingMethods_SetShippingMethod_InvalidShippingMethod
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
+        [Test]
+        public void ShippingMethods_SetShippingMethod_InvalidShippingMethod()
+        {
+            var cart = Cart.CreateNew(Client.Carts);
+            cart.AddItem("TESTPRODUCT", 3);
+
+            cart.BillingAddress = ScunthorpePostOffice;
+            cart.ShippingAddress = ScunthorpePostOffice;
+
+            Assert.Throws<InvalidOperationException>(() => {
+                cart.SetShippingMethod("Yodel", "THISISNOTAVALIDSHIPPINGMETHOD");
+            });
+        }
+
+        [Test]
+        public void PaymentMethods_GetMethods()
+        {
+            var cart = Cart.CreateNew(Client.Carts);
+
+            var methods = cart.GetPaymentMethods();
+            methods.Should().NotBeNullOrEmpty();
+        }
+
+        [Test]
+        public void PaymentMethods_SetPaymentMethods_InvalidPaymentMethod()
+        {
+            var cart = Cart.CreateNew(Client.Carts);
+
+            Assert.Throws<InvalidOperationException>(() => {
+                cart.SetPaymentMethod("GALLONOFPCP");
+            });
+        }
+
+        [Test]
+        public void PaymentMethods_SetPaymentMethods_ValidPaymentMethod()
+        {
+            var cart = Cart.CreateNew(Client.Carts);
+            var paymentMethod = cart.GetPaymentMethods()
+                .First();
+            cart.SetPaymentMethod(paymentMethod.Code);
+        }
+
+        /// <summary>
+        /// CommitOrder_ValidOrder
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
+        public void CommitOrder_ValidOrder()
+        {
+            var cart = Cart.CreateNew(Client.Carts);
+            cart.ShippingAddress = ScunthorpePostOffice;
+            cart.BillingAddress = ScunthorpePostOffice;
 
             cart.AddItem("TESTPRODUCT", 3)
                 .AddItem("TESTPRODUCT", 3);
@@ -118,10 +214,7 @@ namespace Magento.RestClient.Tests.Integration
             cart.SetPaymentMethod(paymentMethod.Code)
                 .SetShippingMethod(cheapestShipping);
             var orderId = cart.Commit();
-
-            var order = Domain.Order.GetExisting(Client.Orders, orderId);
-
-            order.CreateInvoice();
+            orderId.Should().NotBe(0);
         }
     }
 }

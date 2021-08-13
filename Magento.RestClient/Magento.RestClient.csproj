@@ -6,7 +6,7 @@
     <Company />
     <Description>Client for the Magento 2.x REST api.</Description>
     <Copyright />
-    <PackageLicenseExpression />
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/mlof/Magento.RestClient</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

@@ -68,7 +68,7 @@ namespace Magento.RestClient.Domain
         public long? OrderId { get; private set; }
 
         public bool ShippingInformationSet { get; private set; }
-
+        
         private Cart UpdateMagentoValues()
         {
             _model = _cartRepository.GetExistingCart(_id);
@@ -124,8 +124,18 @@ namespace Magento.RestClient.Domain
 
         public Cart SetPaymentMethod(string paymentMethod)
         {
-            _paymentMethod = paymentMethod;
-            return UpdateMagentoValues();
+            var paymentMethods =  _cartRepository.GetPaymentMethodsForCart(Id);
+            if (paymentMethods.Any(method => method.Code == paymentMethod))
+            {
+                _paymentMethod = paymentMethod;
+                return UpdateMagentoValues();
+
+            }
+            else
+            {
+                throw new InvalidOperationException("Payment method is not valid for this cart.");
+
+            }
         }
 
 
@@ -152,6 +162,11 @@ namespace Magento.RestClient.Domain
             if (_shippingAddress == null)
             {
                 throw new ArgumentNullException(nameof(this.ShippingAddress), "Set the shipping address first.");
+            }
+
+            if (!Items.Any())
+            {
+                throw new ArgumentNullException("Can not estimate shipping methods without items.");
             }
 
             return _cartRepository.EstimateShippingMethods(this.Id, this.ShippingAddress);

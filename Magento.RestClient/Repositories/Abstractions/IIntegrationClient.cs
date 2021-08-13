@@ -1,6 +1,6 @@
 ﻿namespace Magento.RestClient.Repositories.Abstractions
 {
-    public interface IIntegrationClient
+    public interface IIntegrationClient 
     {
         IStoreRepository Stores { get;  }
         IProductRepository Products { get; }
@@ -12,5 +12,6 @@
         IAttributeSetRepository AttributeSets { get;  }
         IInvoiceRepository Invoices { get;  }
         ICategoryRepository Categories { get;  }
+        ICartRepository Carts { get; }
     }
 }

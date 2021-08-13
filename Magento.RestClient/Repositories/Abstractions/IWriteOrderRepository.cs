@@ -2,10 +2,10 @@
 {
     public interface IWriteOrderRepository
     {
-        void Cancel(int orderId);
-        void Hold(int orderId);
-        void Unhold(int orderId);
-        void Refund(int orderId);
-        void Ship(int orderId);
+        void Cancel(long orderId);
+        void Hold(long orderId);
+        void Unhold(long orderId);
+        void Refund(long orderId);
+        void Ship(long orderId);
     }
 }

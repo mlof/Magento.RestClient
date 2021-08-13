@@ -2,5 +2,6 @@
 {
     public interface IOrderRepository : IReadOrderRepository, IWriteOrderRepository
     {
+        void CreateInvoice(long orderId);
     }
 }

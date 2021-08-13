@@ -1,6 +1,8 @@
-﻿using Magento.RestClient.Models;
+﻿using FluentValidation;
+using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Repositories.Abstractions.Customers;
+using Magento.RestClient.Validators;
 using RestSharp;
 
 namespace Magento.RestClient.Repositories
@@ -8,10 +10,12 @@ namespace Magento.RestClient.Repositories
     public class CustomerRepository : ICustomerRepository
     {
         private readonly IRestClient _client;
+        private readonly CustomerValidator _customerValidator;
 
         public CustomerRepository(IRestClient client)
         {
             this._client = client;
+            this._customerValidator = new CustomerValidator();
         }
 
         Customer IReadCustomerRepository.GetById(long customerId)
@@ -36,6 +40,7 @@ namespace Magento.RestClient.Repositories
 
         public Customer Create(Customer customer, string password)
         {
+            _customerValidator.ValidateAndThrow(customer);
             throw new System.NotImplementedException();
         }
 
@@ -51,6 +56,8 @@ namespace Magento.RestClient.Repositories
 
         public Customer UpdateOwnCustomer(Customer me)
         {
+            _customerValidator.ValidateAndThrow(me);
+
             throw new System.NotImplementedException();
         }
     }

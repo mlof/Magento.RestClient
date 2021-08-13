@@ -1,4 +1,5 @@
-﻿using Magento.RestClient.Repositories;
+﻿using AgileObjects.AgileMapper;
+using Magento.RestClient.Repositories;
 using Magento.RestClient.Repositories.Abstractions;
 using RestSharp;
 
@@ -6,6 +7,8 @@ namespace Magento.RestClient
 {
     internal class IntegrationClient : IIntegrationClient
     {
+        private readonly IRestClient _client;
+
         public IntegrationClient(IRestClient client)
         {
             this.Stores = new StoreRepository(client);
@@ -18,6 +21,8 @@ namespace Magento.RestClient
             this.AttributeSets = new AttributeSetRepository(client);
             this.Invoices = new InvoiceRepository(client);
             this.Categories = new CategoryRepository(client);
+            this.Carts = new CartRepository(client);
+            this._client = client;
         }
 
         public IStoreRepository Stores { get; }
@@ -30,5 +35,6 @@ namespace Magento.RestClient
         public IAttributeSetRepository AttributeSets { get; }
         public IInvoiceRepository Invoices { get; }
         public ICategoryRepository Categories { get; }
+        public ICartRepository Carts { get; }
     }
 }

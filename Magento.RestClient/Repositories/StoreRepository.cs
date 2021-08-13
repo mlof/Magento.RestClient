@@ -26,7 +26,7 @@ namespace Magento.RestClient.Repositories
             }
             else
             {
-                throw response.GetException();
+                throw response.ErrorException;
             }
         }
 
@@ -41,7 +41,7 @@ namespace Magento.RestClient.Repositories
             }
             else
             {
-                throw response.GetException();
+                throw response.ErrorException;
             }
         }
 
@@ -56,7 +56,7 @@ namespace Magento.RestClient.Repositories
             }
             else
             {
-                throw response.GetException();
+                throw response.ErrorException;
             }
         }
 
@@ -71,7 +71,7 @@ namespace Magento.RestClient.Repositories
             }
             else
             {
-                throw response.GetException();
+                throw response.ErrorException;
             }
         }
     }

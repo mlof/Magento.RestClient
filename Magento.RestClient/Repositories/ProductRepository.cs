@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Net;
+using FluentValidation;
 using Magento.RestClient.Extensions;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
+using Magento.RestClient.Validators;
 using RestSharp;
 
 namespace Magento.RestClient.Repositories
@@ -10,10 +12,12 @@ namespace Magento.RestClient.Repositories
     public class ProductRepository : IProductRepository
     {
         private readonly IRestClient _client;
+        private readonly ProductValidator productValidator;
 
         public ProductRepository(IRestClient client)
         {
             this._client = client;
+            this.productValidator = new ProductValidator();
         }
 
         public List<SearchResponse<Product>> Search()
@@ -37,12 +41,15 @@ namespace Magento.RestClient.Repositories
                 return null;
             }
             else {
-                throw response.GetException();
+                throw response.ErrorException;
             }
         }
 
         public Product CreateProduct(Product product, bool saveOptions = true)
         {
+            productValidator.ValidateAndThrow(product);
+
+
             var request = new RestRequest("products") {Method = Method.POST};
             // ReSharper disable once RedundantAnonymousTypePropertyName
             request.AddJsonBody(new {product = product});
@@ -53,12 +60,14 @@ namespace Magento.RestClient.Repositories
             }
             else
             {
-                throw response.GetException();
+                throw response.ErrorException;
             }
         }
 
         public Product UpdateProduct(string sku, Product product, bool saveOptions = true)
         {
+            productValidator.ValidateAndThrow(product);
+
             var request = new RestRequest("products/{sku}");
             request.AddOrUpdateParameter("sku", sku, ParameterType.UrlSegment);
             request.Method = Method.PUT;
@@ -73,7 +82,7 @@ namespace Magento.RestClient.Repositories
             }
             else
             {
-                throw response.GetException();
+                throw response.ErrorException;
             }
         }
 

@@ -33,9 +33,8 @@ namespace Magento.RestClient.Repositories
             }
             else
             {
-                throw response.GetException();
+                throw response.ErrorException;
             }
-            throw new System.NotImplementedException();
         }
 
         public Category GetCategoryTree(int rootCategoryId, int depth = 1)

@@ -1,20 +1,45 @@
-﻿using Magento.RestClient.Search.Abstractions;
+﻿using System.Collections.Generic;
+using Magento.RestClient.Search.Abstractions;
 
 namespace Magento.RestClient.Repositories.Abstractions
 {
-    public interface IIntegrationClient 
+    public interface IIntegrationClient
     {
-        ISearchService Search { get;  }
-        IStoreRepository Stores { get;  }
+        ISearchService Search { get; }
+        IStoreRepository Stores { get; }
         IProductRepository Products { get; }
-        IConfigurableProductRepository ConfigurableProducts{ get; }
-        IOrderRepository Orders{ get; }
-        ICustomerRepository Customers { get;  }
+        IConfigurableProductRepository ConfigurableProducts { get; }
+        IOrderRepository Orders { get; }
+        ICustomerRepository Customers { get; }
         ICustomerGroupRepository CustomerGroups { get; }
-        IDirectoryRepository Directory{ get; }
-        IAttributeSetRepository AttributeSets { get;  }
-        IInvoiceRepository Invoices { get;  }
-        ICategoryRepository Categories { get;  }
+        IDirectoryRepository Directory { get; }
+        IAttributeSetRepository AttributeSets { get; }
+        IInvoiceRepository Invoices { get; }
+        ICategoryRepository Categories { get; }
         ICartRepository Carts { get; }
+        IAttributeRepository Attributes { get; set; }
+    }
+
+    public interface IAttributeRepository
+    {
+        IEnumerable<EntityAttribute> GetProductAttributes(long attributeSetId);
+
+        void Create(ProductAttribute attribute);
+        void DeleteProductAttribute(string attributeCode);
+    }
+
+    public class ProductAttribute : EntityAttribute
+    {
+        public ProductAttribute()
+        {
+        }
+
+        public ProductAttribute(string code, string frontendInput = "text", bool isRequired = false)
+        {
+            this.AttributeCode = code;
+            this.FrontendInput = frontendInput;
+            this.IsRequired = false;
+            EntityTypeId = EntityType.CatalogProduct;
+        }
     }
 }

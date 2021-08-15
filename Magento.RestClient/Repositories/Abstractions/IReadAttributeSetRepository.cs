@@ -5,7 +5,6 @@ namespace Magento.RestClient.Repositories.Abstractions
 {
     public interface IReadAttributeSetRepository 
     {
-        IEnumerable<EntityAttribute> GetProductAttributes(long attributeSetId);
 
     }
 }

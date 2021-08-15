@@ -69,7 +69,7 @@ namespace Magento.RestClient.Tests.Integration
             var attributeSet = response.Items.First();
 
 
-            var attributes =  Client.AttributeSets.GetProductAttributes(attributeSet.AttributeSetId);
+            var attributes =  Client.Attributes.GetProductAttributes(attributeSet.AttributeSetId);
 
             attributes.Should().NotBeEmpty();
         }
@@ -93,7 +93,7 @@ namespace Magento.RestClient.Tests.Integration
         {
             
 
-            var attributes =  Client.AttributeSets.GetProductAttributes(-1);
+            var attributes =  Client.Attributes.GetProductAttributes(-1);
             attributes.Should().BeNull();
 
         }

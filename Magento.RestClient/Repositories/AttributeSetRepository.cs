@@ -21,25 +21,6 @@ namespace Magento.RestClient.Repositories
 
        
 
-        public IEnumerable<EntityAttribute> GetProductAttributes(long attributeSetId)
-        {
-            var request = new RestRequest("products/attribute-sets/{id}/attributes");
-            request.Method = Method.GET;
-            request.AddOrUpdateParameter("id", attributeSetId, ParameterType.UrlSegment);
-
-            var response = _client.Execute<List<EntityAttribute>>(request);
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-
-            else
-            {
-                throw MagentoException.Parse(response.Content);
-            }
-        }
-
-
         public void Create(EntityType entityTypeCode, int skeletonId, AttributeSet attributeSet)
         {
             var request = new RestRequest("eav/attribute-sets");

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Magento.RestClient.Domain;
+using Magento.RestClient.Domain.DomainCart;
 using Magento.RestClient.Models;
 
 namespace Magento.RestClient.Repositories.Abstractions

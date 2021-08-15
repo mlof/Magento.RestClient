@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Magento.RestClient.Models;
 using Newtonsoft.Json;
 
-namespace Magento.RestClient.Domain.Cart
+namespace Magento.RestClient.Domain.DomainCart
 {
     public class CartModel
     {

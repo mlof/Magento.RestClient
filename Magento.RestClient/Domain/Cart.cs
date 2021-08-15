@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
+using Magento.RestClient.Domain.DomainCart;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Validators;
 using Newtonsoft.Json;
+using Customer = Magento.RestClient.Models.Customer;
 
 namespace Magento.RestClient.Domain
 {

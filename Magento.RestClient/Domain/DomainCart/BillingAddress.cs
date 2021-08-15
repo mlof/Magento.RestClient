@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Magento.RestClient.Domain.Cart
+namespace Magento.RestClient.Domain.DomainCart
 {
     public partial class BillingAddress
     {

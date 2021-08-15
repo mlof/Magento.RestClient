@@ -11,7 +11,7 @@ namespace Magento.RestClient.Repositories.Abstractions
 
         [JsonProperty("frontend_input")] public string FrontendInput { get; set; }
 
-        [JsonProperty("entity_type_id")] public long EntityTypeId { get; set; }
+        [JsonProperty("entity_type_id")] public EntityType EntityTypeId { get; set; }
 
         [JsonProperty("is_required")] public bool IsRequired { get; set; }
 

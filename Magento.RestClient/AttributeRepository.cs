@@ -33,7 +33,7 @@ namespace Magento.RestClient
             }
         }
 
-        public void Create(ProductAttribute attribute)
+        public ProductAttribute Create(ProductAttribute attribute)
         {
             var request = new RestRequest("products/attributes");
 
@@ -41,7 +41,15 @@ namespace Magento.RestClient
             request.AddJsonBody(new {attribute});
 
 
-            _client.Execute(request);
+            var response = _client.Execute<ProductAttribute>(request);
+            if (response.IsSuccessful)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw MagentoException.Parse(response.Content);
+            }
         }
 
         public void DeleteProductAttribute(string attributeCode)
@@ -51,6 +59,42 @@ namespace Magento.RestClient
             request.Method = Method.DELETE;
             request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
             _client.Execute(request);
+        }
+
+        public List<Option> GetProductAttributeOptions(string attributeCode)
+        {
+            var request = new RestRequest("products/attributes/{attributeCode}/options");
+
+            request.Method = Method.GET;
+            request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
+            var response = _client.Execute<List<Option>>(request);
+            if (response.IsSuccessful)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw MagentoException.Parse(response.Content);
+            }
+        }
+
+        public int CreateProductAttributeOption(string attributeCode, Option option)
+        {
+            var request = new RestRequest("products/attributes/{attributeCode}/options");
+
+            request.Method = Method.POST;
+            request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
+            request.AddJsonBody(new {option});
+            var response = _client.Execute<int>(request);
+
+            if (response.IsSuccessful)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw MagentoException.Parse(response.Content);
+            }
         }
     }
 }

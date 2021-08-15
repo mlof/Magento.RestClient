@@ -22,7 +22,7 @@ namespace Magento.RestClient.Repositories.Abstractions
         [JsonProperty("default_frontend_label", NullValueHandling = NullValueHandling.Ignore)]
         public string DefaultFrontendLabel { get; set; }
 
-        [JsonProperty("frontend_labels")] public List<dynamic> FrontendLabels { get; set; }
+        [JsonProperty("frontend_labels")] public List<AttributeLabel> FrontendLabels { get; set; }
 
         [JsonProperty("backend_type")] public string BackendType { get; set; }
 
@@ -44,5 +44,11 @@ namespace Magento.RestClient.Repositories.Abstractions
 
         [JsonProperty("note", NullValueHandling = NullValueHandling.Ignore)]
         public string Note { get; set; }
+    }
+
+    public class AttributeLabel
+    {
+        [JsonProperty("store_id")] public int StoreId { get; set; }
+        [JsonProperty("label")] public string Label { get; set; }
     }
 }

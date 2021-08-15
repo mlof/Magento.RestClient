@@ -24,8 +24,10 @@ namespace Magento.RestClient.Repositories.Abstractions
     {
         IEnumerable<EntityAttribute> GetProductAttributes(long attributeSetId);
 
-        void Create(ProductAttribute attribute);
+        ProductAttribute Create(ProductAttribute attribute);
         void DeleteProductAttribute(string attributeCode);
+        List<Option> GetProductAttributeOptions(string attributeCode);
+        int CreateProductAttributeOption(string attributeCode, Option option);
     }
 
     public class ProductAttribute : EntityAttribute

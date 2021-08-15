@@ -10,5 +10,6 @@ namespace Magento.RestClient.Repositories.Abstractions
         public List<ConfigurableProduct> GetConfigurableChildren(string parentSku);
 
 
+        void CreateOption(string parentSku, long attributeId, int valueId, string label);
     }
 }

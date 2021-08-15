@@ -9,7 +9,6 @@ namespace Magento.RestClient.Models
     {
         public Product()
         {
-            this.AttributeSetId = 4;
         }
 
         [JsonProperty("id")] public long? Id { get; set; }

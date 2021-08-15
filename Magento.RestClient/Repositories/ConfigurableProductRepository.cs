@@ -59,5 +59,18 @@ namespace Magento.RestClient.Repositories
                 throw MagentoException.Parse(response.Content);
             }
         }
+
+        public void CreateOption(string parentSku, long attributeId, int valueId, string label)
+        {
+            var request = new RestRequest("configurable-products/{sku}/options");
+            request.Method = Method.POST;
+            request.AddJsonBody(new {
+                option = new {attribute_id = attributeId, 
+                    label = label,
+                    values = new List<object>() {new {value_index = valueId}}}
+            });
+            request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
+            client.Execute(request);
+        }
     }
 }

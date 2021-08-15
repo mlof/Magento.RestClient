@@ -10,12 +10,16 @@ namespace Magento.RestClient.Tests.Domain
 {
     public class ProductTest : AbstractIntegrationTest
     {
-        public Product Parent => new Product() {
+        public static Product Parent = new Product() {
             Sku = "CONF-PARENT", Price = 0, Name = "Configurable Parent", TypeId = ProductType.Configurable
         };
 
-        public Product Child => new Product() {
-            Sku = "CONF-CHILD-1", Name = "Configurable Child", Price = 30, TypeId = ProductType.Simple
+        public static Product FirstChild = new Product() {
+            Sku = "CONF-CHILD-1", Name = "First Configurable Child", Price = 30, TypeId = ProductType.Simple
+        };
+
+        public static Product SecondChild = new Product() {
+            Sku = "CONF-CHILD-2", Name = "Second Configurable Child", Price = 30, TypeId = ProductType.Simple
         };
 
         [SetUp]
@@ -38,23 +42,17 @@ namespace Magento.RestClient.Tests.Domain
                 FrontendLabels =
                     new List<AttributeLabel>() {new AttributeLabel() {StoreId = 1, Label = "Test Attribute"}}
             };
-            Client.Attributes.Create(testAttribute);
-
+            testAttribute = Client.Attributes.Create(testAttribute);
 
 
             var options = Client.Attributes.GetProductAttributeOptions("testattribute");
-            
-            Client.Attributes.CreateProductAttributeOption("testattribute", new Option() {
-                Label = "ABC",
-                Value = "abc"
-            });
+
+            var abc = Client.Attributes.CreateProductAttributeOption("testattribute",
+                new Option() {Label = "ABC", Value = "abc"});
 
 
-            Client.Attributes.CreateProductAttributeOption("testattribute", new Option()
-            {
-                Label = "DEF",
-                Value = "def"
-            });
+            var def = Client.Attributes.CreateProductAttributeOption("testattribute",
+                new Option() {Label = "DEF", Value = "def"});
 
 
             var attributeGroup = Client.AttributeSets.CreateProductAttributeGroup(attributeSetId, "attributeGroupName");
@@ -63,9 +61,24 @@ namespace Magento.RestClient.Tests.Domain
             Client.AttributeSets.AssignProductAttribute(attributeSetId, attributeGroup, "testattribute");
 
             Parent.AttributeSetId = attributeSetId;
-            Child.AttributeSetId = attributeSetId;
+            FirstChild.AttributeSetId = attributeSetId;
+            SecondChild.AttributeSetId = attributeSetId;
+
+            FirstChild.CustomAttributes = new List<CustomAttribute>() {
+                new CustomAttribute() {AttributeCode = "testattribute", Value = abc.ToString()}
+            };
+            SecondChild.CustomAttributes = new List<CustomAttribute>() {
+                new CustomAttribute() {AttributeCode = "testattribute", Value = def.ToString()}
+            };
             Client.Products.CreateProduct(Parent);
-            Client.Products.CreateProduct(Child);
+            Client.Products.CreateProduct(FirstChild);
+            Client.Products.CreateProduct(SecondChild);
+
+            Client.ConfigurableProducts.CreateOption(Parent.Sku, testAttribute.AttributeId, abc, "abc");
+
+
+            Client.ConfigurableProducts.CreateChild(Parent.Sku, FirstChild.Sku);
+            Client.ConfigurableProducts.CreateChild(Parent.Sku, SecondChild.Sku);
         }
 
         [Test]
@@ -79,7 +92,8 @@ namespace Magento.RestClient.Tests.Domain
         public void TeardownConfigurableProducts()
         {
             Client.Products.DeleteProduct(Parent.Sku);
-            Client.Products.DeleteProduct(Child.Sku);
+            Client.Products.DeleteProduct(FirstChild.Sku);
+            Client.Products.DeleteProduct(SecondChild.Sku);
 
             // ReSharper disable once PossibleNullReferenceException
             var attributeSetId = Client.Search.AttributeSets(builder =>

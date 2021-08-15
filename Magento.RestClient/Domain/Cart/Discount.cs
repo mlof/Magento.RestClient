@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Magento.RestClient.Domain
+namespace Magento.RestClient.Domain.Cart
 {
     public partial class Discount
     {

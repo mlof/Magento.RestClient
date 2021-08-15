@@ -3,8 +3,9 @@ using Magento.RestClient.Repositories.Abstractions.Customers;
 
 namespace Magento.RestClient.Repositories.Abstractions
 {
-    public interface IAttributeSetRepository : IReadAttributeSetRepository, IWriteAttributeSetRepository
+    public interface IReadAttributeSetRepository 
     {
-        void Delete(long attributeSetId);
+        IEnumerable<EntityAttribute> GetProductAttributes(long attributeSetId);
+
     }
 }

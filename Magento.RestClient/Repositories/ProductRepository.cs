@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using FluentValidation;
 using Magento.RestClient.Extensions;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
+using Magento.RestClient.Search;
+using Magento.RestClient.Search.Extensions;
 using Magento.RestClient.Validators;
 using RestSharp;
 
@@ -20,10 +23,6 @@ namespace Magento.RestClient.Repositories
             this.productValidator = new ProductValidator();
         }
 
-        public List<SearchResponse<Product>> Search()
-        {
-            throw new System.NotImplementedException();
-        }
 
         public Product GetProductBySku(string sku)
         {
@@ -40,7 +39,8 @@ namespace Magento.RestClient.Repositories
             {
                 return null;
             }
-            else {
+            else
+            {
                 throw response.ErrorException;
             }
         }
@@ -94,5 +94,7 @@ namespace Magento.RestClient.Repositories
 
             var response = _client.Execute<Product>(request);
         }
+
+      
     }
 }

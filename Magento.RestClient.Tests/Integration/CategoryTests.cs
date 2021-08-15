@@ -9,6 +9,7 @@ namespace Magento.RestClient.Tests.Integration
         [SetUp]
         public void SetupCustomers()
         {
+
         }
 
         [Test]

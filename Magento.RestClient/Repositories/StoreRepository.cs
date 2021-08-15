@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Magento.RestClient.Extensions;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
+using Magento.RestClient.Repositories.Abstractions.Customers;
+using Magento.RestClient.Search;
 using RestSharp;
 
 namespace Magento.RestClient.Repositories
 {
+  
     public class StoreRepository : IStoreRepository
     {
         private readonly IRestClient _client;

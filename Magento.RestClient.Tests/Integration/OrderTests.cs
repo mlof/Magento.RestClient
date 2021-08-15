@@ -15,7 +15,7 @@ namespace Magento.RestClient.Tests.Integration
         [Test]
         public void SearchOrders_WithDefaultSettings()
         {
-            var orderResponse = Client.Orders.Search();
+            var orderResponse = Client.Search.Orders();
 
 
             orderResponse.SearchCriteria.CurrentPage.Should().Be(SearchBuilder<Order>.DefaultPage);
@@ -28,7 +28,7 @@ namespace Magento.RestClient.Tests.Integration
         [Test]
         public void SearchOrders_WhereOrderCurrencyCode_EqualsEuro()
         {
-            var orderResponse = Client.Orders.Search(builder =>
+            var orderResponse = Client.Search.Orders(builder =>
                 builder.Where(order => order.OrderCurrencyCode, SearchCondition.Equals, "EUR"));
 
             orderResponse.SearchCriteria.FilterGroups.Should().HaveCount(1);

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net;
 using Magento.RestClient.Domain;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
-using Newtonsoft.Json;
 using RestSharp;
 using Customer = Magento.RestClient.Models.Customer;
 
@@ -140,35 +138,6 @@ namespace Magento.RestClient.Repositories
             var id = Convert.ToInt64(response.Data);
 
             return id;
-        }
-    }
-
-    public class MagentoException : Exception
-    {
-        private MagentoException(string message) : base(message)
-        {
-        }
-
-        public static MagentoException Parse(string content)
-        {
-            var c = JsonConvert.DeserializeObject<MagentoError>(content);
-            Debug.Assert(c != null, nameof(c) + " != null");
-            return new MagentoException(c.Message);
-        }
-        internal class MagentoError
-        {
-            [JsonProperty("message")]
-            public string Message { get; set; }
-        }
-    }
-
-
-
-
-    public class EntityNotFoundException : Exception
-    {
-        public EntityNotFoundException(Type type, string id) : base($"{type.Name} with Id {id} not found.")
-        {
         }
     }
 }

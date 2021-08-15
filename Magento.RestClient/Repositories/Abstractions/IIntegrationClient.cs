@@ -1,7 +1,10 @@
-﻿namespace Magento.RestClient.Repositories.Abstractions
+﻿using Magento.RestClient.Search.Abstractions;
+
+namespace Magento.RestClient.Repositories.Abstractions
 {
     public interface IIntegrationClient 
     {
+        ISearchService Search { get;  }
         IStoreRepository Stores { get;  }
         IProductRepository Products { get; }
         IConfigurableProductRepository ConfigurableProducts{ get; }

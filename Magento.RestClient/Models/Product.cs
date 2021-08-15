@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Magento.RestClient.Models
 {
@@ -19,13 +20,13 @@ namespace Magento.RestClient.Models
 
         [JsonProperty("attribute_set_id")] public long AttributeSetId { get; set; }
 
-        [JsonProperty("price")] public decimal Price { get; set; }
+        [JsonProperty("price")] public decimal? Price { get; set; }
 
         [JsonProperty("status")] public long Status { get; set; }
 
         [JsonProperty("visibility")] public long Visibility { get; set; }
 
-        [JsonProperty("type_id")] public string TypeId { get; set; }
+        [JsonProperty("type_id")] public ProductType TypeId { get; set; }
 
         [JsonProperty("created_at")] public DateTime? CreatedAt { get; set; }
 

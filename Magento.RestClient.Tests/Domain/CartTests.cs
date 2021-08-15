@@ -10,10 +10,6 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Domain
 {
-    public class ProductTest : AbstractIntegrationTest
-    {
-    }
-
     public class CartTests : AbstractIntegrationTest
     {
         public static Address ScunthorpePostOffice => new Address() {

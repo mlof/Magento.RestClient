@@ -3,6 +3,7 @@ using FluentValidation;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Search;
+using Magento.RestClient.Search.Extensions;
 using Magento.RestClient.Validators;
 using RestSharp;
 
@@ -19,22 +20,7 @@ namespace Magento.RestClient.Repositories
             this._orderValidator = new OrderValidator();
         }
 
-        public SearchResponse<Order> Search(Action<SearchBuilder<Order>> builder = null)
-        {
-            IRestRequest request = new RestRequest("orders");
-
-
-            var searchBuilder = new SearchBuilder<Order>(request);
-            if (builder != null)
-            {
-                builder.Invoke(searchBuilder);
-            }
-
-            request = searchBuilder.Build();
-
-            var response = _client.Execute<SearchResponse<Order>>(request);
-            return response.Data;
-        }
+      
 
 
         public Order CreateOrder(Order order)
@@ -55,7 +41,6 @@ namespace Magento.RestClient.Repositories
             request.AddOrUpdateParameter("id", orderId, ParameterType.UrlSegment);
             var response = _client.Execute<Order>(request);
             return response.Data;
-
         }
 
         public void Cancel(long orderId)
@@ -85,7 +70,6 @@ namespace Magento.RestClient.Repositories
 
         public void CreateInvoice(long orderId)
         {
-
             IRestRequest request = new RestRequest("order/{id}/invoice");
             request.Method = Method.POST;
             request.AddOrUpdateParameter("id", orderId, ParameterType.UrlSegment);

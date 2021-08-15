@@ -1,6 +1,8 @@
 ﻿using AgileObjects.AgileMapper;
 using Magento.RestClient.Repositories;
 using Magento.RestClient.Repositories.Abstractions;
+using Magento.RestClient.Search;
+using Magento.RestClient.Search.Abstractions;
 using RestSharp;
 
 namespace Magento.RestClient
@@ -22,9 +24,11 @@ namespace Magento.RestClient
             this.Invoices = new InvoiceRepository(client);
             this.Categories = new CategoryRepository(client);
             this.Carts = new CartRepository(client);
+            this.Search = new SearchService(client);
             this._client = client;
         }
 
+        public ISearchService Search { get; }
         public IStoreRepository Stores { get; }
         public IProductRepository Products { get; }
         public IConfigurableProductRepository ConfigurableProducts { get; }

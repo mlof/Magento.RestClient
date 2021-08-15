@@ -7,7 +7,9 @@ namespace Magento.RestClient.Validators
     {
         public CustomerValidator()
         {
+            RuleFor(customer => customer.Email).NotEmpty();
             RuleFor(customer => customer.Email).EmailAddress();
+         
             
         }
     }

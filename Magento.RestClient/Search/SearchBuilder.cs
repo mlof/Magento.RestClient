@@ -10,11 +10,11 @@ namespace Magento.RestClient.Search
     public class SearchBuilder<T>
     {
         public const int DefaultPageSize = 10;
-        public const int DefaultPage = 10;
+        public const int DefaultPage = 1;
         private readonly IRestRequest _restRequest;
         private readonly List<SearchFilter> _filters;
-        private readonly int _currentPage;
-        private readonly int _pageSize;
+        private int _currentPage;
+        private int _pageSize;
 
         public SearchBuilder(IRestRequest restRequest)
         {
@@ -25,7 +25,7 @@ namespace Magento.RestClient.Search
         }
 
 
-        public void Where(Expression<Func<T, object>> func, SearchCondition condition, object value = null)
+        public SearchBuilder<T> Where(Expression<Func<T, object>> func, SearchCondition condition, object value = null)
         {
             var expression = GetMemberInfo(func);
 
@@ -47,6 +47,8 @@ namespace Magento.RestClient.Search
 
 
             _filters.Add(new SearchFilter(p.PropertyName, condition, value));
+
+            return this;
         }
 
         private string GetMagentoCondition(SearchCondition condition)
@@ -101,8 +103,8 @@ namespace Magento.RestClient.Search
 
         public IRestRequest Build()
         {
-            _restRequest.AddParameter("searchCriteria[pageSize]", _pageSize, ParameterType.QueryString);
-            _restRequest.AddParameter("searchCriteria[currentPage]", _currentPage, ParameterType.QueryString);
+            _restRequest.AddParameter("searchCriteria[pageSize]", _pageSize, ParameterType.QueryStringWithoutEncode);
+            _restRequest.AddParameter("searchCriteria[currentPage]", _currentPage, ParameterType.QueryStringWithoutEncode);
 
 
             if (_filters.Any())
@@ -113,10 +115,10 @@ namespace Magento.RestClient.Search
                     var searchFilter = filter.filter;
 
                     _restRequest.AddParameter($"searchCriteria[filter_groups][{i}][filters][0][field]",
-                        searchFilter.PropertyName);
+                        searchFilter.PropertyName, ParameterType.QueryStringWithoutEncode);
 
                     _restRequest.AddParameter($"searchCriteria[filter_groups][{i}][filters][0][condition_type]",
-                        GetMagentoCondition(searchFilter.Condition));
+                        GetMagentoCondition(searchFilter.Condition), ParameterType.QueryStringWithoutEncode);
 
                     if (searchFilter.Value != null)
                     {
@@ -132,12 +134,24 @@ namespace Magento.RestClient.Search
                         }
 
                         _restRequest.AddParameter($"searchCriteria[filter_groups][{i}][filters][0][value]",
-                            value);
+                            value, ParameterType.QueryStringWithoutEncode);
                     }
                 }
             }
 
             return _restRequest;
+        }
+
+        public SearchBuilder<T> WithPageSize(int pageSize)
+        {
+            this._pageSize = pageSize;
+            return this;
+        }
+
+        public SearchBuilder<T> WithPage(int currentPage)
+        {
+            this._currentPage = currentPage;
+            return this;
         }
     }
 }

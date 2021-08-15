@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using Magento.RestClient.Models;
+using Magento.RestClient.Repositories.Abstractions.Customers;
 
 namespace Magento.RestClient.Repositories.Abstractions
 {
-    public interface IReadProductRepository
+    public interface IReadProductRepository 
     {
-        List<SearchResponse<Product>> Search();
         Product GetProductBySku(string sku);
     }
 }

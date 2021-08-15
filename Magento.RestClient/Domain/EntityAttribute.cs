@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using Magento.RestClient.Models;
 using Newtonsoft.Json;
 
-namespace Magento.RestClient.Repositories.Abstractions
+namespace Magento.RestClient.Domain
 {
     public partial class EntityAttribute
     {
@@ -44,11 +45,5 @@ namespace Magento.RestClient.Repositories.Abstractions
 
         [JsonProperty("note", NullValueHandling = NullValueHandling.Ignore)]
         public string Note { get; set; }
-    }
-
-    public class AttributeLabel
-    {
-        [JsonProperty("store_id")] public int StoreId { get; set; }
-        [JsonProperty("label")] public string Label { get; set; }
     }
 }

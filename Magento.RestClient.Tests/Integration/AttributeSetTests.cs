@@ -1,5 +1,7 @@
 using System.Linq;
 using FluentAssertions;
+using Magento.RestClient.Domain;
+using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Search;
 using NUnit.Framework;

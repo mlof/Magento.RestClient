@@ -1,6 +1,6 @@
 ﻿using Magento.RestClient.Models;
 
-namespace Magento.RestClient.Repositories.Abstractions
+namespace Magento.RestClient.Repositories.Abstractions.Customers
 {
     public interface IOwnCustomerRepository
     {

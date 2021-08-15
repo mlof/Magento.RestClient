@@ -1,9 +1,11 @@
 ﻿using System;
+using Magento.RestClient.Domain;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Search.Abstractions;
 using Magento.RestClient.Search.Extensions;
 using RestSharp;
+using Order = Magento.RestClient.Models.Order;
 
 namespace Magento.RestClient.Search
 {

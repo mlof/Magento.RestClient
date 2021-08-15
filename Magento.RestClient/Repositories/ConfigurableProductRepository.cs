@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Magento.RestClient.Exceptions;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
 using RestSharp;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -31,7 +32,7 @@ namespace Magento.RestClient.Models
 
         [JsonProperty("updated_at")] public DateTime? UpdatedAt { get; set; }
 
-        [JsonProperty("extension_attributes")] public dynamic ExtensionAttributes { get; set; }
+        [JsonProperty("extension_attributes")] public dynamic ExtensionAttributes { get; set; } = new ExpandoObject();
 
         [JsonProperty("product_links")] public List<dynamic> ProductLinks { get; set; }
 
@@ -43,5 +44,10 @@ namespace Magento.RestClient.Models
         [JsonProperty("tier_prices")] public List<TierPrice> TierPrices { get; set; }
 
         [JsonProperty("custom_attributes")] public List<CustomAttribute> CustomAttributes { get; set; }
+
+        public void SetStockItem(StockItem stockItem)
+        {
+            this.ExtensionAttributes.stock_item = stockItem;
+        }
     }
 }

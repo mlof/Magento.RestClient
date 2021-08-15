@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Magento.RestClient.Domain;
+using Magento.RestClient.Exceptions;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Search;

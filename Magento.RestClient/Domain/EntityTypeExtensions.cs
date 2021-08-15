@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Magento.RestClient.Repositories.Abstractions
+namespace Magento.RestClient.Domain
 {
     public static class EntityTypeExtensions
     {

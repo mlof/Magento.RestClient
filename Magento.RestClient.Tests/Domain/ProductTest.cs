@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Magento.RestClient.Domain;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Search;
@@ -15,7 +16,7 @@ namespace Magento.RestClient.Tests.Domain
         };
 
         public static Product FirstChild = new Product() {
-            Sku = "CONF-CHILD-1", Name = "First Configurable Child", Price = 30, TypeId = ProductType.Simple
+            Sku = "CONF-CHILD-1", Name = "First Configurable Child", Price = 20, TypeId = ProductType.Simple,
         };
 
         public static Product SecondChild = new Product() {
@@ -62,7 +63,10 @@ namespace Magento.RestClient.Tests.Domain
 
             Parent.AttributeSetId = attributeSetId;
             FirstChild.AttributeSetId = attributeSetId;
+            FirstChild.SetStockItem(new StockItem() {Qty = 40, IsInStock = true});
+
             SecondChild.AttributeSetId = attributeSetId;
+            SecondChild.SetStockItem(new StockItem() {Qty = 30, IsInStock = true});
 
             FirstChild.CustomAttributes = new List<CustomAttribute>() {
                 new CustomAttribute() {AttributeCode = "testattribute", Value = abc.ToString()}

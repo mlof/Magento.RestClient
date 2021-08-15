@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using Magento.RestClient.Domain;
 using Magento.RestClient.Domain.DomainCart;
+using Magento.RestClient.Exceptions;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
 using RestSharp;

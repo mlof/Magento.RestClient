@@ -1,4 +1,7 @@
-﻿namespace Magento.RestClient.Repositories.Abstractions
+﻿using Magento.RestClient.Domain;
+using Magento.RestClient.Models;
+
+namespace Magento.RestClient.Repositories.Abstractions
 {
     public interface IWriteAttributeSetRepository
     {

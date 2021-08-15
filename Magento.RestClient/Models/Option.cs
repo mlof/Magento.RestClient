@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Magento.RestClient.Repositories.Abstractions
+namespace Magento.RestClient.Models
 {
     public partial class Option
     {

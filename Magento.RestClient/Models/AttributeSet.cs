@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Magento.RestClient.Domain;
+using Newtonsoft.Json;
 
-namespace Magento.RestClient.Repositories.Abstractions
+namespace Magento.RestClient.Models
 {
     public class AttributeSet
     {

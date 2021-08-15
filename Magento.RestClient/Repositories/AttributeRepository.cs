@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
-using Magento.RestClient.Repositories;
+using Magento.RestClient.Domain;
+using Magento.RestClient.Exceptions;
+using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
 using RestSharp;
 
-namespace Magento.RestClient
+namespace Magento.RestClient.Repositories
 {
     internal class AttributeRepository : IAttributeRepository
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Magento.RestClient.Repositories
+namespace Magento.RestClient.Exceptions
 {
     public class EntityNotFoundException : Exception
     {

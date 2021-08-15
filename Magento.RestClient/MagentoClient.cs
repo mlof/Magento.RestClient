@@ -18,16 +18,15 @@ namespace Magento.RestClient
         public MagentoClient(string baseUrl)
         {
             this._client = new RestSharp.RestClient(baseUrl);
-            
 
-            _client.UseNewtonsoftJson(new JsonSerializerSettings()
-            {
+
+            _client.UseNewtonsoftJson(new JsonSerializerSettings() {
                 NullValueHandling = NullValueHandling.Ignore,
+                Culture = CultureInfo.InvariantCulture,
+                Formatting = Formatting.Indented,
                 DefaultValueHandling = DefaultValueHandling.Ignore,
-                Converters = new List<JsonConverter>()
-                {
-                    new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-
+                Converters = new List<JsonConverter>() {
+                    new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal}
                 }
             });
         }
@@ -53,6 +52,5 @@ namespace Magento.RestClient
         {
             throw new NotImplementedException();
         }
-
     }
 }

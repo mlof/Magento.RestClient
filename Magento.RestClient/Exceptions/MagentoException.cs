@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Newtonsoft.Json;
 
-namespace Magento.RestClient.Repositories
+namespace Magento.RestClient.Exceptions
 {
     public class MagentoException : Exception
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Magento.RestClient.Domain;
+using Magento.RestClient.Exceptions;
 using Magento.RestClient.Models;
 using Magento.RestClient.Repositories;
 using Magento.RestClient.Tests.Integration;

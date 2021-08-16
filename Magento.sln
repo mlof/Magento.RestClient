@@ -3,15 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient", "Magento.RestClient\Magento.RestClient.csproj", "{D8DDDE8E-9B4A-4064-AE0E-E9E11EDE2483}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Tests", "Magento.RestClient.Tests\Magento.RestClient.Tests.csproj", "{793DE0ED-17FB-41DA-9344-4B199C7C79D9}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1B772521-F95D-41FD-8C1E-A94DFEE21FD6}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{07669806-9261-4C45-BD52-B301A81D504E}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "magento", "docker\magento\magento.dcproj", "{70473210-F952-40C0-ADC6-AB2FF04A3DF3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient", "source\Magento.RestClient\Magento.RestClient.csproj", "{46816BF7-80C5-4043-81EC-97DA589B845D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Tests", "source\Magento.RestClient.Tests\Magento.RestClient.Tests.csproj", "{1E3B233D-522A-4228-95E2-1B365CF7E0F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magento.RestClient.Domain", "source\Magento.RestClient.Domain\Magento.RestClient.Domain.csproj", "{4422B8B8-5F75-47EE-BF03-1060B78857F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Domain.Tests", "source\Magento.RestClient.Domain.Tests\Magento.RestClient.Domain.Tests.csproj", "{F58B959A-E485-40F6-BD47-C50B8E42EFDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,17 +27,32 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D8DDDE8E-9B4A-4064-AE0E-E9E11EDE2483}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D8DDDE8E-9B4A-4064-AE0E-E9E11EDE2483}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D8DDDE8E-9B4A-4064-AE0E-E9E11EDE2483}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D8DDDE8E-9B4A-4064-AE0E-E9E11EDE2483}.Release|Any CPU.Build.0 = Release|Any CPU
-		{793DE0ED-17FB-41DA-9344-4B199C7C79D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{793DE0ED-17FB-41DA-9344-4B199C7C79D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{793DE0ED-17FB-41DA-9344-4B199C7C79D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{793DE0ED-17FB-41DA-9344-4B199C7C79D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70473210-F952-40C0-ADC6-AB2FF04A3DF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70473210-F952-40C0-ADC6-AB2FF04A3DF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70473210-F952-40C0-ADC6-AB2FF04A3DF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70473210-F952-40C0-ADC6-AB2FF04A3DF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46816BF7-80C5-4043-81EC-97DA589B845D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46816BF7-80C5-4043-81EC-97DA589B845D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46816BF7-80C5-4043-81EC-97DA589B845D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46816BF7-80C5-4043-81EC-97DA589B845D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E3B233D-522A-4228-95E2-1B365CF7E0F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E3B233D-522A-4228-95E2-1B365CF7E0F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E3B233D-522A-4228-95E2-1B365CF7E0F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E3B233D-522A-4228-95E2-1B365CF7E0F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4422B8B8-5F75-47EE-BF03-1060B78857F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4422B8B8-5F75-47EE-BF03-1060B78857F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4422B8B8-5F75-47EE-BF03-1060B78857F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4422B8B8-5F75-47EE-BF03-1060B78857F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F58B959A-E485-40F6-BD47-C50B8E42EFDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F58B959A-E485-40F6-BD47-C50B8E42EFDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F58B959A-E485-40F6-BD47-C50B8E42EFDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F58B959A-E485-40F6-BD47-C50B8E42EFDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{70473210-F952-40C0-ADC6-AB2FF04A3DF3} = {07669806-9261-4C45-BD52-B301A81D504E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {57FE79C9-1D1B-4489-BE69-3A0F3B6C0E03}

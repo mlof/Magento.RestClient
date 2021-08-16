@@ -1,0 +1,4 @@
+﻿namespace Magento.RestClient.Domain
+{
+	
+}

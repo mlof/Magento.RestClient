@@ -66,7 +66,15 @@ this.IntegrationClient = client.AuthenticateAsIntegration(consumerKey, consumerS
 
 ## Entities
 
+#### Attribute Sets
+
+You can get attributes for an attribute set. You can get attribute groups for an attribute set. But you can't get which attributes are assigned to a certain attribute group! Well, that is unless you use the Search functionality, but that would require reindexing every time you edit an attribute group.
+
 #### Products
+
+##### Product Attributes & Options
+
+Alright, this one's a doozy. There's no real way to get an option ID for an attribute option through the API, except by getting a product which already has it set! So we have to match based on content, and can't delete options! 
 
 ##### Configurable Products
 

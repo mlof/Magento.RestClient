@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Common
 {
-    public class ExtensionAttributes
+    public record ExtensionAttributes
     {
         [JsonProperty("shipping_assignments")] public List<ShippingAssignment> ShippingAssignments { get; set; }
 

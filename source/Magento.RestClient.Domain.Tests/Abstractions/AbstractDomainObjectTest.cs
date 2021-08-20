@@ -7,13 +7,13 @@ namespace Magento.RestClient.Domain.Tests.Abstractions
 {
     public abstract class AbstractDomainObjectTest
     {
-        protected IIntegrationClient Client;
+        protected IAdminClient Client;
 
         [SetUp]
         public void Setup()
         {
             Log.Logger = new LoggerConfiguration().WriteTo.Debug().CreateLogger();
-            this.Client = new MagentoClient("http://localhost/rest/V1/").AuthenticateAsIntegration(
+            this.Client = new MagentoClient("http://localhost/").AuthenticateAsIntegration(
                 IntegrationCredentials.ConsumerKey, IntegrationCredentials.ConsumerSecret,
                 IntegrationCredentials.AccessToken, IntegrationCredentials.AccessTokenSecret);
         }

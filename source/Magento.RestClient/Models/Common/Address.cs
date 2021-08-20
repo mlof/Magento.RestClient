@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Common
 {
-    public class Address
+    public record Address
     {
         [JsonProperty("id")] public long Id { get; set; }
 

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Store
 {
-    public class StoreConfig
+    public record StoreConfig
     {
 
         [JsonProperty("id")]

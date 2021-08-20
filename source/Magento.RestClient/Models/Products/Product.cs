@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Dynamic;
 using Magento.RestClient.Models.Common;
 using Magento.RestClient.Models.Stock;
@@ -7,21 +8,29 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Products
 {
-    public class Product
+    public record Product
     {
         public Product()
         {
         }
 
-        [JsonProperty("id")] public long? Id { get; set; }
+        public Product(string sku)
+        {
+	        this.Sku = sku;
+	        AttributeSetId = 4;
+	        CustomAttributes = new List<CustomAttribute>();
 
-        [JsonProperty("sku")] public string Sku { get; set; }
+		}
 
-        [JsonProperty("name")] public string Name { get; set; }
+		[JsonProperty("id")] public long? Id { get; set; }
 
-        [JsonProperty("attribute_set_id")] public long AttributeSetId { get; set; }
+        [JsonProperty("sku"), Required] public string Sku { get; set; }
 
-        [JsonProperty("price")] public decimal? Price { get; set; }
+        [JsonProperty("name"), Required] public string Name { get; set; }
+
+        [JsonProperty("attribute_set_id"), Required] public long AttributeSetId { get; set; }
+
+        [JsonProperty("price"), Required] public decimal? Price { get; set; }
 
         [JsonProperty("status")] public long Status { get; set; }
 

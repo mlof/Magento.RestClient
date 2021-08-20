@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Shipping
 {
-    public class Total
+    public record Total
     {
         [JsonProperty("base_shipping_amount")] public long BaseShippingAmount { get; set; }
 

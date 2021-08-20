@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Payments
 {
-    public class Payment
+    public record Payment
     {
         [JsonProperty("account_status")] public dynamic AccountStatus { get; set; }
 

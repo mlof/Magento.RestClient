@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using Magento.RestClient.Domain;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Models;
@@ -12,7 +13,7 @@ using RestSharp;
 
 namespace Magento.RestClient.Repositories
 {
-	public class AttributeSetRepository : IAttributeSetRepository
+	internal class AttributeSetRepository : AbstractRepository,  IAttributeSetRepository
 	{
 		private readonly IRestClient _client;
 
@@ -22,13 +23,17 @@ namespace Magento.RestClient.Repositories
 		}
 
 
-		public void Create(EntityType entityTypeCode, int skeletonId, AttributeSet attributeSet)
+		public AttributeSet Create(EntityType entityTypeCode, long skeletonId, AttributeSet attributeSet)
 		{
+			
 			var request = new RestRequest("eav/attribute-sets");
+			
 			request.Method = Method.POST;
 			request.AddJsonBody(new {attributeSet, skeletonId, entityTypeCode = entityTypeCode.ToTypeCode()});
 
-			_client.Execute(request);
+			
+			var response = _client.Execute<AttributeSet>(request);
+			return HandleResponse(response);
 		}
 
 		public void Delete(long attributeSetId)
@@ -63,17 +68,11 @@ namespace Magento.RestClient.Repositories
 		public AttributeSet Get(long id)
 		{
 			var request = new RestRequest("eav/attribute-sets/{id}");
-			request.Method = Method.DELETE;
+			request.Method = Method.GET;
 			request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
 			var response = _client.Execute<AttributeSet>(request);
-			if (response.IsSuccessful)
-			{
-				return response.Data;
-			}
-			else
-			{
-				throw MagentoException.Parse(response.Content);
-			}
+						return HandleResponse(response);
+
 		}
 
 		public void AssignProductAttribute(long attributeSetId, long attributeGroupId, string attributeCode,

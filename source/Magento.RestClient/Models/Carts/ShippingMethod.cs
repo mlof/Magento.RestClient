@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Carts
 {
-    public class ShippingMethod
+    public record ShippingMethod
     {
         [JsonProperty("carrier_code")] public string CarrierCode { get; set; }
 

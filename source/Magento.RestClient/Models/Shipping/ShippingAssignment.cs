@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Shipping
 {
-    public class ShippingAssignment
+    public record ShippingAssignment
     {
         [JsonProperty("shipping")] public Shipping Shipping { get; set; }
 

@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Attributes
 {
-    public partial class Option
+    public record Option
     {
         [JsonProperty("label")] public string Label { get; set; }
 

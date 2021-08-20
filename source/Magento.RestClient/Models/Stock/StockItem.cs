@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Stock
 {
-    public class StockItem
+    public record StockItem
     {
         [JsonProperty("item_id")]
         public long ItemId { get; set; }

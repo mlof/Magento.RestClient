@@ -21,13 +21,20 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void CreateProduct()
 		{
-			var productFactory = ProductFactory.CreateInstance(Client);
+			var productFactory = ProductModelFactory.CreateInstance(Client);
 			var product = productFactory.CreateNew(Sku);
 
 			product.SetName("TestProduct");
+			product.SetAttributeSet(28);
+
 
 			product.SetVisibility(ProductVisibility.Both);
 			product.SetPrice(50);
+
+			product.SetAttribute("test_attr", "Xyz");
+
+			
+			product.Save();
 		}
 
 

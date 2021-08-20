@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Common
 {
-    public class ValidationResult
+    public record ValidationResult
     {
         [JsonProperty("valid")]
         public bool Valid { get; set; }

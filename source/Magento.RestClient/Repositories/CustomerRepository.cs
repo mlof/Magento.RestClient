@@ -15,7 +15,7 @@ using Serilog;
 
 namespace Magento.RestClient.Repositories
 {
-    public class CustomerRepository : ICustomerRepository
+    internal class CustomerRepository : AbstractRepository, ICustomerRepository
     {
         private readonly IRestClient _client;
         private readonly CustomerValidator _customerValidator;
@@ -51,24 +51,11 @@ namespace Magento.RestClient.Repositories
 
             request.AddOrUpdateParameter("id", customerId, ParameterType.UrlSegment);
             var response = _client.Execute<Customer>(request);
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-            else
-            {
-                if (response.ErrorException != null)
-                {
-                    throw response.ErrorException;
-                }
-                else
-                {
-                    throw MagentoException.Parse(response.Content);
-                }
-            }
-        }
+			return HandleResponse(response);
 
-        public ValidationResult Validate(Customer customer)
+		}
+
+		public ValidationResult Validate(Customer customer)
         {
             throw new System.NotImplementedException();
         }
@@ -91,17 +78,11 @@ namespace Magento.RestClient.Repositories
             request.AddJsonBody(new {customer, password});
             var response = _client.Execute<Customer>(request);
 
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-            else
-            {
-                throw MagentoException.Parse(response.Content);
-            }
-        }
+			return HandleResponse(response);
 
-        public void DeleteById(long id)
+		}
+
+		public void DeleteById(long id)
         {
             var request = new RestRequest("customers/{id}");
 

@@ -32,7 +32,7 @@ namespace Magento.RestClient.Repositories
             request.Method = Method.POST;
             request.AddJsonBody(new {entity = order});
 
-            _client.Execute(request);
+            var response = _client.Execute(request);
             return order;
         }
 

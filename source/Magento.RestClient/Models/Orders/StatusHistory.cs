@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Orders
 {
-    public class StatusHistory
+    public record StatusHistory
     {
         [JsonProperty("comment")] public string Comment { get; set; }
 

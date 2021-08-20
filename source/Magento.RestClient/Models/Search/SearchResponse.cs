@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Search
 {
-    public class SearchResponse<T> 
+    public record SearchResponse<T> 
     {
         [JsonProperty("items")] public List<T> Items { get; set; }
         [JsonProperty("search_criteria")] public SearchCriteria SearchCriteria { get; set; }

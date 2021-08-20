@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Carts
 {
-    public partial class ExtensionAttributes
+    public record ExtensionAttributes
     {
         [JsonProperty("discounts")] public List<Discount> Discounts { get; set; }
     }

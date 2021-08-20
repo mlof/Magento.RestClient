@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Search
 {
-    public class Filter
+    public record Filter
     {
         [JsonProperty("field")] public string Field { get; set; }
         [JsonProperty("value")] public string Value { get; set; }

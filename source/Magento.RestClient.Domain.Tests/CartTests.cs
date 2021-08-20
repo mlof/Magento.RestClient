@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Domain.Tests
 {
-    public class CartTests : AbstractDomainObjectTest
+	public class CartTests : AbstractDomainObjectTest
     {
         public static Address ScunthorpePostOffice => new Address() {
             Firstname = "Scunthorpe",
@@ -31,14 +31,17 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void CreateCart()
         {
-            var cart = Cart.CreateNew(Client.Carts);
+	        var factory = new CartModelFactory(Client);
+            var cart = factory.CreateNew();
             cart.Id.Should().NotBe(0);
         }
 
         [Test]
         public void GetExistingCart()
         {
-            var cart = Cart.GetExisting(Client.Carts, 8);
+	        var factory = new CartModelFactory(Client);
+	        var cart = factory.GetExisting(8);
+
 
 
             cart.Id.Should().NotBe(0);
@@ -46,10 +49,11 @@ namespace Magento.RestClient.Domain.Tests
 
         [Test]
         public void Cart_AssignCustomer_ValidCustomer()
-        {
-            var cart = Cart.CreateNew(Client.Carts);
+		{
+			var factory = new CartModelFactory(Client);
+			var cart = factory.CreateNew();
 
-            cart.AssignCustomer(1);
+			cart.AssignCustomer(1);
 
             cart.Customer.Should().NotBeNull();
             cart.Customer.Email.Should().NotBeNullOrEmpty();
@@ -59,11 +63,12 @@ namespace Magento.RestClient.Domain.Tests
 
         [Test]
         public void Cart_AssignCustomer_InvalidCustomer()
-        {
-            var cart = Cart.CreateNew(Client.Carts);
+		{
+			var factory = new CartModelFactory(Client);
+			var cart = factory.CreateNew();
 
 
-            Assert.Throws<EntityNotFoundException>(
+			Assert.Throws<EntityNotFoundException>(
                 () => {
                     cart.AssignCustomer(-1);
 
@@ -75,18 +80,20 @@ namespace Magento.RestClient.Domain.Tests
 
         [Test]
         public void Cart_AddItem_ValidItem()
-        {
-            var cart = Cart.CreateNew(Client.Carts);
-            cart.AddItem("TESTPRODUCT", 3);
+		{
+			var factory = new CartModelFactory(Client);
+			var cart = factory.CreateNew();
+			cart.AddItem("TESTPRODUCT", 3);
             cart.Items.Any(item => item.Sku == "TESTPRODUCT" && item.Qty == 3).Should().BeTrue();
         }
 
         [Test]
         public void Cart_AddItem_InvalidItem()
         {
-            var cart = Cart.CreateNew(Client.Carts);
+	        var factory = new CartModelFactory(Client);
+	        var cart = factory.CreateNew();
 
-            Assert.Throws<MagentoException>(() => {
+			Assert.Throws<MagentoException>(() => {
                 cart.AddItem("DOESNOTEXIST", 3);
             });
         }
@@ -94,8 +101,9 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void ShippingMethods_GetMethods_ShippingAddressSet()
         {
-            var cart = Cart.CreateNew(Client.Carts);
-            cart.AddItem("TESTPRODUCT", 3);
+	        var factory = new CartModelFactory(Client);
+	        var cart = factory.CreateNew();
+	        cart.AddItem("TESTPRODUCT", 3);
 
             cart.BillingAddress = ScunthorpePostOffice;
             cart.ShippingAddress = ScunthorpePostOffice;
@@ -106,9 +114,9 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void ShippingMethods_GetMethods_ShippingAddressSet_ItemsEmpty()
         {
-            var cart = Cart.CreateNew(Client.Carts);
-
-            cart.BillingAddress = ScunthorpePostOffice;
+			var factory = new CartModelFactory(Client);
+			var cart = factory.CreateNew();
+			cart.BillingAddress = ScunthorpePostOffice;
             cart.ShippingAddress = ScunthorpePostOffice;
 
             Assert.Throws<ArgumentNullException>(() => {
@@ -120,8 +128,9 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void ShippingMethods_GetMethods_ShippingAddressNotSet()
         {
-            var cart = Cart.CreateNew(Client.Carts);
-            cart.AddItem("TESTPRODUCT", 3);
+	        var factory = new CartModelFactory(Client);
+	        var cart = factory.CreateNew();
+			cart.AddItem("TESTPRODUCT", 3);
 
             Assert.Throws<ArgumentNullException>(() =>
                 cart.EstimateShippingMethods());
@@ -129,8 +138,9 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void ShippingMethods_SetShippingMethod_Cheapest()
         {
-            var cart = Cart.CreateNew(Client.Carts);
-            cart.AddItem("TESTPRODUCT", 3);
+	        var factory = new CartModelFactory(Client);
+	        var cart = factory.CreateNew();
+			cart.AddItem("TESTPRODUCT", 3);
 
             cart.ShippingAddress = ScunthorpePostOffice;
             var shippingMethods = cart.EstimateShippingMethods();
@@ -148,8 +158,9 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void ShippingMethods_SetShippingMethod_InvalidShippingMethod()
         {
-            var cart = Cart.CreateNew(Client.Carts);
-            cart.AddItem("TESTPRODUCT", 3);
+	        var factory = new CartModelFactory(Client);
+	        var cart = factory.CreateNew();
+			cart.AddItem("TESTPRODUCT", 3);
 
             cart.BillingAddress = ScunthorpePostOffice;
             cart.ShippingAddress = ScunthorpePostOffice;
@@ -161,28 +172,31 @@ namespace Magento.RestClient.Domain.Tests
 
         [Test]
         public void PaymentMethods_GetMethods()
-        {
-            var cart = Cart.CreateNew(Client.Carts);
+		{
+			var factory = new CartModelFactory(Client);
+			var cart = factory.CreateNew();
 
-            var methods = cart.GetPaymentMethods();
+			var methods = cart.GetPaymentMethods();
             methods.Should().NotBeNullOrEmpty();
         }
 
         [Test]
         public void PaymentMethods_SetPaymentMethods_InvalidPaymentMethod()
-        {
-            var cart = Cart.CreateNew(Client.Carts);
+		{
+			var factory = new CartModelFactory(Client);
+			var cart = factory.CreateNew();
 
-            Assert.Throws<InvalidOperationException>(() => {
+			Assert.Throws<InvalidOperationException>(() => {
                 cart.SetPaymentMethod("GALLONOFPCP");
             });
         }
 
         [Test]
         public void PaymentMethods_SetPaymentMethods_ValidPaymentMethod()
-        {
-            var cart = Cart.CreateNew(Client.Carts);
-            var paymentMethod = cart.GetPaymentMethods()
+		{
+			var factory = new CartModelFactory(Client);
+			var cart = factory.CreateNew();
+			var paymentMethod = cart.GetPaymentMethods()
                 .First();
             cart.SetPaymentMethod(paymentMethod.Code);
         }
@@ -193,8 +207,9 @@ namespace Magento.RestClient.Domain.Tests
         /// <exception cref="InvalidOperationException">Ignore.</exception>
         public void CommitOrder_ValidOrder()
         {
-            var cart = Cart.CreateNew(Client.Carts);
-            cart.ShippingAddress = ScunthorpePostOffice;
+	        var factory = new CartModelFactory(Client);
+	        var cart = factory.CreateNew();
+	        cart.ShippingAddress = ScunthorpePostOffice;
             cart.BillingAddress = ScunthorpePostOffice;
 
             cart.AddItem("TESTPRODUCT", 3)

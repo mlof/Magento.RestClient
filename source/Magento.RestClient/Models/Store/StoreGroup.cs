@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Store
 {
-    public class StoreGroup
+    public record StoreGroup
     {
         [JsonProperty("id")]
         public long Id { get; set; }

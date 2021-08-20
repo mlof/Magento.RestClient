@@ -1,0 +1,183 @@
+[
+  {
+    "attribute_code": "activity",
+    "frontend_input": "multiselect",
+    "frontend_label": "Activity",
+    "option": [
+      "Hike",
+      "Outdoor",
+      "Running",
+      "Warmup",
+      "Yoga",
+      "Recreation",
+      "Lounge",
+      "Gym",
+      "Climbing",
+      "Crosstraining",
+      "Post-workout",
+      "Cycling",
+      "Athletic",
+      "Sports",
+      "Hiking",
+      "Overnight",
+      "School",
+      "Trail",
+      "Travel",
+      "Urban"
+    ]
+  },
+  {
+    "attribute_code": "style_bags",
+    "frontend_input": "multiselect",
+    "frontend_label": "Style Bags",
+    "option": [
+      "Backpack",
+      "Luggage",
+      "Duffel",
+      "Messenger",
+      "Laptop",
+      "Exercise",
+      "Tote"
+    ]
+  },
+  {
+    "attribute_code": "material",
+    "frontend_input": "multiselect",
+    "frontend_label": "Material",
+    "option": [
+      "Burlap",
+      "Canvas",
+      "Cotton",
+      "Faux Leather",
+      "Leather",
+      "Mesh",
+      "Nylon",
+      "Polyester",
+      "Rayon",
+      "Ripstop",
+      "Suede",
+      "Foam",
+      "Metal",
+      "Plastic",
+      "Rubber",
+      "Synthetic",
+      "Stainless Steel",
+      "Silicone"
+    ]
+  },
+  {
+    "attribute_code": "color",
+    "frontend_input": "select",
+    "frontend_label": "Color",
+    "option": [
+      "Black",
+      "Blue",
+      "Brown",
+      "Gray",
+      "Green",
+      "Lavender",
+      "Multi",
+      "Orange",
+      "Purple",
+      "Red",
+      "White",
+      "Yellow"
+    ]
+  },
+  {
+    "attribute_code": "strap_bags",
+    "frontend_input": "multiselect",
+    "frontend_label": "Strap\/Handle",
+    "option": [
+      "Adjustable",
+      "Cross Body",
+      "Detachable",
+      "Double",
+      "Padded",
+      "Shoulder",
+      "Single",
+      "Telescoping"
+    ]
+  },
+  {
+    "attribute_code": "features_bags",
+    "frontend_input": "multiselect",
+    "frontend_label": "Features",
+    "option": [
+      "Audio Pocket",
+      "Wheeled",
+      "Hydration Pocket",
+      "Audio Pocket",
+      "Flapover",
+      "Waterproof",
+      "Lightweight",
+      "TSA Approved",
+      "Reflective",
+      "Laptop Sleeve",
+      "Lockable"
+    ]
+  },
+  {
+    "attribute_code": "gender",
+    "frontend_input": "multiselect",
+    "frontend_label": "Gender",
+    "option": [
+      "Men",
+      "Women",
+      "Boys",
+      "Girls",
+      "Unisex"
+    ]
+  },
+  {
+    "attribute_code": "category_gear",
+    "frontend_input": "multiselect",
+    "frontend_label": "Category",
+    "option": [
+      "Cardio",
+      "Electronic",
+      "Exercise",
+      "Fashion",
+      "Hydration",
+      "Timepiece"
+    ]
+  },
+  {
+    "attribute_code": "size",
+    "frontend_input": "select",
+    "frontend_label": "Size",
+    "option": [
+      "55 cm",
+      "65 cm",
+      "75 cm",
+      "6 foot",
+      "8 foot",
+      "10 foot"
+    ]
+  },
+  {
+    "attribute_code": "eco_collection",
+    "frontend_input": "boolean",
+    "frontend_label": "Eco Collection"
+  },
+  {
+    "attribute_code": "performance_fabric",
+    "frontend_input": "boolean",
+    "frontend_label": "Performance Fabric"
+  },
+  {
+    "attribute_code": "erin_recommends",
+    "frontend_input": "boolean",
+    "frontend_label": "Erin Recommends"
+  },
+  {
+    "attribute_code": "new",
+    "frontend_input": "boolean",
+    "frontend_label": "New"
+  },
+  {
+    "attribute_code": "sale",
+    "frontend_input": "boolean",
+    "frontend_label": "Sale"
+  }
+]

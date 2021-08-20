@@ -51,7 +51,7 @@ namespace Magento.RestClient.Search
             return this;
         }
 
-        public SearchBuilder<T> WhereEquals(Expression<Func<T, object>> func,  object value = null)
+        public SearchBuilder<T> WhereEquals(Expression<Func<T, object>> func,  object value )
         {
             return Where(func, SearchCondition.Equals, value);
         }
@@ -147,6 +147,12 @@ namespace Magento.RestClient.Search
             return _restRequest;
         }
 
+		/// <summary>
+		/// Sets the page size for the search query.
+		/// 0 returns everything.
+		/// </summary>
+		/// <param name="pageSize"></param>
+		/// <returns></returns>
         public SearchBuilder<T> WithPageSize(int pageSize)
         {
             this._pageSize = pageSize;

@@ -7,6 +7,6 @@ namespace Magento.RestClient.Repositories.Abstractions
 {
     public interface IReadProductRepository 
     {
-        Product GetProductBySku(string sku);
+        Product GetProductBySku(string sku, string scope = "all");
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Attributes
 {
-    public class AttributeGroup
+    public record AttributeGroup
     {
         [JsonProperty("attribute_group_id")]
         public long AttributeGroupId { get; set; }

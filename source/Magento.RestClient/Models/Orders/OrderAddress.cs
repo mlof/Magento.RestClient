@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Orders
 {
-    public class OrderAddress : Address
+    public record OrderAddress : Address
     {
         [JsonProperty("address_type")] public string AddressType { get; set; }
 

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Orders
 {
-    public class Order
+    public record Order
     {
         [JsonProperty("base_currency_code")] public string BaseCurrencyCode { get; set; }
 

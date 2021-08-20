@@ -4,7 +4,7 @@ using RestSharp;
 
 namespace Magento.RestClient.Models.Search
 {
-    public class SearchCriteria
+    public record SearchCriteria
     {
         [JsonProperty("filter_groups")] public List<FilterGroup> FilterGroups { get; set; }
         [JsonProperty("sort_orders")] public List<SortOrder> SortOrders { get; set; }

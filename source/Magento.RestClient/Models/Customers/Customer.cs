@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Customers
 {
-    public class Customer
+    public record Customer
     {
         [JsonProperty("id")] public long Id { get; set; }
 

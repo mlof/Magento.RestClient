@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Carts
 {
-    public partial class BillingAddress
+    public record BillingAddress
     {
         [JsonProperty("id")] public long Id { get; set; }
 

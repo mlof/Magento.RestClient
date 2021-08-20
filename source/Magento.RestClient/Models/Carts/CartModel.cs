@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Carts
 {
-    public class CartModel
+    public record CartModel
     {
         #region Properties
 

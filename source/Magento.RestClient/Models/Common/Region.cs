@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Common
 {
-    public class Region
+    public record Region
     {
         [JsonProperty("region_code")] public string RegionCode { get; set; }
 

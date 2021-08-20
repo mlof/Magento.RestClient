@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Category
 {
-    public class Category
+    public record Category
     {
         [JsonProperty("id")] public long Id { get; set; }
 

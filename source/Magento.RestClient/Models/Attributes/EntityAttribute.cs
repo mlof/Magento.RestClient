@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Attributes
 {
-    public partial class EntityAttribute
+    public record  EntityAttribute
     {
         [JsonProperty("attribute_id")] public long AttributeId { get; set; }
 

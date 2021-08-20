@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Orders
 {
-    public class OrderItem
+    public record OrderItem
     {
         [JsonProperty("amount_refunded")] public long AmountRefunded { get; set; }
 

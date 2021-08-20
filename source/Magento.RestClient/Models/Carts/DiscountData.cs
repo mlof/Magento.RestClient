@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Carts
 {
-    public partial class DiscountData
+    public record DiscountData
     {
         [JsonProperty("amount")] public long Amount { get; set; }
 

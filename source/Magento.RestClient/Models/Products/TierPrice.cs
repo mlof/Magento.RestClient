@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Magento.RestClient.Models.Products
 {
     [JsonConverter(typeof(JsonPathConverter))]
-    public class TierPrice
+    public record TierPrice
     {
         [JsonProperty("customer_group_id")] public long CustomerGroupId { get; set; }
 

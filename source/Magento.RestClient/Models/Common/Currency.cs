@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Common
 {
-	public partial class Currency
+	public record Currency
 	{
 		[JsonProperty("global_currency_code")] public string GlobalCurrencyCode { get; set; }
 

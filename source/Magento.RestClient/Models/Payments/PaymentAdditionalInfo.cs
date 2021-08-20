@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Payments
 {
-    public class PaymentAdditionalInfo
+    public record PaymentAdditionalInfo
     {
         [JsonProperty("key")] public string Key { get; set; }
 

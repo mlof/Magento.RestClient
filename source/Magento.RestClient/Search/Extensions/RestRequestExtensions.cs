@@ -20,5 +20,10 @@ namespace Magento.RestClient.Search.Extensions
 
             return searchBuilder.Build();
         }
-    }
+        public static IRestRequest SetScope(this IRestRequest request, string scope)
+        {
+	        request.AddOrUpdateParameter("scope", scope, ParameterType.UrlSegment);
+	        return request;
+        }
+	}
 }

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Search
 {
-    public class FilterGroup
+    public record FilterGroup
     {
         [JsonProperty("filters")] public List<Filter> Filters { get; set; }
     }

@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Carts
 {
-    public class PaymentMethod
+    public record PaymentMethod
     {
         [JsonProperty("code")] public string Code { get; set; }
         [JsonProperty("title")] public string Title { get; set; }

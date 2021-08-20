@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Shipping
 {
-    public class Shipping
+    public record Shipping
     {
         [JsonProperty("address")] public OrderAddress Address { get; set; }
 

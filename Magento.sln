@@ -17,9 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient", "sourc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Tests", "source\Magento.RestClient.Tests\Magento.RestClient.Tests.csproj", "{1E3B233D-522A-4228-95E2-1B365CF7E0F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magento.RestClient.Domain", "source\Magento.RestClient.Domain\Magento.RestClient.Domain.csproj", "{4422B8B8-5F75-47EE-BF03-1060B78857F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Domain", "source\Magento.RestClient.Domain\Magento.RestClient.Domain.csproj", "{4422B8B8-5F75-47EE-BF03-1060B78857F1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Domain.Tests", "source\Magento.RestClient.Domain.Tests\Magento.RestClient.Domain.Tests.csproj", "{F58B959A-E485-40F6-BD47-C50B8E42EFDE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Tests.Integration", "source\Magento.RestClient.Tests.Integration\Magento.RestClient.Tests.Integration.csproj", "{12DFE166-B38E-4884-A56B-A7A3EBBF96B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{F58B959A-E485-40F6-BD47-C50B8E42EFDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F58B959A-E485-40F6-BD47-C50B8E42EFDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F58B959A-E485-40F6-BD47-C50B8E42EFDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12DFE166-B38E-4884-A56B-A7A3EBBF96B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12DFE166-B38E-4884-A56B-A7A3EBBF96B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12DFE166-B38E-4884-A56B-A7A3EBBF96B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12DFE166-B38E-4884-A56B-A7A3EBBF96B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

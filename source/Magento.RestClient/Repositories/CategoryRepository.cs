@@ -12,7 +12,7 @@ using RestSharp;
 
 namespace Magento.RestClient.Repositories
 {
-	public class CategoryRepository : ICategoryRepository
+	internal class CategoryRepository : AbstractRepository, ICategoryRepository
 	{
 		private readonly IRestClient _client;
 		private readonly CategoryValidator categoryValidator;
@@ -30,18 +30,8 @@ namespace Magento.RestClient.Repositories
 			request.AddOrUpdateParameter("categoryId", categoryId, ParameterType.UrlSegment);
 
 			var response = _client.Execute<Category>(request);
-			if (response.IsSuccessful)
-			{
-				return response.Data;
-			}
-			else if (response.StatusCode == HttpStatusCode.NotFound)
-			{
-				return null;
-			}
-			else
-			{
-				throw response.ErrorException;
-			}
+			return HandleResponse(response);
+
 		}
 
 		public Category GetCategoryTree(int rootCategoryId, int depth = 1)
@@ -88,14 +78,8 @@ namespace Magento.RestClient.Repositories
 			request.Method = Method.POST;
 			request.AddJsonBody(new {category});
 			var response =  _client.Execute<Category>(request);
-			if (response.IsSuccessful)
-			{
-				return response.Data;
-			}
-			else
-			{
-				throw MagentoException.Parse(response.Content);
-			}
+			return HandleResponse(response);
+
 		}
 	}
 

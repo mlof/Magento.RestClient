@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Models.Carts
 {
-    public partial class CartItem
+    public record CartItem
     {
         [JsonProperty("item_id")] public long ItemId { get; set; }
 

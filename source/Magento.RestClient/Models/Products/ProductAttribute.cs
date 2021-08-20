@@ -4,7 +4,7 @@ using Magento.RestClient.Models.Common;
 
 namespace Magento.RestClient.Models.Products
 {
-    public class ProductAttribute : EntityAttribute
+    public record ProductAttribute : EntityAttribute
     {
         public ProductAttribute()
         {

@@ -1,4 +1,6 @@
-﻿using Magento.RestClient.Repositories.Abstractions;
+﻿using System.Collections.Generic;
+using Magento.RestClient.Repositories.Abstractions;
+using Magento.RestClient.Search;
 using RestSharp;
 
 namespace Magento.RestClient.Repositories
@@ -11,5 +13,12 @@ namespace Magento.RestClient.Repositories
         {
             this._client = client;
         }
+
+      
+        public List<Invoice> GetByOrderId(long orderId)
+        {
+	        var response = _client.Search().Invoices(builder => builder.WhereEquals(invoice => invoice.OrderId, orderId));
+	        return response.Items;
+		}
     }
 }

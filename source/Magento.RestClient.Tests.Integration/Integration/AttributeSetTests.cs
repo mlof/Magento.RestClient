@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using FluentAssertions;
 using Magento.RestClient.Domain;
+using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Models.Attributes;
 using Magento.RestClient.Models.Common;
@@ -20,8 +21,8 @@ namespace Magento.RestClient.Tests.Integration.Integration
 		[SetUp]
 		public void AttributeSetSetup()
 		{
-			var attributes = File.ReadAllText(Path.Join("Fixtures", "attributes.json"));
-			var attributeSets = File.ReadAllText(Path.Join("Fixtures", "attribute-sets.json"));
+			var attributes = File.ReadAllText(Path.Join("Fixtures", "complex", "attributes.json"));
+			var attributeSets = File.ReadAllText(Path.Join("Fixtures","complex", "attribute-sets.json"));
 			this.attributeSetFixtures = JsonConvert.DeserializeObject<List<AttributeSetFixture>>(attributeSets);
 			this.attributeFixtures = JsonConvert.DeserializeObject<List<AttributeFixture>>(attributes);
 		}
@@ -30,12 +31,12 @@ namespace Magento.RestClient.Tests.Integration.Integration
 		[Test]
 		public void CreateFixtures()
 		{
-			var attributeFactory = new ProductAttributeFactory(Client);
 
 			
+			/*
 			foreach (var fixture in attributeFixtures)
 			{
-				var attribute = attributeFactory.GetInstance(fixture.AttributeCode);
+				var attribute = Client.GetAttributeModel(fixture.AttributeCode);
 				attribute.SetFrontendLabel(fixture.FrontendLabel);
 				attribute.SetFrontendInput(fixture.FrontendInput);
 
@@ -47,22 +48,35 @@ namespace Magento.RestClient.Tests.Integration.Integration
 					}
 				}
 
-				attribute.Save();
-			}
+				try
+				{
+					attribute.Save();
+
+				}
+				catch
+				{
+
+				}
+			}*/
 
 
-			var attributeSetFactory = new AttributeSetModelFactory(Client);
 			foreach (var fixture in attributeSetFixtures)
 			{
-				var attributeSet = attributeSetFactory.GetInstance(fixture.Name);
-				attributeSet.AddGroup("Fixtures");
-
-				foreach (var attributeCode in fixture.Attributes)
+				var attributeSet = Client.GetAttributeSetModel(fixture.AttributeSetName);
+				
+				foreach (var attributeGroup in fixture.AttributeGroups)
 				{
+					attributeSet.AddGroup(attributeGroup.AttributeGroupName);
+
+
 
 					try
 					{
-						attributeSet.AssignAttribute("Fixtures", attributeCode);
+						foreach (var attribute in attributeGroup.Attributes)
+						{
+							attributeSet.AssignAttribute(attributeGroup.AttributeGroupName, attribute);
+
+						}
 
 					}
 					catch
@@ -87,11 +101,15 @@ namespace Magento.RestClient.Tests.Integration.Integration
 					var id =
 						Client.Search
 							.AttributeSets(builder =>
-								builder.WhereEquals(set => set.AttributeSetName, attributeSet.Name)
+								builder.WhereEquals(set => set.AttributeSetName, attributeSet.AttributeSetName)
 									.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct)).Items
-							.SingleOrDefault()
+							.SingleOrDefault()?
 							.AttributeSetId;
-					Client.AttributeSets.Delete(id.Value);
+					if (id != null)
+					{
+						Client.AttributeSets.Delete(id.Value);
+
+					}
 
 				}
 				catch
@@ -105,29 +123,5 @@ namespace Magento.RestClient.Tests.Integration.Integration
 				Client.Attributes.DeleteProductAttribute(fixture.AttributeCode);
 			}
 		}
-	}
-
-	public class AttributeSetFixture
-	{
-		[JsonProperty("Name")] public string Name { get; set; }
-
-		[JsonProperty("Attributes")] public List<string> Attributes { get; set; }
-	}
-
-	public partial class AttributeFixture
-	{
-		[JsonProperty("attribute_code")] public string AttributeCode { get; set; }
-
-		[JsonProperty("frontend_input")] public string FrontendInput { get; set; }
-
-		[JsonProperty("frontend_label")] public string FrontendLabel { get; set; }
-
-		[JsonProperty("option", NullValueHandling = NullValueHandling.Ignore)]
-		public List<string> Option { get; set; }
-	}
-
-
-	public class AttributeTests : AbstractIntegrationTest
-	{
 	}
 }

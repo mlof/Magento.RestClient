@@ -6,6 +6,8 @@ using Magento.RestClient.Models.Category;
 using Magento.RestClient.Models.Customers;
 using Magento.RestClient.Models.Products;
 using Magento.RestClient.Models.Search;
+using Magento.RestClient.Models.Shipping;
+using Magento.RestClient.Repositories;
 using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Search.Abstractions;
 using Magento.RestClient.Search.Extensions;
@@ -81,8 +83,19 @@ namespace Magento.RestClient.Search
         {
             return Search("coupons/search", configure);
         }
+        public SearchResponse<Invoice> Invoices(
+	        Action<SearchBuilder<Invoice>> configure = null)
+        {
+	        return Search("invoices", configure);
+        }
 
-        public SearchResponse<CustomerGroup> CustomerGroups(
+        public SearchResponse<Shipment> Shipments(Action<SearchBuilder<Shipment>> configure = null)
+        {
+	        return Search("shipments", configure);
+
+		}
+
+		public SearchResponse<CustomerGroup> CustomerGroups(
             Action<SearchBuilder<CustomerGroup>> configure = null)
         {
             return Search("customerGroups/search", configure);

@@ -4,8 +4,12 @@ using RestSharp;
 
 namespace Magento.RestClient.Repositories
 {
-	internal abstract class AbstractRepository
+	public abstract class AbstractRepository
 	{
+		protected AbstractRepository()
+		{
+
+		}
 		protected T HandleResponse<T>(IRestResponse<T> response) where T : class
 		{
 			if (response.IsSuccessful)
@@ -19,6 +23,16 @@ namespace Magento.RestClient.Repositories
 			}
 
 			throw MagentoException.Parse(response.Content);
+		}
+		protected void HandleResponse(IRestResponse response) 
+		{
+			if (!response.IsSuccessful)
+			{
+				throw MagentoException.Parse(response.Content);
+
+			}
+
+
 		}
 	}
 }

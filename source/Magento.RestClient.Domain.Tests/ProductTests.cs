@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Domain.Tests.Abstractions;
 using NUnit.Framework;
 
@@ -10,7 +11,7 @@ namespace Magento.RestClient.Domain.Tests
 {
 	class ProductTests : AbstractDomainObjectTest
 	{
-		public string Sku = "TESTSKU";
+		public string Sku = "NEWSKU";
 
 		[SetUp]
 		public void ProductSetup()
@@ -21,19 +22,17 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void CreateProduct()
 		{
-			var productFactory = ProductModelFactory.CreateInstance(Client);
-			var product = productFactory.CreateNew(Sku);
+			var product = new ProductModel(this.Client, Sku);
 
-			product.SetName("TestProduct");
-			product.SetAttributeSet(28);
+			product.Name = "TestProduct";
+			product.AttributeSetId = 28;
 
-
-			product.SetVisibility(ProductVisibility.Both);
-			product.SetPrice(50);
+			product.Visibility = ProductVisibility.Both;
+			product.Price = 50;
 
 			product.SetAttribute("test_attr", "Xyz");
 
-			
+
 			product.Save();
 		}
 

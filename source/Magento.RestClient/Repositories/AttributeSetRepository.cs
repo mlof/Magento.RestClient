@@ -49,6 +49,7 @@ namespace Magento.RestClient.Repositories
 		{
 			var request = new RestRequest("products/attribute-sets/{attributeSetId}/groups");
 			request.Method = Method.PUT;
+			request.SetScope("all");
 			request.AddOrUpdateParameter("attributeSetId", attributeSetId, ParameterType.UrlSegment);
 			request.AddJsonBody(new {
 				group = new {attribute_group_name = attributeGroupName, attribute_set_id = attributeSetId}

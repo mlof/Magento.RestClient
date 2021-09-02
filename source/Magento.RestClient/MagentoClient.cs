@@ -20,14 +20,14 @@ namespace Magento.RestClient
 		public MagentoClient(string host)
 		{
 			this.baseUrl = "";
-			if (!host.EndsWith("/"))
+			if (host.EndsWith("/"))
 			{
-				host += "/";
+				host = host.TrimEnd('/');
 			}
 
-			this.baseUrl = host + "rest/{scope}/V1/";
-			this.adminTokenUrl = host + "rest/V1/integration/admin/token";
-			this.customerTokenUrl = host + "rest/V1/integration/customer/token";
+			this.baseUrl = $"{host}/rest/{{scope}}/V1/";
+			this.adminTokenUrl = $"{host}/rest/V1/integration/admin/token";
+			this.customerTokenUrl = host + "/rest/V1/integration/customer/token";
 			this._client = new RestSharp.RestClient(baseUrl);
 
 

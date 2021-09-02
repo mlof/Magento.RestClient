@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net;
 using Magento.RestClient.Domain;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Models;
@@ -123,24 +122,6 @@ namespace Magento.RestClient.Repositories
 			request.Method = Method.POST;
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.AddOrUpdateParameter("optionValue", optionValue, ParameterType.UrlSegment);
-		}
-	}
-
-	public abstract class AbstractRepository
-	{
-		protected T HandleResponse<T>(IRestResponse<T> response) where T : class
-		{
-			if (response.IsSuccessful)
-			{
-				return response.Data;
-			}
-
-			if (response.StatusCode == HttpStatusCode.NotFound)
-			{
-				return null;
-			}
-
-			throw MagentoException.Parse(response.Content);
 		}
 	}
 }

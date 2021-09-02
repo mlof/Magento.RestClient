@@ -4,17 +4,15 @@ using System.Linq;
 using FluentValidation;
 using Magento.RestClient.Domain.Validators;
 using Magento.RestClient.Exceptions;
-using Magento.RestClient.Models;
 using Magento.RestClient.Models.Carts;
 using Magento.RestClient.Models.Common;
 using Magento.RestClient.Repositories.Abstractions;
-using Magento.RestClient.Validators;
 using Newtonsoft.Json;
 using Customer = Magento.RestClient.Models.Customers.Customer;
 
-namespace Magento.RestClient.Domain
+namespace Magento.RestClient.Domain.Models
 {
-	public class CartModel 
+	public class CartModel : ICartModel
 	{
 		private readonly CartAddressValidator _addressValidator;
 		private readonly ICartRepository _cartRepository;
@@ -23,7 +21,7 @@ namespace Magento.RestClient.Domain
 		private long _id;
 
 
-		private Models.Carts.CartModel _model;
+		private RestClient.Models.Carts.Cart _model;
 
 		private string _paymentMethod;
 		private Address _shippingAddress;
@@ -37,6 +35,7 @@ namespace Magento.RestClient.Domain
 			_addressValidator = new CartAddressValidator();
 			_commitCartValidator = new CommitCartValidator();
 			_cartRepository = cartRepository;
+			this.Id = _cartRepository.GetNewCartId();
 		}
 
 
@@ -49,7 +48,7 @@ namespace Magento.RestClient.Domain
 		}
 
 		public Address BillingAddress {
-			get { return _billingAddress; }
+			get => _billingAddress;
 			set {
 				_addressValidator.ValidateAndThrow(value);
 				_billingAddress = value;
@@ -57,7 +56,7 @@ namespace Magento.RestClient.Domain
 		}
 
 		public Address ShippingAddress {
-			get { return _shippingAddress; }
+			get => _shippingAddress;
 			set {
 				_addressValidator.ValidateAndThrow(value);
 				_shippingAddress = value;
@@ -67,7 +66,7 @@ namespace Magento.RestClient.Domain
 
 		[JsonProperty("id")]
 		public long Id {
-			get { return _id; }
+			get => _id;
 			private set {
 				_id = value;
 				if (_id > 0)
@@ -133,7 +132,7 @@ namespace Magento.RestClient.Domain
 		/// <exception cref="InvalidOperationException"></exception>
 		public CartModel SetPaymentMethod(string paymentMethod)
 		{
-			var paymentMethods = _cartRepository.GetPaymentMethodsForCart(Id);
+			var paymentMethods = _cartRepository.GetPaymentMethodsForCart(this.Id);
 			if (paymentMethods.Any(method => method.Code == paymentMethod))
 			{
 				_paymentMethod = paymentMethod;
@@ -145,13 +144,6 @@ namespace Magento.RestClient.Domain
 			}
 		}
 
-
-		public CartModel CreateNew()
-		{
-			this.Id = _cartRepository.GetNewCartId();
-
-			return this;
-		}
 
 		public CartModel AddItem(string sku, int quantity)
 		{
@@ -175,7 +167,7 @@ namespace Magento.RestClient.Domain
 				throw new ArgumentNullException(nameof(this.ShippingAddress), "Set the shipping address first.");
 			}
 
-			if (!Items.Any())
+			if (!this.Items.Any())
 			{
 				throw new ArgumentNullException("Can not estimate shipping methods without items.");
 			}
@@ -210,7 +202,7 @@ namespace Magento.RestClient.Domain
 				return this.OrderId.Value;
 			}
 
-			throw new CartAlreadyCommittedException(Id);
+			throw new CartAlreadyCommittedException(this.Id);
 		}
 
 		/// <summary>

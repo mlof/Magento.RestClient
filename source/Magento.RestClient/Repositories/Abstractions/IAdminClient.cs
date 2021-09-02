@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Magento.RestClient.Exceptions;
-using Magento.RestClient.Search.Abstractions;
+﻿using Magento.RestClient.Search.Abstractions;
 
 namespace Magento.RestClient.Repositories.Abstractions
 {
@@ -21,19 +19,7 @@ namespace Magento.RestClient.Repositories.Abstractions
         ICategoryRepository Categories { get; }
         ICartRepository Carts { get; }
         IAttributeRepository Attributes { get; }
-
-
-    }
-
-    /// <summary>
-    /// Gets installed modules.
-    /// </summary>
-    /// <returns></returns>
-    /// <exception cref="MagentoException"></exception>
-
-	public interface ICanGetModules
-    {
-	    List<string> GetModules();
-
-    }
+        IShipmentRepository Shipments { get; }
+		IBulkRepository Bulk { get; }
+	}
 }

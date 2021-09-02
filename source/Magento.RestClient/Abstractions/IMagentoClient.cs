@@ -11,8 +11,4 @@ namespace Magento.RestClient.Abstractions
 
         IGuestClient AuthenticateAsGuest();
     }
-
-    public interface IGuestClient
-    {
-    }
 }

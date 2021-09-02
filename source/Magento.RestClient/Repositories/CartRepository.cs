@@ -12,7 +12,7 @@ using Customer = Magento.RestClient.Models.Customers.Customer;
 
 namespace Magento.RestClient.Repositories
 {
-    internal class CartRepository : ICartRepository
+    internal class CartRepository : AbstractRepository, ICartRepository
     {
         private readonly IRestClient _client;
 
@@ -21,12 +21,12 @@ namespace Magento.RestClient.Repositories
             this._client = client;
         }
 
-        public CartModel GetExistingCart(long i)
+        public Cart GetExistingCart(long i)
         {
             var request = new RestRequest("carts/{id}");
             request.Method = Method.GET;
             request.AddOrUpdateParameter("id", i, ParameterType.UrlSegment);
-            var response = _client.Execute<CartModel>(request);
+            var response = _client.Execute<Cart>(request);
 
 
             return response.Data;

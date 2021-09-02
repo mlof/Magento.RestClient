@@ -1,0 +1,37 @@
+﻿using Magento.RestClient.Domain.Models;
+using Magento.RestClient.Models.Common;
+using Magento.RestClient.Repositories.Abstractions;
+
+namespace Magento.RestClient.Domain.Extensions
+{
+	public static class ClientExtensions
+	{
+		public static AttributeSetModel GetAttributeSetModel(this IAdminClient client, string name,
+			EntityType entityType = EntityType.CatalogProduct,
+			long? skeletonId = null)
+		{
+			return new AttributeSetModel(client, name, entityType, skeletonId);
+		}
+
+		public static AttributeModel GetAttributeModel(this IAdminClient client, string attributeCode)
+		{
+			return new AttributeModel(client, attributeCode);
+		}
+
+		public static ProductModel GetProductModel(this IAdminClient client, string sku)
+		{
+			return new ProductModel(client, sku);
+		}
+
+
+		public static CartModel CreateNewCartModel(this IAdminClient client)
+		{
+			return new CartModel(client.Carts);
+		}
+
+		public static CartModel GetExistingCartModel(this IAdminClient client, long id)
+		{
+			return new CartModel(client.Carts, id);
+		}
+	}
+}

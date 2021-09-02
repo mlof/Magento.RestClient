@@ -1,3 +1,4 @@
+using Magento.RestClient.Tests.Configuration;
 using Magento.RestClient.Tests.Constants;
 using NUnit.Framework;
 
@@ -16,10 +17,12 @@ namespace Magento.RestClient.Tests
 		[Test]
 		public void CanAuthenticateAsIntegration()
 		{
-			var c = _client.AuthenticateAsIntegration(IntegrationCredentials.ConsumerKey,
-				IntegrationCredentials.ConsumerSecret,
-				IntegrationCredentials.AccessToken, IntegrationCredentials.AccessTokenSecret);
+			var conf = TestConfiguration.GetInstance();
+			var c = new MagentoClient("http://localhost/").AuthenticateAsIntegration(
+				conf.ConsumerKey, conf.ConsumerSecret,
+				conf.AccessToken, conf.AccessTokenSecret);
 
+		
 			var websites = c.Stores.GetWebsites();
 
 			Assert.IsNotEmpty(websites);

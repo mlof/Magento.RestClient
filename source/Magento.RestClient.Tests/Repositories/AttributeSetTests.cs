@@ -86,7 +86,6 @@ namespace Magento.RestClient.Tests.Repositories
 			var attributeSet = response.Items.First();
 
 
-			//var groups = Client.Search.AttributeSets(attributeSet.AttributeSetId);
 
 			//attributes.Should().NotBeEmpty();
 		}
@@ -98,9 +97,5 @@ namespace Magento.RestClient.Tests.Repositories
 				var attributes = Client.Attributes.GetProductAttributes(-1);
 			});
 		}
-	}
-
-	public class AttributeTests : AbstractIntegrationTest
-	{
 	}
 }

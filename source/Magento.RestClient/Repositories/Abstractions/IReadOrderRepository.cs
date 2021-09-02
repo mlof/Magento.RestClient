@@ -9,6 +9,6 @@ namespace Magento.RestClient.Repositories.Abstractions
     public interface IReadOrderRepository
     {
         Order CreateOrder(Order order);
-        Order GetOrderById(long orderId);
+        Order GetByOrderId(long orderId);
     }
 }

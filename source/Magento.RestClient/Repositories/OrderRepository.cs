@@ -36,7 +36,7 @@ namespace Magento.RestClient.Repositories
             return order;
         }
 
-        public Order GetOrderById(long orderId)
+        public Order GetByOrderId(long orderId)
         {
             IRestRequest request = new RestRequest("orders/{id}");
             request.AddOrUpdateParameter("id", orderId, ParameterType.UrlSegment);

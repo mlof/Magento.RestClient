@@ -1,0 +1,87 @@
+[
+  {
+    "Name": "Bag",
+    "Attributes": [
+      "activity",
+      "style_bags",
+      "material",
+      "color",
+      "strap_bags",
+      "features_bags",
+      "eco_collection",
+      "performance_fabric",
+      "erin_recommends",
+      "new",
+      "sale"
+    ]
+  },
+  {
+    "Name": "Bottom",
+    "Attributes": [
+      "activity",
+      "material",
+      "color",
+      "eco_collection",
+      "performance_fabric",
+      "erin_recommends",
+      "new",
+      "sale"
+    ]
+  },
+  {
+    "Name": "Downloadable",
+    "Attributes": [
+      "activity"
+    ]
+  },
+  {
+    "Name": "Gear",
+    "Attributes": [
+      "activity",
+      "material",
+      "color",
+      "gender",
+      "category_gear",
+      "eco_collection",
+      "performance_fabric",
+      "erin_recommends",
+      "new",
+      "sale"
+    ]
+  },
+  {
+    "Name": "Sprite Stasis Ball",
+    "Attributes": [
+      "activity",
+      "material",
+      "color",
+      "gender",
+      "category_gear",
+      "size"
+    ]
+  },
+  {
+    "Name": "Sprite Yoga Strap",
+    "Attributes": [
+      "activity",
+      "material",
+      "color",
+      "gender",
+      "category_gear",
+      "size"
+    ]
+  },
+  {
+    "Name": "Top",
+    "Attributes": [
+      "activity",
+      "material",
+      "color",
+      "eco_collection",
+      "performance_fabric",
+      "erin_recommends",
+      "new",
+      "sale"
+    ]
+  }
+]

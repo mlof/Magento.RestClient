@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FluentAssertions;
+using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Tests.Abstractions;
 using Magento.RestClient.Models.Attributes;
 using Magento.RestClient.Models.Products;
@@ -14,28 +16,45 @@ namespace Magento.RestClient.Domain.Tests
 		[SetUp]
 		public void SetupAttributeSets()
 		{
+			var attributeSet = Client.GetAttributeSetModel(this.ExistingAttributeSet);
+			attributeSet.Save();
 		}
+
+		public string ExistingAttributeSet { get; set; } = "SHOULD EXIST";
 
 
 		[Test]
-		public void CreateNew()
+		public void GetAttributeSetModel_Existing()
 		{
-			var factory = new AttributeSetModelFactory(Client);
-			var attributeSet = factory.GetInstance("Test Attribute Set");
+			var attributeSet =  Client.GetAttributeSetModel(this.ExistingAttributeSet);
 
+			attributeSet.IsPersisted.Should().BeTrue();
+		}
+		[Test]
+		public void GetAttributeSetModel_DoesNotExist()
+		{
+			var attributeSet = Client.GetAttributeSetModel("DOESNOTEXIST");
 
-			attributeSet.AddGroup("");
-
-			attributeSet.Save();
+			attributeSet.IsPersisted.Should().BeFalse();
 		}
 
 
 		[TearDown]
 		public void TeardownAttributeSets()
 		{
-			var attributeSet = Client.Search.AttributeSets(builder =>
-				builder.WhereEquals(set => set.AttributeSetName, "Test Attribute Set")).Items.SingleOrDefault();
-			Client.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
+			var testNames = new List<string>() {this.ExistingAttributeSet};
+
+			foreach (var name in testNames)
+			{
+				var attributeSet = Client.Search.AttributeSets(builder =>
+					builder.WhereEquals(set => set.AttributeSetName, name))
+					.Items.SingleOrDefault();
+
+				Client.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
+			}
+
+
+
 		}
 	}
 }

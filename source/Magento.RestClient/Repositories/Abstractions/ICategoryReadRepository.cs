@@ -4,12 +4,10 @@ using Magento.RestClient.Models.Search;
 
 namespace Magento.RestClient.Repositories.Abstractions
 {
-    public interface ICategoryReadRepository
-    {
-        public Category GetCategoryById(int categoryId);
+	public interface ICategoryReadRepository
+	{
+		public Category GetCategoryById(long categoryId);
 
-        public Category GetCategoryTree( int rootCategoryId, int depth = 1);
-
-
-    }
+		public CategoryTree GetCategoryTree(long? rootCategoryId = null, long? depth = null);
+	}
 }

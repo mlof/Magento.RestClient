@@ -7,7 +7,7 @@ using RestSharp;
 
 namespace Magento.RestClient.Repositories
 {
-    public class ConfigurableProductRepository : IConfigurableProductRepository
+    internal class ConfigurableProductRepository : AbstractRepository, IConfigurableProductRepository
     {
         private readonly IRestClient client;
 
@@ -52,17 +52,11 @@ namespace Magento.RestClient.Repositories
             request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
 
             var response = client.Execute<List<ConfigurableProduct>>(request);
-            if (response.IsSuccessful)
-            {
-                return response.Data;
-            }
-            else
-            {
-                throw MagentoException.Parse(response.Content);
-            }
-        }
+			return HandleResponse(response);
 
-        public void CreateOption(string parentSku, long attributeId, int valueId, string label)
+		}
+
+		public void CreateOption(string parentSku, long attributeId, int valueId, string label)
         {
             var request = new RestRequest("configurable-products/{sku}/options");
             request.Method = Method.POST;

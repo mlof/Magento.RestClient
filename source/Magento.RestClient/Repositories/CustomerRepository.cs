@@ -103,5 +103,19 @@ namespace Magento.RestClient.Repositories
 
             throw new System.NotImplementedException();
         }
+
+        public Customer Update(long id, Customer customer)
+        {
+	        _customerValidator.ValidateAndThrow(customer);
+	        var request = new RestRequest("customers/{id}");
+			
+	        request.Method = Method.PUT;
+	        request.AddJsonBody(new { customer});
+	        request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
+
+			var response = _client.Execute<Customer>(request);
+
+			return HandleResponse(response);
+		}
     }
 }

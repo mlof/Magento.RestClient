@@ -7,9 +7,7 @@ namespace Magento.RestClient.Converters
 {
     internal class JsonPathConverter : JsonConverter
     {
-        public override bool CanWrite {
-            get { return false; }
-        }
+        public override bool CanWrite => false;
 
         public override object ReadJson(JsonReader reader, Type objectType,
             object existingValue, JsonSerializer serializer)

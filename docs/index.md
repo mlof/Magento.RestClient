@@ -84,7 +84,18 @@ Alright, this one's a doozy. There's no real way to get an option ID for an attr
 
 ## Common Tasks
 
+### Creating a attribute set
+
+### Creating a category
+
+### Creating a simple product
+
+### Creating a configurable product
+
 ### Creating an order
+
+
+
 
 When creating an order directly in Magento, it won't calculate things like order line prices, shipping costs, etc. Probably useful, if you need to create a backlog of orders in bulk, but not so much if you actually want these things done for you. For this, you'll have to create a cart and jump through hoops. To make this process a bit less painful, I've added the Cart class.
 

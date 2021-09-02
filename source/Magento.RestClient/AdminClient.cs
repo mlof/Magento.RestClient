@@ -18,6 +18,8 @@ namespace Magento.RestClient
 			this._client = client;
 		}
 
+
+		public IBulkRepository Bulk => new BulkRepository(_client);
 		public ISearchService Search => new SearchService(_client);
 		public IStoreRepository Stores => new StoreRepository(_client);
 		public IProductRepository Products => new ProductRepository(_client);
@@ -32,6 +34,7 @@ namespace Magento.RestClient
 		public ICategoryRepository Categories => new CategoryRepository(_client);
 		public ICartRepository Carts => new CartRepository(_client);
 		public IAttributeRepository Attributes => new AttributeRepository(_client);
+		public IShipmentRepository Shipments => new ShipmentRepository(_client);
 
 		///<inheritdoc cref="ICanGetModules"/>
 		public List<string> GetModules()

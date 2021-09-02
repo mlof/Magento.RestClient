@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
+using Magento.RestClient.Models.Products;
 
-namespace Magento.RestClient.Domain
+namespace Magento.RestClient.Domain.Validators
 {
-	internal class ProductValidator : AbstractValidator<Models.Products.Product>
+	internal class ProductValidator : AbstractValidator<Product>
 	{
 		public ProductValidator()
 		{

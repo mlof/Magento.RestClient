@@ -6,6 +6,8 @@ using Magento.RestClient.Models.Customers;
 using Magento.RestClient.Models.Orders;
 using Magento.RestClient.Models.Products;
 using Magento.RestClient.Models.Search;
+using Magento.RestClient.Models.Shipping;
+using Magento.RestClient.Repositories;
 using Magento.RestClient.Repositories.Abstractions;
 
 namespace Magento.RestClient.Search.Abstractions
@@ -22,5 +24,7 @@ namespace Magento.RestClient.Search.Abstractions
 		SearchResponse<CmsBlock> CmsBlocks(Action<SearchBuilder<CmsBlock>> configure = null);
 		SearchResponse<Coupon> Coupons(Action<SearchBuilder<Coupon>> configure = null);
 		SearchResponse<CustomerGroup> CustomerGroups(Action<SearchBuilder<CustomerGroup>> configure = null);
-	}
+		SearchResponse<Invoice> Invoices(Action<SearchBuilder<Invoice>> configure = null);
+		SearchResponse<Shipment> Shipments(Action<SearchBuilder<Shipment>> configure = null);
+    }
 }

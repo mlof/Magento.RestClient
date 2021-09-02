@@ -9,7 +9,7 @@ namespace Magento.RestClient.Repositories.Abstractions
     public interface ICartRepository
     {
         long GetNewCartId();
-        CartModel GetExistingCart(long i);
+        Cart GetExistingCart(long i);
         CartItem AddItemToCart(long cartId, string sku, int quantity);
         List<PaymentMethod> GetPaymentMethodsForCart(long cartId);
         long? PlaceOrder(long cartId, string paymentMethodCode, Address billingAddress);

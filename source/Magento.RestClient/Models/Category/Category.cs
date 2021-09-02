@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Models.Category
 {
-    public record Category
+    public  record Category
     {
         [JsonProperty("id")] public long Id { get; set; }
 
@@ -31,5 +31,9 @@ namespace Magento.RestClient.Models.Category
         [JsonProperty("include_in_menu")] public bool IncludeInMenu { get; set; }
 
         [JsonProperty("custom_attributes")] public List<CustomAttribute> CustomAttributes { get; set; }
+    
+
+
     }
+
 }

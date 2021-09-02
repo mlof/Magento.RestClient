@@ -1,6 +1,4 @@
-﻿using Magento.RestClient.Models;
-using Magento.RestClient.Models.Category;
-using Magento.RestClient.Models.Search;
+﻿using Magento.RestClient.Models.Category;
 
 namespace Magento.RestClient.Repositories.Abstractions
 {

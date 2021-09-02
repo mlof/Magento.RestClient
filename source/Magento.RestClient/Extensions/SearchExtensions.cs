@@ -7,7 +7,8 @@ namespace Magento.RestClient.Extensions
 {
 	public static class SearchExtensions
 	{
-		public static AttributeSet GetDefaultAttributeSet(this ISearchService search, EntityType entityType = EntityType.CatalogProduct)
+		public static AttributeSet GetDefaultAttributeSet(this ISearchService search,
+			EntityType entityType = EntityType.CatalogProduct)
 		{
 			var response = search.AttributeSets(builder =>
 				builder.WhereEquals(set => set.AttributeSetName, "Default")

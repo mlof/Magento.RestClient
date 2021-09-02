@@ -1,6 +1,6 @@
 ﻿namespace Magento.RestClient.Repositories.Abstractions
 {
-    public class ProductMedia
-    {
-    }
+	public class ProductMedia
+	{
+	}
 }

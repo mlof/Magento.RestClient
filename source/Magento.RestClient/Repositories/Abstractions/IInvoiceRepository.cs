@@ -2,8 +2,8 @@
 
 namespace Magento.RestClient.Repositories.Abstractions
 {
-    public interface IInvoiceRepository
-    {
-	    List<Invoice> GetByOrderId(long orderId);
-    }
+	public interface IInvoiceRepository
+	{
+		List<Invoice> GetByOrderId(long orderId);
+	}
 }

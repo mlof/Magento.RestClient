@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using FluentValidation;
+﻿using System.Net;
 using Magento.RestClient.Exceptions;
-using Magento.RestClient.Extensions;
-using Magento.RestClient.Models;
 using Magento.RestClient.Models.Products;
 using Magento.RestClient.Repositories.Abstractions;
-using Magento.RestClient.Search;
 using Magento.RestClient.Search.Extensions;
-using Magento.RestClient.Validators;
 using RestSharp;
 
 namespace Magento.RestClient.Repositories
@@ -20,7 +13,7 @@ namespace Magento.RestClient.Repositories
 
 		public ProductRepository(IRestClient client)
 		{
-			this._client = client;
+			_client = client;
 		}
 
 
@@ -37,14 +30,13 @@ namespace Magento.RestClient.Repositories
 			{
 				return response.Data;
 			}
-			else if (response.StatusCode == HttpStatusCode.NotFound)
+
+			if (response.StatusCode == HttpStatusCode.NotFound)
 			{
 				return null;
 			}
-			else
-			{
-				throw response.ErrorException;
-			}
+
+			throw response.ErrorException;
 		}
 
 		public Product CreateProduct(Product product, bool saveOptions = true)
@@ -58,10 +50,8 @@ namespace Magento.RestClient.Repositories
 			{
 				return response.Data;
 			}
-			else
-			{
-				throw response.ErrorException;
-			}
+
+			throw response.ErrorException;
 		}
 
 		public Product UpdateProduct(string sku, Product product, bool saveOptions = true, string scope = "all")
@@ -79,10 +69,8 @@ namespace Magento.RestClient.Repositories
 			{
 				return response.Data;
 			}
-			else
-			{
-				throw MagentoException.Parse(response.Content);
-			}
+
+			throw MagentoException.Parse(response.Content);
 		}
 
 		public void DeleteProduct(string sku)

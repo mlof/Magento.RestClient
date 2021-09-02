@@ -1,6 +1,6 @@
 ﻿namespace Magento.RestClient.Repositories.Abstractions.Customers
 {
-    public interface IReadCustomerGroupRepository
-    {
-    }
+	public interface IReadCustomerGroupRepository
+	{
+	}
 }

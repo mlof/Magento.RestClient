@@ -1,5 +1,4 @@
-﻿using Magento.RestClient.Models;
-using Magento.RestClient.Models.Products;
+﻿using Magento.RestClient.Models.Products;
 
 namespace Magento.RestClient.Repositories.Abstractions
 {

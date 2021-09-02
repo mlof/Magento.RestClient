@@ -1,6 +1,6 @@
 ﻿namespace Magento.RestClient.Models.Common
 {
-    public record Country
-    {
-    }
+	public record Country
+	{
+	}
 }

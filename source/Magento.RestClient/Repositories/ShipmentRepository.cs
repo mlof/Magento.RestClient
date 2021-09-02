@@ -12,7 +12,7 @@ namespace Magento.RestClient
 
 		public ShipmentRepository(IRestClient client)
 		{
-			this._client = client;
+			_client = client;
 		}
 
 

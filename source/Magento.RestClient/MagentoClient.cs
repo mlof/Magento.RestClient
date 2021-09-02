@@ -13,31 +13,31 @@ namespace Magento.RestClient
 	public class MagentoClient : IMagentoClient
 	{
 		private readonly IRestClient _client;
-		private readonly string baseUrl;
 		private readonly string adminTokenUrl;
+		private readonly string baseUrl;
 		private readonly string customerTokenUrl;
 
 		public MagentoClient(string host)
 		{
-			this.baseUrl = "";
+			baseUrl = "";
 			if (host.EndsWith("/"))
 			{
 				host = host.TrimEnd('/');
 			}
 
-			this.baseUrl = $"{host}/rest/{{scope}}/V1/";
-			this.adminTokenUrl = $"{host}/rest/V1/integration/admin/token";
-			this.customerTokenUrl = host + "/rest/V1/integration/customer/token";
-			this._client = new RestSharp.RestClient(baseUrl);
+			baseUrl = $"{host}/rest/{{scope}}/V1/";
+			adminTokenUrl = $"{host}/rest/V1/integration/admin/token";
+			customerTokenUrl = host + "/rest/V1/integration/customer/token";
+			_client = new RestSharp.RestClient(baseUrl);
 
 
 			_client.AddDefaultUrlSegment("scope", "default");
-			_client.UseNewtonsoftJson(new JsonSerializerSettings() {
+			_client.UseNewtonsoftJson(new JsonSerializerSettings {
 				NullValueHandling = NullValueHandling.Ignore,
 				Culture = CultureInfo.InvariantCulture,
 				Formatting = Formatting.Indented,
 				DefaultValueHandling = DefaultValueHandling.Ignore,
-				Converters = new List<JsonConverter>() {
+				Converters = new List<JsonConverter> {
 					new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal}
 				}
 			});

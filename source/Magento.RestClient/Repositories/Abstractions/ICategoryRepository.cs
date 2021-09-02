@@ -1,8 +1,6 @@
-﻿using Magento.RestClient.Models.Category;
-
-namespace Magento.RestClient.Repositories.Abstractions
+﻿namespace Magento.RestClient.Repositories.Abstractions
 {
-    public interface ICategoryRepository : ICategoryReadRepository, ICategoryWriteRepository
-    {
-    }
+	public interface ICategoryRepository : ICategoryReadRepository, ICategoryWriteRepository
+	{
+	}
 }

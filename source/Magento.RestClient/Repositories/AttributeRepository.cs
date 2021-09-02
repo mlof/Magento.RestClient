@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using Magento.RestClient.Domain;
 using Magento.RestClient.Exceptions;
-using Magento.RestClient.Models;
 using Magento.RestClient.Models.Attributes;
 using Magento.RestClient.Models.Products;
 using Magento.RestClient.Repositories.Abstractions;
@@ -16,7 +14,7 @@ namespace Magento.RestClient.Repositories
 
 		public AttributeRepository(IRestClient client)
 		{
-			this._client = client;
+			_client = client;
 		}
 
 
@@ -84,10 +82,8 @@ namespace Magento.RestClient.Repositories
 			{
 				return response.Data;
 			}
-			else
-			{
-				throw MagentoException.Parse(response.Content);
-			}
+
+			throw MagentoException.Parse(response.Content);
 		}
 
 		public ProductAttribute GetByCode(string attributeCode)

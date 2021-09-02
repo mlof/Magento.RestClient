@@ -1,14 +1,10 @@
-﻿using System;
-using Magento.RestClient.Models;
-using Magento.RestClient.Models.Orders;
-using Magento.RestClient.Repositories.Abstractions.Customers;
-using Magento.RestClient.Search;
+﻿using Magento.RestClient.Models.Orders;
 
 namespace Magento.RestClient.Repositories.Abstractions
 {
-    public interface IReadOrderRepository
-    {
-        Order CreateOrder(Order order);
-        Order GetByOrderId(long orderId);
-    }
+	public interface IReadOrderRepository
+	{
+		Order CreateOrder(Order order);
+		Order GetByOrderId(long orderId);
+	}
 }

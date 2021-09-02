@@ -1,6 +1,6 @@
 ﻿namespace Magento.RestClient.Abstractions
 {
-    public interface ICustomerClient
-    {
-    }
+	public interface ICustomerClient
+	{
+	}
 }

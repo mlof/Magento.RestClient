@@ -1,9 +1,5 @@
-﻿using System;
-using System.Net;
-using Magento.RestClient.Exceptions;
-using Magento.RestClient.Models.Products;
+﻿using Magento.RestClient.Models.Products;
 using Magento.RestClient.Models.Stock;
-using RestSharp;
 
 namespace Magento.RestClient.Extensions
 {

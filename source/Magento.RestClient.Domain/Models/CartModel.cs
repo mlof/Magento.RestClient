@@ -6,9 +6,9 @@ using Magento.RestClient.Domain.Validators;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Models.Carts;
 using Magento.RestClient.Models.Common;
+using Magento.RestClient.Models.Customers;
 using Magento.RestClient.Repositories.Abstractions;
 using Newtonsoft.Json;
-using Customer = Magento.RestClient.Models.Customers.Customer;
 
 namespace Magento.RestClient.Domain.Models
 {
@@ -21,14 +21,10 @@ namespace Magento.RestClient.Domain.Models
 		private long _id;
 
 
-		private RestClient.Models.Carts.Cart _model;
+		private Cart _model;
 
 		private string _paymentMethod;
 		private Address _shippingAddress;
-
-		public Customer Customer => _model.Customer;
-
-		public List<CartItem> Items => _model.Items;
 
 		public CartModel(ICartRepository cartRepository)
 		{
@@ -46,6 +42,10 @@ namespace Magento.RestClient.Domain.Models
 			_cartRepository = cartRepository;
 			this.Id = id;
 		}
+
+		public Customer Customer => _model.Customer;
+
+		public List<CartItem> Items => _model.Items;
 
 		public Address BillingAddress {
 			get => _billingAddress;
@@ -89,10 +89,8 @@ namespace Magento.RestClient.Domain.Models
 		}
 
 
-		
-
 		/// <summary>
-		/// SetShippingMethod
+		///     SetShippingMethod
 		/// </summary>
 		/// <param name="carrier"></param>
 		/// <param name="method"></param>
@@ -125,7 +123,7 @@ namespace Magento.RestClient.Domain.Models
 
 
 		/// <summary>
-		/// Sets the payment method for this cart.
+		///     Sets the payment method for this cart.
 		/// </summary>
 		/// <param name="paymentMethod"></param>
 		/// <returns></returns>
@@ -138,26 +136,21 @@ namespace Magento.RestClient.Domain.Models
 				_paymentMethod = paymentMethod;
 				return UpdateMagentoValues();
 			}
-			else
-			{
-				throw new InvalidOperationException("Payment method is not valid for this cart.");
-			}
+
+			throw new InvalidOperationException("Payment method is not valid for this cart.");
 		}
 
 
 		public CartModel AddItem(string sku, int quantity)
 		{
-
 			//todo: Add configurable product functionality
 			if (quantity > 0)
 			{
 				_cartRepository.AddItemToCart(this.Id, sku, quantity);
 				return UpdateMagentoValues();
 			}
-			else
-			{
-				throw new InvalidOperationException();
-			}
+
+			throw new InvalidOperationException();
 		}
 
 		public List<ShippingMethod> EstimateShippingMethods()
@@ -182,7 +175,7 @@ namespace Magento.RestClient.Domain.Models
 		}
 
 		/// <summary>
-		/// Commits the cart and creates an order.
+		///     Commits the cart and creates an order.
 		/// </summary>
 		/// <exception cref="CartAlreadyCommittedException"></exception>
 		/// <returns>Order ID</returns>
@@ -206,7 +199,7 @@ namespace Magento.RestClient.Domain.Models
 		}
 
 		/// <summary>
-		/// Sets the shipping method for this cart.
+		///     Sets the shipping method for this cart.
 		/// </summary>
 		/// <param name="shippingMethod"></param>
 		/// <returns></returns>

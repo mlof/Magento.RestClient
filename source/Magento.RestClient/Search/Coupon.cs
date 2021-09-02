@@ -1,6 +1,6 @@
 ﻿namespace Magento.RestClient.Search
 {
-    public class Coupon
-    {
-    }
+	public class Coupon
+	{
+	}
 }

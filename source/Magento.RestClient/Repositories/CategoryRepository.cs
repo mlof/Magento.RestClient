@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System;
+using System.Collections.Generic;
 using FluentValidation;
-using Magento.RestClient.Exceptions;
-using Magento.RestClient.Extensions;
-using Magento.RestClient.Models;
 using Magento.RestClient.Models.Category;
 using Magento.RestClient.Models.Products;
-using Magento.RestClient.Models.Search;
 using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Search.Extensions;
 using RestSharp;
@@ -20,8 +16,8 @@ namespace Magento.RestClient.Repositories
 
 		public CategoryRepository(IRestClient client)
 		{
-			this._client = client;
-			this.categoryValidator = new CategoryValidator();
+			_client = client;
+			categoryValidator = new CategoryValidator();
 		}
 
 		public Category GetCategoryById(long categoryId)
@@ -32,19 +28,19 @@ namespace Magento.RestClient.Repositories
 
 			var response = _client.Execute<Category>(request);
 			return HandleResponse(response);
-
 		}
 
 		public CategoryTree GetCategoryTree(long? rootCategoryId = null, long? depth = null)
 		{
-			var request = new RestRequest("categories") { Method = Method.GET};
+			var request = new RestRequest("categories") {Method = Method.GET};
 			request.SetScope("all");
 
 			if (rootCategoryId != null)
 			{
 				request.AddOrUpdateParameter("rootCategoryId", rootCategoryId);
 			}
-			if (depth!= null)
+
+			if (depth != null)
 			{
 				request.AddOrUpdateParameter("depth", depth);
 			}
@@ -65,7 +61,7 @@ namespace Magento.RestClient.Repositories
 
 		public void MoveCategory(int categoryId, int parentId, int? afterId = null)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public List<ProductLink> GetProducts(long categoryId)
@@ -76,7 +72,6 @@ namespace Magento.RestClient.Repositories
 			request.Method = Method.GET;
 			var response = _client.Execute<List<ProductLink>>(request);
 			return HandleResponse(response);
-
 		}
 
 		public void AddProduct(long categoryId, ProductLink productLink)
@@ -92,7 +87,7 @@ namespace Magento.RestClient.Repositories
 
 		public void DeleteProduct(int categoryId, string sku)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public Category CreateCategory(Category category)
@@ -100,19 +95,18 @@ namespace Magento.RestClient.Repositories
 			categoryValidator.ValidateAndThrow(category);
 
 			var request = new RestRequest("categories");
-			
+
 			request.Method = Method.POST;
 			request.AddJsonBody(new {category});
-			var response =  _client.Execute<Category>(request);
+			var response = _client.Execute<Category>(request);
 			return HandleResponse(response);
-
 		}
 
 		public Category UpdateCategory(long categoryId, Category category)
 		{
 			var request = new RestRequest("categories/{id}");
 			request.Method = Method.PUT;
-			request.AddJsonBody(new { category });
+			request.AddJsonBody(new {category});
 
 			request.AddOrUpdateParameter("id", categoryId, ParameterType.UrlSegment);
 			var response = _client.Execute<Category>(request);

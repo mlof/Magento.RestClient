@@ -3,11 +3,11 @@ using RestSharp;
 
 namespace Magento.RestClient.Search
 {
-    public static class ClientExtensions
-    {
-        public static ISearchService Search(this IRestClient restClient)
-        {
-            return new SearchService(restClient);
-        }
-    }
+	public static class ClientExtensions
+	{
+		public static ISearchService Search(this IRestClient restClient)
+		{
+			return new SearchService(restClient);
+		}
+	}
 }

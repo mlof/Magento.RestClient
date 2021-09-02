@@ -13,9 +13,8 @@ namespace Magento.RestClient.Domain.Models
 {
 	public class AttributeSetModel : IDomainModel
 	{
-		private readonly IAdminClient _client;
-
 		private readonly List<AttributeAssignment> _attributeAssignments = new();
+		private readonly IAdminClient _client;
 		private List<AttributeGroup> _attributeGroups;
 		private List<EntityAttribute> _attributes;
 		private long? _skeletonId;
@@ -60,7 +59,7 @@ namespace Magento.RestClient.Domain.Models
 					.WhereEquals(set => set.EntityTypeId, this.EntityType));
 			if (searchResponse.TotalCount == 1)
 			{
-				IsPersisted = true;
+				this.IsPersisted = true;
 				var r = searchResponse.Items.Single();
 				this.Id = r.AttributeSetId.Value;
 
@@ -76,7 +75,7 @@ namespace Magento.RestClient.Domain.Models
 			}
 			else
 			{
-				IsPersisted = false;
+				this.IsPersisted = false;
 
 				_attributes = new List<EntityAttribute>();
 				_attributeGroups = new List<AttributeGroup>();

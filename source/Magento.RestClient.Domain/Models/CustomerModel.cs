@@ -1,5 +1,4 @@
-﻿using AgileObjects.AgileMapper;
-using Magento.RestClient.Domain.Abstractions;
+﻿using Magento.RestClient.Domain.Abstractions;
 using Magento.RestClient.Models.Customers;
 using Magento.RestClient.Repositories.Abstractions;
 
@@ -16,14 +15,16 @@ namespace Magento.RestClient.Domain.Models
 		}
 
 		public string EmailAddress { get; set; }
-
-		public bool IsPersisted { get; private set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 
+		public long Id { get; private set; }
+
+		public bool IsPersisted { get; private set; }
+
 		public void Refresh()
 		{
-			var existing = _client.Customers.GetByEmailAddress(EmailAddress);
+			var existing = _client.Customers.GetByEmailAddress(this.EmailAddress);
 			if (existing != null)
 			{
 				this.IsPersisted = true;
@@ -35,17 +36,15 @@ namespace Magento.RestClient.Domain.Models
 			else
 			{
 				this.IsPersisted = false;
-
-
 			}
 		}
 
-		public long Id { get; private set; }
-
 		public void Save()
 		{
-			var customer = new Customer {Firstname = this.FirstName, Lastname = this.LastName, Email = EmailAddress};
-			if (IsPersisted)
+			var customer = new Customer {
+				Firstname = this.FirstName, Lastname = this.LastName, Email = this.EmailAddress
+			};
+			if (this.IsPersisted)
 			{
 				_client.Customers.Update(this.Id, customer);
 			}

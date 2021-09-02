@@ -39,10 +39,10 @@
     </ItemGroup>
     <ItemGroup>
 
-      <None Include="..\..\resources\icons8_magento_96px.png">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-      </None>
+        <None Include="..\..\resources\icons8_magento_96px.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
     </ItemGroup>
 
 </Project>

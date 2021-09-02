@@ -1,12 +1,10 @@
-﻿using Magento.RestClient.Models;
-using Magento.RestClient.Models.Customers;
+﻿using Magento.RestClient.Models.Customers;
 
 namespace Magento.RestClient.Repositories.Abstractions.Customers
 {
-    public interface IWriteCustomerRepository
-    {
-        Customer Create(Customer customer, string password = null);
-        void DeleteById(long id);
-
-    }
+	public interface IWriteCustomerRepository
+	{
+		Customer Create(Customer customer, string password = null);
+		void DeleteById(long id);
+	}
 }

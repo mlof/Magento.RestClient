@@ -20,48 +20,36 @@ namespace Magento.RestClient.Domain.Models
 		{
 			_client = client;
 			this.Sku = sku;
-			this._productValidator = new ProductValidator();
+			_productValidator = new ProductValidator();
 			this.Scope = "all";
 			Refresh();
 		}
 
-		public string Sku { get; private set; }
+		public string Sku { get; }
 
 
-		public string Scope { get; private set; }
+		public string Scope { get; }
 
 		public string Name {
 			get;
 			set;
 		}
 
+		public long AttributeSetId { get; set; }
 
-		public void Delete()
-		{
-			_client.Products.DeleteProduct(this.Sku);
-		}
+		public ProductVisibility Visibility { get; set; }
 
+		public List<CustomAttribute> CustomAttributes { get; set; }
 
-		public ProductModel SetAttribute(string attributeCode, string value)
-		{
-			if (CustomAttributes.Any(attribute => attribute.AttributeCode == attributeCode))
-			{
-				CustomAttributes.Single(attribute => attribute.AttributeCode == attributeCode).Value =
-					value;
-			}
-			else
-			{
-				CustomAttributes.Add(new CustomAttribute(attributeCode, value));
-			}
+		public decimal? Price { get; set; }
 
-			return this;
-		}
+		public StockItem StockItem { get; set; }
 
 		public bool IsPersisted { get; set; }
 
 		public void Refresh()
 		{
-			var existingProduct = _client.Products.GetProductBySku(Sku, this.Scope);
+			var existingProduct = _client.Products.GetProductBySku(this.Sku, this.Scope);
 			if (existingProduct == null)
 			{
 			}
@@ -76,20 +64,12 @@ namespace Magento.RestClient.Domain.Models
 			}
 		}
 
-		public long AttributeSetId { get; set; }
-
-		public ProductVisibility Visibility { get; set; }
-
-		public List<CustomAttribute> CustomAttributes { get; set; }
-
-		public decimal? Price { get; set; }
-
 		public void Save()
 		{
 			var existingProduct = _client.Products.GetProductBySku(this.Sku);
 
-			var product = new Product() {
-				Sku = this.Sku, Name = this.Name, Price = this.Price, Visibility = (long) Visibility
+			var product = new Product {
+				Sku = this.Sku, Name = this.Name, Price = this.Price, Visibility = (long) this.Visibility
 			};
 			if (this.StockItem != null)
 			{
@@ -98,7 +78,7 @@ namespace Magento.RestClient.Domain.Models
 
 			if (existingProduct == null)
 			{
-				_client.Products.CreateProduct(product, true);
+				_client.Products.CreateProduct(product);
 
 				this.IsPersisted = true;
 			}
@@ -110,11 +90,31 @@ namespace Magento.RestClient.Domain.Models
 			Refresh();
 		}
 
+
+		public void Delete()
+		{
+			_client.Products.DeleteProduct(this.Sku);
+		}
+
+
+		public ProductModel SetAttribute(string attributeCode, string value)
+		{
+			if (this.CustomAttributes.Any(attribute => attribute.AttributeCode == attributeCode))
+			{
+				this.CustomAttributes.Single(attribute => attribute.AttributeCode == attributeCode).Value =
+					value;
+			}
+			else
+			{
+				this.CustomAttributes.Add(new CustomAttribute(attributeCode, value));
+			}
+
+			return this;
+		}
+
 		public void SetStock(long quantity)
 		{
 			this.StockItem = new StockItem {IsInStock = quantity > 0, Qty = quantity};
 		}
-
-		public StockItem StockItem { get; set; }
 	}
 }

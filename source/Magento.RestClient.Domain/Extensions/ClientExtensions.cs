@@ -10,28 +10,28 @@ namespace Magento.RestClient.Domain.Extensions
 			EntityType entityType = EntityType.CatalogProduct,
 			long? skeletonId = null)
 		{
-			return new AttributeSetModel(client, name, entityType, skeletonId);
+			return new(client, name, entityType, skeletonId);
 		}
 
 		public static AttributeModel GetAttributeModel(this IAdminClient client, string attributeCode)
 		{
-			return new AttributeModel(client, attributeCode);
+			return new(client, attributeCode);
 		}
 
 		public static ProductModel GetProductModel(this IAdminClient client, string sku)
 		{
-			return new ProductModel(client, sku);
+			return new(client, sku);
 		}
 
 
 		public static CartModel CreateNewCartModel(this IAdminClient client)
 		{
-			return new CartModel(client.Carts);
+			return new(client.Carts);
 		}
 
 		public static CartModel GetExistingCartModel(this IAdminClient client, long id)
 		{
-			return new CartModel(client.Carts, id);
+			return new(client.Carts, id);
 		}
 	}
 }

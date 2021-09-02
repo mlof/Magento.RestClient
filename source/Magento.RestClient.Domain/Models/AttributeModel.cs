@@ -9,53 +9,19 @@ namespace Magento.RestClient.Domain.Models
 {
 	public class AttributeModel : IDomainModel
 	{
-		public string AttributeCode { get; private set; }
-
 		private readonly IAdminClient _client;
-		private List<Option> _options;
-		private bool _frontendInputChanged;
 		private string _frontendInput;
+		private bool _frontendInputChanged;
+		private List<Option> _options;
 
 		public AttributeModel(IAdminClient client, string attributeCode)
 		{
-			this._client = client;
+			_client = client;
 			this.AttributeCode = attributeCode;
 			Refresh();
 		}
 
-
-		public void AddOption(string option)
-		{
-			if (option != null)
-			{
-				if (_options.All(o => o.Label != option))
-				{
-					_options.Add(new Option() {Label = option});
-				}
-			}
-		}
-
-
-		public bool IsPersisted { get; private set; }
-
-		public void Refresh()
-		{
-			var existing = _client.Attributes.GetByCode(AttributeCode);
-
-			if (existing == null)
-			{
-				this.IsPersisted = false;
-				this._options = new List<Option>();
-			}
-			else
-			{
-				this.IsPersisted = true;
-
-				this.DefaultFrontendLabel = existing.DefaultFrontendLabel;
-				this._frontendInput = existing.FrontendInput;
-				this._options = _client.Attributes.GetProductAttributeOptions(this.AttributeCode);
-			}
-		}
+		public string AttributeCode { get; }
 
 		public string FrontendInput {
 			get => _frontendInput;
@@ -67,12 +33,34 @@ namespace Magento.RestClient.Domain.Models
 
 		public string DefaultFrontendLabel { get; set; }
 
+
+		public bool IsPersisted { get; private set; }
+
+		public void Refresh()
+		{
+			var existing = _client.Attributes.GetByCode(this.AttributeCode);
+
+			if (existing == null)
+			{
+				this.IsPersisted = false;
+				_options = new List<Option>();
+			}
+			else
+			{
+				this.IsPersisted = true;
+
+				this.DefaultFrontendLabel = existing.DefaultFrontendLabel;
+				_frontendInput = existing.FrontendInput;
+				_options = _client.Attributes.GetProductAttributeOptions(this.AttributeCode);
+			}
+		}
+
 		public void Save()
 		{
 			var existing = _client.Attributes.GetByCode(this.AttributeCode);
-			var attribute = new ProductAttribute(AttributeCode);
+			var attribute = new ProductAttribute(this.AttributeCode);
 
-			attribute.FrontendInput = FrontendInput;
+			attribute.FrontendInput = this.FrontendInput;
 			if (existing != null && _frontendInputChanged)
 			{
 				_client.Attributes.DeleteProductAttribute(this.AttributeCode);
@@ -100,6 +88,18 @@ namespace Magento.RestClient.Domain.Models
 			}
 
 			Refresh();
+		}
+
+
+		public void AddOption(string option)
+		{
+			if (option != null)
+			{
+				if (_options.All(o => o.Label != option))
+				{
+					_options.Add(new Option {Label = option});
+				}
+			}
 		}
 	}
 }

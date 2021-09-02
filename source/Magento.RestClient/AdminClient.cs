@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AgileObjects.AgileMapper;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Repositories;
 using Magento.RestClient.Repositories.Abstractions;
@@ -15,7 +14,7 @@ namespace Magento.RestClient
 
 		public AdminClient(IRestClient client)
 		{
-			this._client = client;
+			_client = client;
 		}
 
 
@@ -36,7 +35,7 @@ namespace Magento.RestClient
 		public IAttributeRepository Attributes => new AttributeRepository(_client);
 		public IShipmentRepository Shipments => new ShipmentRepository(_client);
 
-		///<inheritdoc cref="ICanGetModules"/>
+		/// <inheritdoc cref="ICanGetModules" />
 		public List<string> GetModules()
 		{
 			var request = new RestRequest("modules");
@@ -47,10 +46,8 @@ namespace Magento.RestClient
 			{
 				return response.Data;
 			}
-			else
-			{
-				throw MagentoException.Parse(response.Content);
-			}
+
+			throw MagentoException.Parse(response.Content);
 		}
 	}
 }

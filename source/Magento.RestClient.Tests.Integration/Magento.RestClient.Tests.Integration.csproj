@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Magento.RestClient.Tests.Configuration\Magento.RestClient.Tests.Configuration.csproj" />
     <ProjectReference Include="..\Magento.RestClient.Domain\Magento.RestClient.Domain.csproj" />
+    <ProjectReference Include="..\Magento.RestClient.Tests.Configuration\Magento.RestClient.Tests.Configuration.csproj" />
     <ProjectReference Include="..\Magento.RestClient\Magento.RestClient.csproj" />
   </ItemGroup>
 

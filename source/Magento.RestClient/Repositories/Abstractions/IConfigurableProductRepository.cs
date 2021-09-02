@@ -7,9 +7,10 @@ namespace Magento.RestClient.Repositories.Abstractions
 	{
 		public void CreateChild(string parentSku, string childSku);
 		public void DeleteChild(string parentSku, string childSku);
-		public List<ConfigurableProduct> GetConfigurableChildren(string parentSku);
+		public List<Product> GetConfigurableChildren(string parentSku);
 
 
 		void CreateOption(string parentSku, long attributeId, int valueId, string label);
+		List<ConfigurableProductOption> GetOptions(string parentSku);
 	}
 }

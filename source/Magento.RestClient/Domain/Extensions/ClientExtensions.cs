@@ -26,12 +26,12 @@ namespace Magento.RestClient.Domain.Extensions
 
 		public static CartModel CreateNewCartModel(this IAdminClient client)
 		{
-			return new(client.Carts);
+			return new(client);
 		}
 
 		public static CartModel GetExistingCartModel(this IAdminClient client, long id)
 		{
-			return new(client.Carts, id);
+			return new(client, id);
 		}
 	}
 }

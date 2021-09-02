@@ -10,8 +10,7 @@ namespace Magento.RestClient.Models.Products
     {
         [EnumMember(Value = "simple")] Simple,
         [EnumMember(Value = "configurable")] Configurable,
-
-        [EnumMember(Value = "grouped")] Grouped,
+		[EnumMember(Value = "grouped")] Grouped,
         [EnumMember(Value = "virtual")] Virtual,
         [EnumMember(Value = "downloadable")] Downloadable,
         [EnumMember(Value = "bundle")] Bundle

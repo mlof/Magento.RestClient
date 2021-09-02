@@ -4,7 +4,7 @@ using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Search;
 using RestSharp;
 
-namespace Magento.RestClient
+namespace Magento.RestClient.Repositories
 {
 	internal class ShipmentRepository : IShipmentRepository
 	{

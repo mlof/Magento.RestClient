@@ -38,12 +38,12 @@ namespace Magento.RestClient.Repositories
 		/// <param name="quantity"></param>
 		/// <returns></returns>
 		/// <exception cref="MagentoException"></exception>
-		public CartItem AddItemToCart(long cartId, string sku, int quantity)
+		public CartItem AddItemToCart(long cartId, CartItem cartItem)
 		{
 			var request = new RestRequest("carts/{id}/items");
 			request.Method = Method.POST;
 			request.AddOrUpdateParameter("id", cartId, ParameterType.UrlSegment);
-			request.AddJsonBody(new {cartItem = new {sku, qty = quantity, quoteId = cartId.ToString()}});
+			request.AddJsonBody(new {cartItem = cartItem});
 			var response = _client.Execute<CartItem>(request);
 
 			if (response.IsSuccessful)

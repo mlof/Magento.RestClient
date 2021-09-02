@@ -1,4 +1,4 @@
-﻿namespace Magento.RestClient.Domain
+﻿namespace Magento.RestClient.Models.Products
 {
 	public enum ProductVisibility
 	{

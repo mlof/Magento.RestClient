@@ -11,4 +11,5 @@ namespace Magento.RestClient.Models.Attributes
 		[JsonProperty("is_default", NullValueHandling = NullValueHandling.Ignore)]
 		public bool? IsDefault { get; set; }
 	}
+
 }

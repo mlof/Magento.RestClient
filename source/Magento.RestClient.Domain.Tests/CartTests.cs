@@ -15,7 +15,6 @@ namespace Magento.RestClient.Domain.Tests
 	public class CartTests : AbstractDomainObjectTest
     {
 	    private long existingCartId;
-		private ProductModel existingSimpleProduct;
 
 		public static Address ScunthorpePostOffice => new Address() {
             Firstname = "Scunthorpe",
@@ -32,22 +31,15 @@ namespace Magento.RestClient.Domain.Tests
         public void SetupCart()
         {
 
-	        var cart = new CartModel(Client.Carts);
+	        var cart = new CartModel(Client);
 	        this.existingCartId = cart.Id;
 
-
-	        this.existingSimpleProduct = new ProductModel(Client, "TESTSKU-SIMPLE-EXISTING");
-	        existingSimpleProduct.Name = "TEST - Existing Simple Product";
-			existingSimpleProduct.SetStock(30);
-	        existingSimpleProduct.Price = 30;
-	        existingSimpleProduct.Save();
 			
         }
 
 		[TearDown]
         public void TearDownCart()
         {
-	        existingSimpleProduct.Delete();
 
 		}
 
@@ -69,7 +61,7 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void Cart_AssignCustomer_ValidCustomer()
 		{
-			var cart = new CartModel(Client.Carts);
+			var cart = new CartModel(Client);
 
 			cart.AssignCustomer(1);
 
@@ -96,28 +88,38 @@ namespace Magento.RestClient.Domain.Tests
 
 
         [Test]
-        public void Cart_AddItem_ValidItem()
+        public void Cart_AddSimpleProduct_ValidItem()
 		{
-			var cart = new CartModel(Client.Carts);
-			cart.AddItem(existingSimpleProduct.Sku, 3);
-            cart.Items.Any(item => item.Sku == existingSimpleProduct.Sku && item.Qty == 3).Should().BeTrue();
+			var cart = new CartModel(Client);
+			cart.AddSimpleProduct(SimpleProductSku, 3);
+			
+            cart.Items.Any(item => item.Sku == SimpleProductSku && item.Qty == 3).Should().BeTrue();
         }
 
         [Test]
-        public void Cart_AddItem_InvalidItem()
+        public void Cart_AddSimpleProduct_InvalidItem()
         {
-	        var cart = new CartModel(Client.Carts);
+	        var cart = new CartModel(Client);
 
 			Assert.Throws<MagentoException>(() => {
-                cart.AddItem("DOESNOTEXIST", 3);
+                cart.AddSimpleProduct("DOESNOTEXIST", 3);
             });
         }
-
         [Test]
+        public void Cart_AddConfigurableProduct()
+        {
+	        var cart = new CartModel(Client);
+			cart.AddConfigurableProduct("TESTSKU-CONF", "TESTSKU-CONF-option 1-option 2", 3);
+        }
+
+
+
+
+		[Test]
         public void ShippingMethods_GetMethods_ShippingAddressSet()
         {
-	        var cart = new CartModel(Client.Carts);
-	        cart.AddItem(this.existingSimpleProduct.Sku, 3);
+	        var cart = new CartModel(Client);
+	        cart.AddSimpleProduct(SimpleProductSku, 3);
 
             cart.BillingAddress = ScunthorpePostOffice;
             cart.ShippingAddress = ScunthorpePostOffice;
@@ -128,7 +130,7 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void ShippingMethods_GetMethods_ShippingAddressSet_ItemsEmpty()
         {
-			var cart = new CartModel(Client.Carts);
+			var cart = new CartModel(Client);
 			cart.BillingAddress = ScunthorpePostOffice;
             cart.ShippingAddress = ScunthorpePostOffice;
 
@@ -141,9 +143,9 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void ShippingMethods_GetMethods_ShippingAddressNotSet()
         {
-	        var cart = new CartModel(Client.Carts);
+	        var cart = new CartModel(Client);
 
-			cart.AddItem(this.existingSimpleProduct.Sku, 3);
+			cart.AddSimpleProduct(SimpleProductSku, 3);
 
             Assert.Throws<ArgumentNullException>(() =>
                 cart.EstimateShippingMethods());
@@ -151,9 +153,9 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void ShippingMethods_SetShippingMethod_Cheapest()
 		{
-			var cart = new CartModel(Client.Carts);
+			var cart = new CartModel(Client);
 
-			cart.AddItem(this.existingSimpleProduct.Sku, 3);
+			cart.AddSimpleProduct(SimpleProductSku, 3);
 
             cart.ShippingAddress = ScunthorpePostOffice;
             var shippingMethods = cart.EstimateShippingMethods();
@@ -171,9 +173,9 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void ShippingMethods_SetShippingMethod_InvalidShippingMethod()
         {
-	        var cart = new CartModel(Client.Carts);
+	        var cart = new CartModel(Client);
 
-			cart.AddItem(this.existingSimpleProduct.Sku, 3);
+			cart.AddSimpleProduct(SimpleProductSku, 3);
 
             cart.BillingAddress = ScunthorpePostOffice;
             cart.ShippingAddress = ScunthorpePostOffice;
@@ -186,16 +188,20 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void PaymentMethods_GetMethods()
 		{
-			var cart = new CartModel(Client.Carts);
+			var cart = new CartModel(Client);
 
 			var methods = cart.GetPaymentMethods();
             methods.Should().NotBeNullOrEmpty();
         }
 
+        /// <summary>
+        /// PaymentMethods_SetPaymentMethods_InvalidPaymentMethod
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
         [Test]
         public void PaymentMethods_SetPaymentMethods_InvalidPaymentMethod()
 		{
-			var cart = new CartModel(Client.Carts);
+			var cart = new CartModel(Client);
 
 
 			Assert.Throws<InvalidOperationException>(() => {
@@ -206,7 +212,7 @@ namespace Magento.RestClient.Domain.Tests
         [Test]
         public void PaymentMethods_SetPaymentMethods_ValidPaymentMethod()
 		{
-			var cart = new CartModel(Client.Carts);
+			var cart = new CartModel(Client);
 
 			var paymentMethod = cart.GetPaymentMethods()
                 .First();
@@ -219,13 +225,12 @@ namespace Magento.RestClient.Domain.Tests
         /// <exception cref="InvalidOperationException">Ignore.</exception>
         public void CommitOrder_ValidOrder()
         {
-	        var cart = new CartModel(Client.Carts);
+	        var cart = new CartModel(Client);
 
 			cart.ShippingAddress = ScunthorpePostOffice;
             cart.BillingAddress = ScunthorpePostOffice;
 
-            cart.AddItem("TESTPRODUCT", 3)
-                .AddItem("TESTPRODUCT", 3);
+            cart.AddSimpleProduct(SimpleProductSku, 3);
 
             var cheapestShipping = cart.EstimateShippingMethods()
                 .OrderByDescending(method => method.PriceInclTax)

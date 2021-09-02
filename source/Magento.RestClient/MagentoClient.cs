@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using JsonExts.JsonPath;
 using Magento.RestClient.Abstractions;
+using Magento.RestClient.Authentication;
 using Magento.RestClient.Repositories.Abstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -38,7 +40,8 @@ namespace Magento.RestClient
 				Formatting = Formatting.Indented,
 				DefaultValueHandling = DefaultValueHandling.Ignore,
 				Converters = new List<JsonConverter> {
-					new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal}
+					new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal},
+					new JsonPathObjectConverter()
 				}
 			});
 		}

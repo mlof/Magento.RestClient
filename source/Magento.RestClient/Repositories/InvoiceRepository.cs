@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Magento.RestClient.Models;
 using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Search;
 using RestSharp;

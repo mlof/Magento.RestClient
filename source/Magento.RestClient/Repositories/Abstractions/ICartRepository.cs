@@ -8,7 +8,7 @@ namespace Magento.RestClient.Repositories.Abstractions
 	{
 		long GetNewCartId();
 		Cart GetExistingCart(long i);
-		CartItem AddItemToCart(long cartId, string sku, int quantity);
+		CartItem AddItemToCart(long cartId, CartItem cartItem);
 		List<PaymentMethod> GetPaymentMethodsForCart(long cartId);
 		long? PlaceOrder(long cartId, string paymentMethodCode, Address billingAddress);
 		List<ShippingMethod> EstimateShippingMethods(long cartId, Address address);

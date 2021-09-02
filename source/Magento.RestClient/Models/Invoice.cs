@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Magento.RestClient.Repositories
+namespace Magento.RestClient.Models
 {
 	public record Invoice
 	{

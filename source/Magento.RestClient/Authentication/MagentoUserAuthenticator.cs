@@ -3,7 +3,7 @@ using System.Linq;
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace Magento.RestClient
+namespace Magento.RestClient.Authentication
 {
 	public class MagentoUserAuthenticator : IAuthenticator
 	{

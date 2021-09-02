@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Domain.Tests.Abstractions;
+using Magento.RestClient.Models.Products;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Domain.Tests

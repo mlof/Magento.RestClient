@@ -5,6 +5,7 @@ using FluentValidation;
 using Magento.RestClient.Domain.Validators;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Models.Carts;
+using Magento.RestClient.Models.Carts.ConfigurableCartItems;
 using Magento.RestClient.Models.Common;
 using Magento.RestClient.Models.Customers;
 using Magento.RestClient.Repositories.Abstractions;
@@ -15,7 +16,6 @@ namespace Magento.RestClient.Domain.Models
 	public class CartModel : ICartModel
 	{
 		private readonly CartAddressValidator _addressValidator;
-		private readonly ICartRepository _cartRepository;
 		private readonly CommitCartValidator _commitCartValidator;
 		private Address _billingAddress;
 		private long _id;
@@ -25,21 +25,24 @@ namespace Magento.RestClient.Domain.Models
 
 		private string _paymentMethod;
 		private Address _shippingAddress;
+		private readonly IAdminClient client;
 
-		public CartModel(ICartRepository cartRepository)
+		public CartModel(IAdminClient client)
 		{
+			this.client = client;
 			_addressValidator = new CartAddressValidator();
 			_commitCartValidator = new CommitCartValidator();
-			_cartRepository = cartRepository;
-			this.Id = _cartRepository.GetNewCartId();
+			this.Id = client.Carts.GetNewCartId();
 		}
 
 
-		public CartModel(ICartRepository cartRepository, long id)
+		public CartModel(IAdminClient client, long id)
 		{
+			this.client = client;
+
 			_addressValidator = new CartAddressValidator();
 			_commitCartValidator = new CommitCartValidator();
-			_cartRepository = cartRepository;
+
 			this.Id = id;
 		}
 
@@ -83,7 +86,7 @@ namespace Magento.RestClient.Domain.Models
 
 		private CartModel UpdateMagentoValues()
 		{
-			_model = _cartRepository.GetExistingCart(_id);
+			_model = client.Carts.GetExistingCart(_id);
 
 			return this;
 		}
@@ -100,10 +103,10 @@ namespace Magento.RestClient.Domain.Models
 		{
 			if (this.ShippingAddress != null)
 			{
-				if (_cartRepository.EstimateShippingMethods(this.Id, this.ShippingAddress).Any(shippingMethod =>
+				if (client.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress).Any(shippingMethod =>
 					shippingMethod.MethodCode == method && shippingMethod.CarrierCode == carrier))
 				{
-					_cartRepository.SetShippingInformation(this.Id, _shippingAddress, this.BillingAddress, carrier,
+					client.Carts.SetShippingInformation(this.Id, _shippingAddress, this.BillingAddress, carrier,
 						method);
 					this.ShippingInformationSet = true;
 				}
@@ -130,7 +133,7 @@ namespace Magento.RestClient.Domain.Models
 		/// <exception cref="InvalidOperationException"></exception>
 		public CartModel SetPaymentMethod(string paymentMethod)
 		{
-			var paymentMethods = _cartRepository.GetPaymentMethodsForCart(this.Id);
+			var paymentMethods = client.Carts.GetPaymentMethodsForCart(this.Id);
 			if (paymentMethods.Any(method => method.Code == paymentMethod))
 			{
 				_paymentMethod = paymentMethod;
@@ -141,12 +144,12 @@ namespace Magento.RestClient.Domain.Models
 		}
 
 
-		public CartModel AddItem(string sku, int quantity)
+		public CartModel AddSimpleProduct(string sku, int quantity)
 		{
 			//todo: Add configurable product functionality
 			if (quantity > 0)
 			{
-				_cartRepository.AddItemToCart(this.Id, sku, quantity);
+				client.Carts.AddItemToCart(this.Id, new CartItem() {Sku = sku, Qty = quantity, QuoteId = this.Id});
 				return UpdateMagentoValues();
 			}
 
@@ -165,13 +168,13 @@ namespace Magento.RestClient.Domain.Models
 				throw new ArgumentNullException("Can not estimate shipping methods without items.");
 			}
 
-			return _cartRepository.EstimateShippingMethods(this.Id, this.ShippingAddress);
+			return client.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress);
 		}
 
 
 		public List<PaymentMethod> GetPaymentMethods()
 		{
-			return _cartRepository.GetPaymentMethodsForCart(this.Id);
+			return client.Carts.GetPaymentMethodsForCart(this.Id);
 		}
 
 		/// <summary>
@@ -191,7 +194,7 @@ namespace Magento.RestClient.Domain.Models
 					throw new InvalidOperationException("Set shipping information first.");
 				}
 
-				this.OrderId = _cartRepository.PlaceOrder(this.Id, _paymentMethod, this.BillingAddress);
+				this.OrderId = client.Carts.PlaceOrder(this.Id, _paymentMethod, this.BillingAddress);
 				return this.OrderId.Value;
 			}
 
@@ -211,9 +214,34 @@ namespace Magento.RestClient.Domain.Models
 
 		public CartModel AssignCustomer(int customerId)
 		{
-			_cartRepository.AssignCustomer(this.Id, _model.StoreId, customerId);
+			client.Carts.AssignCustomer(this.Id, _model.StoreId, customerId);
 
 			return UpdateMagentoValues();
+		}
+
+		public void AddConfigurableProduct(string parentSku, string childSku, int quantity = 1)
+		{
+			var options = client.ConfigurableProducts.GetOptions(parentSku);
+			var children = client.ConfigurableProducts.GetConfigurableChildren(parentSku);
+			var child = children.SingleOrDefault(product => product.Sku == childSku);
+
+			var cartItem = new ConfigurableCartItem();
+			cartItem.Sku = parentSku;
+			cartItem.Qty = quantity;
+			cartItem.QuoteId = Id;
+
+
+			foreach (var option in options)
+			{
+
+				var s = child.CustomAttributes.SingleOrDefault(attribute => attribute.AttributeCode == option.Label);
+				cartItem.ConfigurableItemOptions.Add(new ConfigurableItemOption() {
+					OptionId = option.AttributeId.ToString(),
+					OptionValue = Convert.ToInt64(s.Value)
+				});
+			}
+
+			client.Carts.AddItemToCart(Id, cartItem);
 		}
 	}
 }

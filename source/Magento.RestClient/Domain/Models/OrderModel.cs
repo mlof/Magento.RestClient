@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Magento.RestClient.Domain.Abstractions;
+using Magento.RestClient.Models;
 using Magento.RestClient.Models.Orders;
 using Magento.RestClient.Models.Shipping;
 using Magento.RestClient.Repositories;

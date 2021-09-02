@@ -44,7 +44,7 @@ namespace Magento.RestClient.Domain.Tests
 
 			root.Save();
 			var cat = root.Children.SingleOrDefault(category => category.Name == "TEST CATEGORY").ToModel(Client);
-			cat.AddProduct(this.ExistingProductSku);
+			cat.AddProduct(this.SimpleProductSku);
 
 
 			cat.Save();

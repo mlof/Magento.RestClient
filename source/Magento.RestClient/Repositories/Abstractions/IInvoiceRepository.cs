@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Magento.RestClient.Models;
 
 namespace Magento.RestClient.Repositories.Abstractions
 {

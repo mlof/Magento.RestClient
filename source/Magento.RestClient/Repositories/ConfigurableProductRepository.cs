@@ -43,14 +43,14 @@ namespace Magento.RestClient.Repositories
 			}
 		}
 
-		public List<ConfigurableProduct> GetConfigurableChildren(string parentSku)
+		public List<Product> GetConfigurableChildren(string parentSku)
 		{
 			var request = new RestRequest("configurable-products/{sku}/children");
 			request.Method = Method.GET;
 
 			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
 
-			var response = client.Execute<List<ConfigurableProduct>>(request);
+			var response = client.Execute<List<Product>>(request);
 			return HandleResponse(response);
 		}
 
@@ -65,6 +65,16 @@ namespace Magento.RestClient.Repositories
 			});
 			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
 			client.Execute(request);
+		}
+
+		public List<ConfigurableProductOption> GetOptions(string parentSku)
+		{
+			var request = new RestRequest("configurable-products/{sku}/options/all");
+			request.Method = Method.GET;
+
+			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
+			var response = client.Execute<List<ConfigurableProductOption>>(request);
+			return HandleResponse(response);
 		}
 	}
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Magento.RestClient.Repositories.Abstractions;
 using RestSharp;
 
-namespace Magento.RestClient
+namespace Magento.RestClient.Repositories
 {
 	internal class ProductMediaRepository : IProductMediaRepository
 	{

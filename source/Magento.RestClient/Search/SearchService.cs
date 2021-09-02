@@ -1,4 +1,5 @@
 ﻿using System;
+using Magento.RestClient.Models;
 using Magento.RestClient.Models.Attributes;
 using Magento.RestClient.Models.Category;
 using Magento.RestClient.Models.Customers;

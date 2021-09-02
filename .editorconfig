@@ -61,7 +61,7 @@ csharp_style_expression_bodied_constructors = false:suggestion
 #prefer block bodies for methods
 csharp_style_expression_bodied_methods = false:suggestion
 #prefer block bodies for properties
-csharp_style_expression_bodied_properties = false:suggestion
+csharp_style_expression_bodied_properties = true:suggestion
 
 #Style - Expression-level  preferences
 
@@ -102,4 +102,4 @@ dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = true:suggestion
 
 [*.{cs,vb}]
-indent_style=tab
+indent_style = tab

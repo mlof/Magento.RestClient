@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Magento.RestClient.Data.Models.Category;
+using Magento.RestClient.Data.Models.Products;
+using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Abstractions;
-using Magento.RestClient.Models.Category;
-using Magento.RestClient.Models.Products;
-using Magento.RestClient.Repositories.Abstractions;
 
 namespace Magento.RestClient.Domain.Models
 {

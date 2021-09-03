@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
+using Magento.RestClient.Data.Models.Carts;
+using Magento.RestClient.Data.Models.Carts.ConfigurableCartItems;
+using Magento.RestClient.Data.Models.Common;
+using Magento.RestClient.Data.Models.Customers;
+using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Validators;
 using Magento.RestClient.Exceptions;
-using Magento.RestClient.Models.Carts;
-using Magento.RestClient.Models.Carts.ConfigurableCartItems;
-using Magento.RestClient.Models.Common;
-using Magento.RestClient.Models.Customers;
-using Magento.RestClient.Repositories.Abstractions;
 using Newtonsoft.Json;
 
 namespace Magento.RestClient.Domain.Models

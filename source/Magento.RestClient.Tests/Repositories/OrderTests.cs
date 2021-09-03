@@ -1,8 +1,8 @@
 using System.Linq;
 using FluentAssertions;
 using FluentValidation;
-using Magento.RestClient.Models.Orders;
-using Magento.RestClient.Models.Search;
+using Magento.RestClient.Data.Models.Orders;
+using Magento.RestClient.Data.Models.Search;
 using Magento.RestClient.Search;
 using NUnit.Framework;
 

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using Magento.RestClient.Models.Attributes;
-using Magento.RestClient.Models.Common;
+using Magento.RestClient.Data.Models.Attributes;
+using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Search.Abstractions;
 
 namespace Magento.RestClient.Extensions

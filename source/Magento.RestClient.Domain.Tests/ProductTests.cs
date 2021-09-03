@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Domain.Tests.Abstractions;
-using Magento.RestClient.Models.Products;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Domain.Tests

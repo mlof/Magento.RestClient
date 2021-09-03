@@ -1,14 +1,13 @@
-﻿using Magento.RestClient.Repositories;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using RestSharp;
 using System;
 using System.Linq;
 using FluentAssertions;
+using Magento.RestClient.Data.Models.Attributes;
+using Magento.RestClient.Data.Models.Common;
+using Magento.RestClient.Data.Models.Products;
+using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Extensions;
-using Magento.RestClient.Models.Attributes;
-using Magento.RestClient.Models.Common;
-using Magento.RestClient.Models.Products;
-using Magento.RestClient.Repositories.Abstractions;
 
 namespace Magento.RestClient.Tests.Repositories
 {

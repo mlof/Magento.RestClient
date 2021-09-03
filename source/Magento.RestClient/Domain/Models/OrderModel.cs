@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Magento.RestClient.Data.Models;
+using Magento.RestClient.Data.Models.Orders;
+using Magento.RestClient.Data.Models.Shipping;
+using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Abstractions;
-using Magento.RestClient.Models;
-using Magento.RestClient.Models.Orders;
-using Magento.RestClient.Models.Shipping;
-using Magento.RestClient.Repositories;
-using Magento.RestClient.Repositories.Abstractions;
 
 namespace Magento.RestClient.Domain.Models
 {

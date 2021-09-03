@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Domain.Tests.Abstractions;
 using Magento.RestClient.Exceptions;
-using Magento.RestClient.Models.Carts;
-using Magento.RestClient.Models.Common;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Domain.Tests

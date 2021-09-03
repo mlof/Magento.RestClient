@@ -1,4 +1,4 @@
-﻿using Magento.RestClient.Repositories.Abstractions;
+﻿using Magento.RestClient.Data.Repositories.Abstractions;
 
 namespace Magento.RestClient.Abstractions
 {

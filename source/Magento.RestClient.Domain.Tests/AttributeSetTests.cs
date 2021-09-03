@@ -4,8 +4,6 @@ using System.Linq;
 using FluentAssertions;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Tests.Abstractions;
-using Magento.RestClient.Models.Attributes;
-using Magento.RestClient.Models.Products;
 using Newtonsoft.Json;
 using NUnit.Framework;
 

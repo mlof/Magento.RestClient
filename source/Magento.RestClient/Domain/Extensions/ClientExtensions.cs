@@ -1,6 +1,6 @@
-﻿using Magento.RestClient.Domain.Models;
-using Magento.RestClient.Models.Common;
-using Magento.RestClient.Repositories.Abstractions;
+﻿using Magento.RestClient.Data.Models.Common;
+using Magento.RestClient.Data.Repositories.Abstractions;
+using Magento.RestClient.Domain.Models;
 
 namespace Magento.RestClient.Domain.Extensions
 {

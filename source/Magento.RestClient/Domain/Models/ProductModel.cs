@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Magento.RestClient.Data.Models.Common;
+using Magento.RestClient.Data.Models.Products;
+using Magento.RestClient.Data.Models.Stock;
+using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Abstractions;
 using Magento.RestClient.Domain.Validators;
 using Magento.RestClient.Extensions;
-using Magento.RestClient.Models.Common;
-using Magento.RestClient.Models.Products;
-using Magento.RestClient.Models.Stock;
-using Magento.RestClient.Repositories.Abstractions;
 
 namespace Magento.RestClient.Domain.Models
 {

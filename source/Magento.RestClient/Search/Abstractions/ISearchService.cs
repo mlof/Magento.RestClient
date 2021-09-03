@@ -1,13 +1,12 @@
 ﻿using System;
-using Magento.RestClient.Models;
-using Magento.RestClient.Models.Attributes;
-using Magento.RestClient.Models.Category;
-using Magento.RestClient.Models.Customers;
-using Magento.RestClient.Models.Orders;
-using Magento.RestClient.Models.Products;
-using Magento.RestClient.Models.Search;
-using Magento.RestClient.Models.Shipping;
-using Magento.RestClient.Repositories;
+using Magento.RestClient.Data.Models;
+using Magento.RestClient.Data.Models.Attributes;
+using Magento.RestClient.Data.Models.Category;
+using Magento.RestClient.Data.Models.Customers;
+using Magento.RestClient.Data.Models.Orders;
+using Magento.RestClient.Data.Models.Products;
+using Magento.RestClient.Data.Models.Search;
+using Magento.RestClient.Data.Models.Shipping;
 
 namespace Magento.RestClient.Search.Abstractions
 {

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Magento.RestClient.Models.Orders;
+using Magento.RestClient.Data.Models.Orders;
 
 namespace Magento.RestClient.Validators
 {

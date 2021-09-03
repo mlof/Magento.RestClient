@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using Magento.RestClient.Data.Repositories;
+using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
-using Magento.RestClient.Repositories;
-using Magento.RestClient.Repositories.Abstractions;
 using Magento.RestClient.Search;
 using Magento.RestClient.Search.Abstractions;
 using RestSharp;

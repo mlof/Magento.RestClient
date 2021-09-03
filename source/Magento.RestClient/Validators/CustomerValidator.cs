@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Magento.RestClient.Models.Customers;
+using Magento.RestClient.Data.Models.Customers;
 
 namespace Magento.RestClient.Validators
 {

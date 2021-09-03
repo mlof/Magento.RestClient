@@ -1,8 +1,8 @@
 using System.Linq;
 using FluentAssertions;
+using Magento.RestClient.Data.Models.Attributes;
+using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Exceptions;
-using Magento.RestClient.Models.Attributes;
-using Magento.RestClient.Models.Common;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories

@@ -6,8 +6,6 @@ using FluentAssertions;
 using Magento.RestClient.Domain;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Exceptions;
-using Magento.RestClient.Models.Attributes;
-using Magento.RestClient.Models.Common;
 using Newtonsoft.Json;
 using NUnit.Framework;
 

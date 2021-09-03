@@ -1,7 +1,8 @@
 ﻿using System;
-using Magento.RestClient.Models.Carts;
+using Magento.RestClient.Data.Models.Carts;
+using Magento.RestClient.Domain.Models;
 
-namespace Magento.RestClient.Domain.Models
+namespace Magento.RestClient.Domain.Extensions
 {
 	public static class CartExtensions
 	{

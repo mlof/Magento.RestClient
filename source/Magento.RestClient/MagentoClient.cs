@@ -3,7 +3,7 @@ using System.Globalization;
 using JsonExts.JsonPath;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Authentication;
-using Magento.RestClient.Repositories.Abstractions;
+using Magento.RestClient.Data.Repositories.Abstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using RestSharp;

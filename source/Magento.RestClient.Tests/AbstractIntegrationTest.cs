@@ -1,4 +1,4 @@
-using Magento.RestClient.Repositories.Abstractions;
+using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Tests.Configuration;
 using Magento.RestClient.Tests.Constants;
 using NUnit.Framework;

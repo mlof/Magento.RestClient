@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using Bogus;
 using Magento.RestClient.Domain.Extensions;
-using Magento.RestClient.Models.Products;
 using Newtonsoft.Json;
 using NUnit.Framework;
 

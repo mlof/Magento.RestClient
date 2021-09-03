@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Magento.RestClient.Data.Models.Attributes;
+using Magento.RestClient.Data.Models.Common;
+using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Abstractions;
 using Magento.RestClient.Domain.Models.AttributeSets;
 using Magento.RestClient.Extensions;
-using Magento.RestClient.Models.Attributes;
-using Magento.RestClient.Models.Common;
-using Magento.RestClient.Repositories.Abstractions;
 
 namespace Magento.RestClient.Domain.Models
 {

@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Domain.Tests.Abstractions;
-using Magento.RestClient.Models.Category;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Domain.Tests

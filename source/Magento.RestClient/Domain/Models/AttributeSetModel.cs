@@ -93,6 +93,8 @@ namespace Magento.RestClient.Domain.Models
 		public void Save()
 		{
 			var attributeSet = new AttributeSet();
+			attributeSet.AttributeSetName = Name;
+			attributeSet.EntityTypeId = EntityType;
 
 			if (this.Id == 0)
 			{

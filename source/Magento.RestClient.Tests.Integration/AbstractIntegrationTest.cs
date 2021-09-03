@@ -8,14 +8,14 @@ namespace Magento.RestClient.Tests.Integration
 {
 	public abstract class AbstractIntegrationTest
 	{
-		protected IAdminClient Client;
+		protected IAdminContext Context;
 
 		[SetUp]
 		public void Setup()
 		{
 			var conf = TestConfiguration.GetInstance();
 			Log.Logger = new LoggerConfiguration().WriteTo.Debug().CreateLogger();
-			this.Client = new MagentoClient("http://localhost/").AuthenticateAsIntegration(
+			this.Context = new MagentoClient("http://localhost/").AuthenticateAsIntegration(
 				conf.ConsumerKey, conf.ConsumerSecret,
 				conf.AccessToken, conf.AccessTokenSecret);
 		}

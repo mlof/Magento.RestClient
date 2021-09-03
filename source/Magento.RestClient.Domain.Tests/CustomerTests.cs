@@ -10,7 +10,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void CreateCustomer()
 		{
-			var customer = new CustomerModel(this.Client, "user@example.org");
+			var customer = new CustomerModel(this.Context, "user@example.org");
 			customer.FirstName = "First Name";
 			customer.LastName = "Last Name";
 
@@ -31,8 +31,8 @@ namespace Magento.RestClient.Domain.Tests
 		[TearDown]
 		public void CustomerTeardown()
 		{
-			var customer = Client.Customers.GetByEmailAddress("user@example.org");
-			Client.Customers.DeleteById(customer.Id);
+			var customer = Context.Customers.GetByEmailAddress("user@example.org");
+			Context.Customers.DeleteById(customer.Id);
 		}
 	}
 }

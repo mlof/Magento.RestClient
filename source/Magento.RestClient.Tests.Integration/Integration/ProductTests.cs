@@ -37,7 +37,7 @@ namespace Magento.RestClient.Tests.Integration.Integration
 			
 			foreach (var product in products_100)
 			{
-				var p = Client.GetProductModel(product.Sku);
+				var p = Context.GetProductModel(product.Sku);
 				p.AttributeSetId = 4;
 				p.Name = product.Title;
 				p.Price = product.Price;
@@ -47,7 +47,7 @@ namespace Magento.RestClient.Tests.Integration.Integration
 			/*
 			foreach (var productFixture in this.ProductFixtures.Where(fixture => fixture.Title.Contains("Asus", StringComparison.InvariantCultureIgnoreCase)))
 			{
-				var product = Client.GetProductModel(productFixture.Sku);
+				var product = Context.GetProductModel(productFixture.Sku);
 
 
 				product.SetStock(productFixture.InStock);

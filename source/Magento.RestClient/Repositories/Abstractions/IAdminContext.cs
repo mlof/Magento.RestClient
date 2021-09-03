@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Repositories.Abstractions
 {
-	public interface IAdminClient : ICanGetModules
+	public interface IAdminContext : ICanGetModules
 	{
 		ISearchService Search { get; }
 		IStoreRepository Stores { get; }

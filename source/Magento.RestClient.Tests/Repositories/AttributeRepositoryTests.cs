@@ -25,27 +25,27 @@ namespace Magento.RestClient.Tests.Repositories
 		public void SetupAttributes()
 		{
 			this.attributeSetName = "AttributeTestSet";
-			this.attributeRepository = this.Client.Attributes;
-			this.attributeSet = this.Client.AttributeSets.Create(EntityType.CatalogProduct, 4,
+			this.attributeRepository = this.Context.Attributes;
+			this.attributeSet = this.Context.AttributeSets.Create(EntityType.CatalogProduct, 4,
 				new AttributeSet() {AttributeSetName = attributeSetName});
 		}
 
 		[TearDown]
 		public void TeardownAttributes()
 		{
-			var id = this.Client.Search.AttributeSets(builder =>
+			var id = this.Context.Search.AttributeSets(builder =>
 					builder.WhereEquals(set => set.AttributeSetName, attributeSetName)
 						.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct))
 				.Items.SingleOrDefault()
 				.AttributeSetId;
-			this.Client.AttributeSets.Delete(id.Value);
-			this.Client.Attributes.DeleteProductAttribute(attributeCode);
+			this.Context.AttributeSets.Delete(id.Value);
+			this.Context.Attributes.DeleteProductAttribute(attributeCode);
 		}
 
 		[Test]
 		public void GetProductAttributes_NewAttributeSet_HasDefaultAttributes()
 		{
-			var defaultAttributeSet = Client.Search.GetDefaultAttributeSet(EntityType.CatalogProduct);
+			var defaultAttributeSet = Context.Search.GetDefaultAttributeSet(EntityType.CatalogProduct);
 			var defaultAttributes = attributeRepository.GetProductAttributes(
 					defaultAttributeSet.AttributeSetId.Value)
 				.OrderBy(attribute => attribute.AttributeCode);
@@ -75,7 +75,7 @@ namespace Magento.RestClient.Tests.Repositories
 
 			// Assert
 
-			var assert = Client.AttributeSets.Get(result.AttributeId);
+			var assert = Context.AttributeSets.Get(result.AttributeId);
 		}
 
 		[Test]
@@ -97,7 +97,7 @@ namespace Magento.RestClient.Tests.Repositories
 			
 			// Assert
 			
-			var assert = Client.AttributeSets.Get(result.AttributeId);
+			var assert = Context.AttributeSets.Get(result.AttributeId);
 			assert.Should().BeNull();
 			Assert.Fail();
 		}

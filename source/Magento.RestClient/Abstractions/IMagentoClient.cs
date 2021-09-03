@@ -4,12 +4,12 @@ namespace Magento.RestClient.Abstractions
 {
 	public interface IMagentoClient
 	{
-		IAdminClient AuthenticateAsIntegration(string consumerKey, string consumerSecret, string accessToken,
+		IAdminContext AuthenticateAsIntegration(string consumerKey, string consumerSecret, string accessToken,
 			string accessTokenSecret);
 
-		IAdminClient AuthenticateAsAdmin(string username, string password);
-		ICustomerClient AuthenticateAsCustomer(string username, string password);
+		IAdminContext AuthenticateAsAdmin(string username, string password);
+		ICustomerContext AuthenticateAsCustomer(string username, string password);
 
-		IGuestClient AuthenticateAsGuest();
+		IGuestContext AuthenticateAsGuest();
 	}
 }

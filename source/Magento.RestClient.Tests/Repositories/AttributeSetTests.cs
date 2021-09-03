@@ -18,27 +18,27 @@ namespace Magento.RestClient.Tests.Repositories
 				EntityTypeId = EntityType.CatalogProduct, AttributeSetName = "Laptops"
 			};
 
-			Client.AttributeSets.Create(EntityType.CatalogProduct, defaultProductAttributeSet, laptopAttributeSet);
+			Context.AttributeSets.Create(EntityType.CatalogProduct, defaultProductAttributeSet, laptopAttributeSet);
 		}
 
 
 		[TearDown]
 		public void AttributeSetTearDown()
 		{
-			var response = Client.Search.AttributeSets(builder => builder
+			var response = Context.Search.AttributeSets(builder => builder
 				.WithPageSize(100)
 				.WithPage(1)
 				.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct)
 				.WhereEquals(set => set.AttributeSetName, "Laptops"));
 
 			var attributeSet = response.Items.First();
-			Client.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
+			Context.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
 		}
 
 		[Test]
 		public void Search_Existing()
 		{
-			var response = Client.Search.AttributeSets(builder => builder
+			var response = Context.Search.AttributeSets(builder => builder
 				.WithPageSize(100)
 				.WithPage(1)
 				.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct)
@@ -50,7 +50,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void Search_NonExistent()
 		{
-			var response = Client.Search.AttributeSets(builder => builder
+			var response = Context.Search.AttributeSets(builder => builder
 				.WithPageSize(100)
 				.WithPage(1)
 				.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct)
@@ -62,7 +62,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void GetProductAttributes_Existent()
 		{
-			var response = Client.Search.AttributeSets(builder => builder
+			var response = Context.Search.AttributeSets(builder => builder
 				.WithPageSize(100)
 				.WithPage(1)
 				.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct));
@@ -70,7 +70,7 @@ namespace Magento.RestClient.Tests.Repositories
 			var attributeSet = response.Items.First();
 
 
-			var attributes = Client.Attributes.GetProductAttributes(attributeSet.AttributeSetId.Value);
+			var attributes = Context.Attributes.GetProductAttributes(attributeSet.AttributeSetId.Value);
 
 			attributes.Should().NotBeEmpty();
 		}
@@ -78,7 +78,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void GetProductAttributeGroups_Existent()
 		{
-			var response = Client.Search.AttributeSets(builder => builder
+			var response = Context.Search.AttributeSets(builder => builder
 				.WithPageSize(100)
 				.WithPage(1)
 				.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct));
@@ -94,7 +94,7 @@ namespace Magento.RestClient.Tests.Repositories
 		public void GetProductAttributes_NonExistent()
 		{
 			Assert.Throws<EntityNotFoundException>(() => {
-				var attributes = Client.Attributes.GetProductAttributes(-1);
+				var attributes = Context.Attributes.GetProductAttributes(-1);
 			});
 		}
 	}

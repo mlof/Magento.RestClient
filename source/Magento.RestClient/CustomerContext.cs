@@ -3,9 +3,9 @@ using RestSharp;
 
 namespace Magento.RestClient
 {
-	public class GuestClient : IGuestClient
+	public class CustomerContext : ICustomerContext
 	{
-		public GuestClient(IRestClient client)
+		public CustomerContext(IRestClient client)
 		{
 		}
 	}

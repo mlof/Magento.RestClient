@@ -13,12 +13,12 @@ namespace Magento.RestClient.Domain.Models
 {
 	public class ProductModel : IDomainModel
 	{
-		private readonly IAdminClient _client;
+		private readonly IAdminContext _context;
 		private readonly ProductValidator _productValidator;
 
-		public ProductModel(IAdminClient client, string sku)
+		public ProductModel(IAdminContext context, string sku)
 		{
-			_client = client;
+			_context = context;
 			this.Sku = sku;
 			_productValidator = new ProductValidator();
 			this.Scope = "all";
@@ -49,10 +49,10 @@ namespace Magento.RestClient.Domain.Models
 
 		public void Refresh()
 		{
-			var existingProduct = _client.Products.GetProductBySku(this.Sku, this.Scope);
+			var existingProduct = _context.Products.GetProductBySku(this.Sku, this.Scope);
 			if (existingProduct == null)
 			{
-				this.AttributeSetId = _client.Search.GetDefaultAttributeSet(EntityType.CatalogProduct).AttributeSetId
+				this.AttributeSetId = _context.Search.GetDefaultAttributeSet(EntityType.CatalogProduct).AttributeSetId
 					.GetValueOrDefault();
 			}
 			else
@@ -67,7 +67,7 @@ namespace Magento.RestClient.Domain.Models
 
 				if (this.Type == ProductType.Configurable)
 				{
-					this.Children = this._client.ConfigurableProducts.GetConfigurableChildren(Sku);
+					this.Children = this._context.ConfigurableProducts.GetConfigurableChildren(Sku);
 				}
 			}
 		}
@@ -78,7 +78,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public void Save()
 		{
-			var existingProduct = _client.Products.GetProductBySku(this.Sku);
+			var existingProduct = _context.Products.GetProductBySku(this.Sku);
 
 			var product = new Product {
 				Sku = this.Sku,
@@ -95,13 +95,13 @@ namespace Magento.RestClient.Domain.Models
 
 			if (existingProduct == null)
 			{
-				_client.Products.CreateProduct(product);
+				_context.Products.CreateProduct(product);
 
 				this.IsPersisted = true;
 			}
 			else
 			{
-				_client.Products.UpdateProduct(this.Sku, product, scope: this.Scope);
+				_context.Products.UpdateProduct(this.Sku, product, scope: this.Scope);
 			}
 
 			Refresh();
@@ -110,7 +110,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public void Delete()
 		{
-			_client.Products.DeleteProduct(this.Sku);
+			_context.Products.DeleteProduct(this.Sku);
 		}
 
 

@@ -9,18 +9,18 @@ namespace Magento.RestClient.Domain.Models
 {
 	public class CategoryModel : IDomainModel
 	{
-		private readonly IAdminClient _client;
+		private readonly IAdminContext _context;
 		private List<Category> _children;
 		private List<ProductLink> _products;
 
-		public CategoryModel(IAdminClient client)
+		public CategoryModel(IAdminContext context)
 		{
-			_client = client;
+			_context = context;
 		}
 
-		public CategoryModel(IAdminClient client, long id)
+		public CategoryModel(IAdminContext context, long id)
 		{
-			_client = client;
+			_context = context;
 			this.Id = id;
 			Refresh();
 		}
@@ -45,12 +45,12 @@ namespace Magento.RestClient.Domain.Models
 
 		public void Refresh()
 		{
-			var tree = _client.Categories.GetCategoryTree(this.Id);
+			var tree = _context.Categories.GetCategoryTree(this.Id);
 
 			this.Id = tree.Id;
 			this.ParentId = tree.ParentId;
 			_children = tree.ChildrenData.ToList();
-			_products = _client.Categories.GetProducts(this.Id).ToList();
+			_products = _context.Categories.GetProducts(this.Id).ToList();
 		}
 
 		public void Save()
@@ -61,11 +61,11 @@ namespace Magento.RestClient.Domain.Models
 			{
 				if (this.IsPersisted)
 				{
-					_client.Categories.UpdateCategory(this.Id, _model);
+					_context.Categories.UpdateCategory(this.Id, _model);
 				}
 				else
 				{
-					var response = _client.Categories.CreateCategory(_model);
+					var response = _context.Categories.CreateCategory(_model);
 					this.Id = response.Id;
 				}
 			}
@@ -75,17 +75,17 @@ namespace Magento.RestClient.Domain.Models
 				child.ParentId = this.Id;
 				if (child.Id == 0)
 				{
-					_client.Categories.CreateCategory(child);
+					_context.Categories.CreateCategory(child);
 				}
 				else
 				{
-					_client.Categories.UpdateCategory(child.Id, child);
+					_context.Categories.UpdateCategory(child.Id, child);
 				}
 			}
 
 			foreach (var link in _products)
 			{
-				_client.Categories.AddProduct(this.Id, link);
+				_context.Categories.AddProduct(this.Id, link);
 			}
 
 
@@ -102,7 +102,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public void Delete()
 		{
-			_client.Categories.DeleteCategoryById(this.Id);
+			_context.Categories.DeleteCategoryById(this.Id);
 		}
 
 		public void AddProduct(string productSku)

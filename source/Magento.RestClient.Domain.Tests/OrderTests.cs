@@ -10,7 +10,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void CreateShipment()
 		{
-			var order = OrderModel.GetExisting(Client, 35);
+			var order = OrderModel.GetExisting(Context, 35);
 			
 			order.CreateInvoice();
 

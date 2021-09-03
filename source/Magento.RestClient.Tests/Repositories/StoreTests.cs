@@ -7,28 +7,28 @@ namespace Magento.RestClient.Tests.Repositories
         [Test]
         public void CanGetWebsites()
         {
-            var websites = this.Client.Stores.GetWebsites();
+            var websites = this.Context.Stores.GetWebsites();
             Assert.IsNotEmpty(websites);
         }
 
         [Test]
         public void CanGetStoreViews()
         {
-            var storeViews = this.Client.Stores.GetStoreViews();
+            var storeViews = this.Context.Stores.GetStoreViews();
             Assert.IsNotEmpty(storeViews);
         }
 
         [Test]
         public void CanGetStoreConfigs()
         {
-            var storeConfigs = this.Client.Stores.GetStoreConfigs();
+            var storeConfigs = this.Context.Stores.GetStoreConfigs();
             Assert.IsNotEmpty(storeConfigs);
         }
 
         [Test]
         public void CanGetStoreGroups()
         {
-            var storeGroups = this.Client.Stores.GetStoreGroups();
+            var storeGroups = this.Context.Stores.GetStoreGroups();
             Assert.IsNotEmpty(storeGroups);
         }
     }

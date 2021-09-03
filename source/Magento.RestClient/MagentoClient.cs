@@ -47,7 +47,7 @@ namespace Magento.RestClient
 		}
 
 
-		public IAdminClient AuthenticateAsIntegration(string consumerKey, string consumerSecret,
+		public IAdminContext AuthenticateAsIntegration(string consumerKey, string consumerSecret,
 			string accessToken,
 			string accessTokenSecret)
 		{
@@ -55,28 +55,28 @@ namespace Magento.RestClient
 				consumerSecret, accessToken,
 				accessTokenSecret);
 
-			return new AdminClient(_client);
+			return new AdminContext(_client);
 		}
 
-		public IAdminClient AuthenticateAsAdmin(string username, string password)
+		public IAdminContext AuthenticateAsAdmin(string username, string password)
 		{
 			_client.Authenticator =
 				new MagentoUserAuthenticator(adminTokenUrl, username, password, 4);
 
-			return new AdminClient(_client);
+			return new AdminContext(_client);
 		}
 
-		public ICustomerClient AuthenticateAsCustomer(string username, string password)
+		public ICustomerContext AuthenticateAsCustomer(string username, string password)
 		{
 			_client.Authenticator =
 				new MagentoUserAuthenticator(customerTokenUrl, username, password, 1);
 
-			return new CustomerClient(_client);
+			return new CustomerContext(_client);
 		}
 
-		public IGuestClient AuthenticateAsGuest()
+		public IGuestContext AuthenticateAsGuest()
 		{
-			return new GuestClient(_client);
+			return new GuestContext(_client);
 		}
 	}
 }

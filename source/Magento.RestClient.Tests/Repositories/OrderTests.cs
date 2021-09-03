@@ -13,7 +13,7 @@ namespace Magento.RestClient.Tests.Repositories
         [Test]
         public void SearchOrders_WithDefaultSettings()
         {
-            var orderResponse = Client.Search.Orders();
+            var orderResponse = Context.Search.Orders();
 
 
             orderResponse.SearchCriteria.CurrentPage.Should().Be(SearchBuilder<Order>.DefaultPage);
@@ -26,7 +26,7 @@ namespace Magento.RestClient.Tests.Repositories
         [Test]
         public void SearchOrders_WhereOrderCurrencyCode_EqualsEuro()
         {
-            var orderResponse = Client.Search.Orders(builder =>
+            var orderResponse = Context.Search.Orders(builder =>
                 builder.WhereEquals(order => order.OrderCurrencyCode,  "EUR"));
 
             orderResponse.SearchCriteria.FilterGroups.Should().HaveCount(1);
@@ -41,7 +41,7 @@ namespace Magento.RestClient.Tests.Repositories
 
 
             Assert.Throws<ValidationException>(() => {
-                Client.Orders.CreateOrder(invalidOrder);
+                Context.Orders.CreateOrder(invalidOrder);
             });
         }
     }

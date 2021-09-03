@@ -36,7 +36,7 @@ namespace Magento.RestClient.Tests.Integration.Integration
 			/*
 			foreach (var fixture in attributeFixtures)
 			{
-				var attribute = Client.GetAttributeModel(fixture.AttributeCode);
+				var attribute = Context.GetAttributeModel(fixture.AttributeCode);
 				attribute.SetFrontendLabel(fixture.FrontendLabel);
 				attribute.SetFrontendInput(fixture.FrontendInput);
 
@@ -63,7 +63,7 @@ namespace Magento.RestClient.Tests.Integration.Integration
 			/*
 			foreach (var fixture in attributeSetFixtures)
 			{
-				var attributeSet = Client.GetAttributeSetModel(fixture.AttributeSetName);
+				var attributeSet = Context.GetAttributeSetModel(fixture.AttributeSetName);
 				
 				foreach (var attributeGroup in fixture.AttributeGroups)
 				{
@@ -100,7 +100,7 @@ namespace Magento.RestClient.Tests.Integration.Integration
 				try
 				{
 					var id =
-						Client.Search
+						Context.Search
 							.AttributeSets(builder =>
 								builder.WhereEquals(set => set.AttributeSetName, attributeSet.AttributeSetName)
 									.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct)).Items
@@ -108,7 +108,7 @@ namespace Magento.RestClient.Tests.Integration.Integration
 							.AttributeSetId;
 					if (id != null)
 					{
-						Client.AttributeSets.Delete(id.Value);
+						Context.AttributeSets.Delete(id.Value);
 
 					}
 
@@ -121,7 +121,7 @@ namespace Magento.RestClient.Tests.Integration.Integration
 
 			foreach (var fixture in attributeFixtures)
 			{
-				Client.Attributes.DeleteProductAttribute(fixture.AttributeCode);
+				Context.Attributes.DeleteProductAttribute(fixture.AttributeCode);
 			}*/
 		}
 	}

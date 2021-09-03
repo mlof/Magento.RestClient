@@ -15,7 +15,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[TearDown]
 		public void TeardownCategories()
 		{
-			var category = Client.Search
+			var category = Context.Search
 				.Categories(builder => builder.WhereEquals(category => category.Name, "Should Be Created"))
 				.Items
 				.SingleOrDefault();
@@ -23,14 +23,14 @@ namespace Magento.RestClient.Tests.Repositories
 
 			if (category != null)
 			{
-				Client.Categories.DeleteCategoryById(category.Id);
+				Context.Categories.DeleteCategoryById(category.Id);
 			}
 		}
 
 		[Test]
 		public void GetCategoryById_CategoryExists()
 		{
-			var c = this.Client.Categories.GetCategoryById(1);
+			var c = this.Context.Categories.GetCategoryById(1);
 
 
 			c.Should().NotBeNull();
@@ -42,10 +42,10 @@ namespace Magento.RestClient.Tests.Repositories
 		{
 			var shouldBeCreated = new Category() {Name = "Should Be Created", IsActive = true};
 
-			var created = this.Client.Categories.CreateCategory(shouldBeCreated);
+			var created = this.Context.Categories.CreateCategory(shouldBeCreated);
 
 
-			var category = Client.Search
+			var category = Context.Search
 				.Categories(builder => builder.WhereEquals(category => category.Name, "Should Be Created"))
 				.Items.Single();
 			category.Name.Should().BeEquivalentTo(shouldBeCreated.Name);
@@ -57,10 +57,10 @@ namespace Magento.RestClient.Tests.Repositories
 		{
 			var shouldBeCreated = new Category() {Name = "Should Be Created", IsActive = true};
 
-			this.Client.Categories.CreateCategory(shouldBeCreated);
+			this.Context.Categories.CreateCategory(shouldBeCreated);
 
 
-			var category = Client.Search
+			var category = Context.Search
 				.Categories(builder => builder.WhereEquals(category => category.Name, "Should Be Created"))
 				.Items.Single();
 			category.Name.Should().BeEquivalentTo(shouldBeCreated.Name);
@@ -70,7 +70,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void GetCategoryById_CategoryDoesNotExist()
 		{
-			var c = this.Client.Categories.GetCategoryById(-1);
+			var c = this.Context.Categories.GetCategoryById(-1);
 
 
 			c.Should().BeNull();

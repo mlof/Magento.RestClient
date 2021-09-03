@@ -6,32 +6,32 @@ namespace Magento.RestClient.Domain.Extensions
 {
 	public static class ClientExtensions
 	{
-		public static AttributeSetModel GetAttributeSetModel(this IAdminClient client, string name,
+		public static AttributeSetModel GetAttributeSetModel(this IAdminContext context, string name,
 			EntityType entityType = EntityType.CatalogProduct,
 			long? skeletonId = null)
 		{
-			return new(client, name, entityType, skeletonId);
+			return new(context, name, entityType, skeletonId);
 		}
 
-		public static AttributeModel GetAttributeModel(this IAdminClient client, string attributeCode)
+		public static AttributeModel GetAttributeModel(this IAdminContext context, string attributeCode)
 		{
-			return new(client, attributeCode);
+			return new(context, attributeCode);
 		}
 
-		public static ProductModel GetProductModel(this IAdminClient client, string sku)
+		public static ProductModel GetProductModel(this IAdminContext context, string sku)
 		{
-			return new(client, sku);
+			return new(context, sku);
 		}
 
 
-		public static CartModel CreateNewCartModel(this IAdminClient client)
+		public static CartModel CreateNewCartModel(this IAdminContext context)
 		{
-			return new(client);
+			return new(context);
 		}
 
-		public static CartModel GetExistingCartModel(this IAdminClient client, long id)
+		public static CartModel GetExistingCartModel(this IAdminContext context, long id)
 		{
-			return new(client, id);
+			return new(context, id);
 		}
 	}
 }

@@ -14,14 +14,14 @@ namespace Magento.RestClient.Domain.Tests
 		[SetUp]
 		public void CategorySetup()
 		{
-			var root = this.Client.Categories.GetCategoryTree();
+			var root = this.Context.Categories.GetCategoryTree();
 			this.rootId = root.Id;
 		}
 
 		[Test]
 		public void AddChild_ValidCategory()
 		{
-			var model = new CategoryModel(Client, rootId);
+			var model = new CategoryModel(Context, rootId);
 
 			model.AddChild("TEST CATEGORY");
 
@@ -38,12 +38,12 @@ namespace Magento.RestClient.Domain.Tests
 		public void AddProduct()
 		{
 
-			var root = new CategoryModel(Client, rootId);
+			var root = new CategoryModel(Context, rootId);
 
 			root.AddChild("TEST CATEGORY");
 
 			root.Save();
-			var cat = root.Children.SingleOrDefault(category => category.Name == "TEST CATEGORY").ToModel(Client);
+			var cat = root.Children.SingleOrDefault(category => category.Name == "TEST CATEGORY").ToModel(Context);
 			cat.AddProduct(this.SimpleProductSku);
 
 
@@ -54,7 +54,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void AddChild_Nested()
 		{
-			var model = new CategoryModel(Client, rootId);
+			var model = new CategoryModel(Context, rootId);
 
 			model.AddChild("TEST CATEGORY");
 
@@ -67,12 +67,12 @@ namespace Magento.RestClient.Domain.Tests
 		[TearDown]
 		public void CategoryTeardown()
 		{
-			var model = new CategoryModel(Client, rootId);
+			var model = new CategoryModel(Context, rootId);
 
 
 			model.Children
 				.Single(category => category.Name == "TEST CATEGORY")
-				.ToModel(Client)
+				.ToModel(Context)
 				.Delete();
 		}
 	}

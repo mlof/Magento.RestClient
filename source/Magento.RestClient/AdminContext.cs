@@ -8,11 +8,11 @@ using RestSharp;
 
 namespace Magento.RestClient
 {
-	internal class AdminClient : IAdminClient
+	internal class AdminContext : IAdminContext
 	{
 		private readonly IRestClient _client;
 
-		public AdminClient(IRestClient client)
+		public AdminContext(IRestClient client)
 		{
 			_client = client;
 		}

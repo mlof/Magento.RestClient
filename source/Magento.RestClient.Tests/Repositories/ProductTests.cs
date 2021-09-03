@@ -25,21 +25,21 @@ namespace Magento.RestClient.Tests.Repositories
         [SetUp]
         public void SetupProducts()
         {
-            this.Client.Products.CreateProduct(_shouldExist);
+            this.Context.Products.CreateProduct(_shouldExist);
         }
 
         [TearDown]
         public void TeardownProducts()
         {
-            this.Client.Products.DeleteProduct("SKU-SHOULDEXIST");
-            this.Client.Products.DeleteProduct("SKU-SHOULDBEUPDATED");
-            this.Client.Products.DeleteProduct("SKU-SHOULDBECREATED");
+            this.Context.Products.DeleteProduct("SKU-SHOULDEXIST");
+            this.Context.Products.DeleteProduct("SKU-SHOULDBEUPDATED");
+            this.Context.Products.DeleteProduct("SKU-SHOULDBECREATED");
         }
 
         [Test]
         public void GetProductBySku_ProductExists()
         {
-            var p = Client.Products.GetProductBySku(_shouldExist.Sku);
+            var p = Context.Products.GetProductBySku(_shouldExist.Sku);
 
             p.Should().NotBeNull();
 
@@ -50,7 +50,7 @@ namespace Magento.RestClient.Tests.Repositories
         [Test]
         public void GetProduct_ProductDoesNotExist()
         {
-            var p = Client.Products.GetProductBySku(_shouldNotExist.Sku);
+            var p = Context.Products.GetProductBySku(_shouldNotExist.Sku);
 
             p.Should().BeNull();
         }
@@ -65,7 +65,7 @@ namespace Magento.RestClient.Tests.Repositories
                 Name = "Should Be Created",
                 Price = 30
             };
-            var p = Client.Products.CreateProduct(shouldBeCreated);
+            var p = Context.Products.CreateProduct(shouldBeCreated);
 
             
             p.Name.Should().BeEquivalentTo(shouldBeCreated.Name);
@@ -80,7 +80,7 @@ namespace Magento.RestClient.Tests.Repositories
             
             var updatedTitle = "Has Been Updated";
             _shouldExist.Name = updatedTitle;
-            var p = Client.Products.UpdateProduct(_shouldExist.Sku, _shouldExist);
+            var p = Context.Products.UpdateProduct(_shouldExist.Sku, _shouldExist);
 
 
             p.Name.Should().BeEquivalentTo(updatedTitle);

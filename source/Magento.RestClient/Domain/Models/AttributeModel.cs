@@ -9,14 +9,14 @@ namespace Magento.RestClient.Domain.Models
 {
 	public class AttributeModel : IDomainModel
 	{
-		private readonly IAdminClient _client;
+		private readonly IAdminContext _context;
 		private string _frontendInput;
 		private bool _frontendInputChanged;
 		private List<Option> _options;
 
-		public AttributeModel(IAdminClient client, string attributeCode)
+		public AttributeModel(IAdminContext context, string attributeCode)
 		{
-			_client = client;
+			_context = context;
 			this.AttributeCode = attributeCode;
 			Refresh();
 		}
@@ -38,7 +38,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public void Refresh()
 		{
-			var existing = _client.Attributes.GetByCode(this.AttributeCode);
+			var existing = _context.Attributes.GetByCode(this.AttributeCode);
 
 			if (existing == null)
 			{
@@ -51,39 +51,39 @@ namespace Magento.RestClient.Domain.Models
 
 				this.DefaultFrontendLabel = existing.DefaultFrontendLabel;
 				_frontendInput = existing.FrontendInput;
-				_options = _client.Attributes.GetProductAttributeOptions(this.AttributeCode);
+				_options = _context.Attributes.GetProductAttributeOptions(this.AttributeCode);
 			}
 		}
 
 		public void Save()
 		{
-			var existing = _client.Attributes.GetByCode(this.AttributeCode);
+			var existing = _context.Attributes.GetByCode(this.AttributeCode);
 			var attribute = new ProductAttribute(this.AttributeCode);
 
 			attribute.FrontendInput = this.FrontendInput;
 			if (existing != null && _frontendInputChanged)
 			{
-				_client.Attributes.DeleteProductAttribute(this.AttributeCode);
+				_context.Attributes.DeleteProductAttribute(this.AttributeCode);
 			}
 
 			attribute = existing != null
-				? _client.Attributes.Update(this.AttributeCode, attribute)
-				: _client.Attributes.Create(attribute);
+				? _context.Attributes.Update(this.AttributeCode, attribute)
+				: _context.Attributes.Create(attribute);
 
 			if (_options.Any())
 			{
-				var existingOptions = _client.Attributes.GetProductAttributeOptions(this.AttributeCode);
+				var existingOptions = _context.Attributes.GetProductAttributeOptions(this.AttributeCode);
 
 				foreach (var option in _options.Where(option =>
 					!existingOptions.Select(option1 => option1.Label).Contains(option.Label)))
 				{
-					_client.Attributes.CreateProductAttributeOption(this.AttributeCode, option);
+					_context.Attributes.CreateProductAttributeOption(this.AttributeCode, option);
 				}
 
 				foreach (var option in existingOptions.Where(option =>
 					!_options.Select(o => o.Label).Contains(option.Label) && !string.IsNullOrEmpty(option.Value)))
 				{
-					_client.Attributes.DeleteProductAttributeOption(this.AttributeCode, option.Value);
+					_context.Attributes.DeleteProductAttributeOption(this.AttributeCode, option.Value);
 				}
 			}
 

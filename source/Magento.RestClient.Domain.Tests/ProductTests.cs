@@ -25,7 +25,7 @@ namespace Magento.RestClient.Domain.Tests
 		public void CreateSimpleProduct()
 		{
 			var sku = "TEST-SIMPLEPRODUCT";
-			var product = new ProductModel(this.Client, sku);
+			var product = new ProductModel(this.Context, sku);
 
 			product.Name = "TestProduct";
 			product.AttributeSetId = 28;
@@ -43,7 +43,7 @@ namespace Magento.RestClient.Domain.Tests
 		public void CreateConfigurableProduct()
 		{
 			var sku = "TEST-CONFIGURABLEPRODUCT";
-			var product = new ProductModel(this.Client, sku);
+			var product = new ProductModel(this.Context, sku);
 			product.Name = "TestProduct";
 			product.AttributeSetId = 28;
 			product.Visibility = ProductVisibility.Both;
@@ -54,7 +54,7 @@ namespace Magento.RestClient.Domain.Tests
 
 			product.Save();
 
-			var persistedProduct= new ProductModel(this.Client, sku);
+			var persistedProduct= new ProductModel(this.Context, sku);
 
 			product.Name.Should().BeEquivalentTo("TestProduct");
 
@@ -63,7 +63,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void GetExistingProduct()
 		{
-			var product = Client.GetProductModel(SimpleProductSku);
+			var product = Context.GetProductModel(SimpleProductSku);
 
 			product.Name.Should().NotBeNullOrWhiteSpace();
 		}
@@ -71,7 +71,7 @@ namespace Magento.RestClient.Domain.Tests
 		[TearDown]
 		public void ProductTeardown()
 		{
-			Client.Products.DeleteProduct("TEST-SIMPLEPRODUCT");
+			Context.Products.DeleteProduct("TEST-SIMPLEPRODUCT");
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace Magento.RestClient.Domain.Models
 	{
 		private readonly CartAddressValidator _addressValidator;
 		private readonly CommitCartValidator _commitCartValidator;
-		private readonly IAdminClient client;
+		private readonly IAdminContext _context;
 		private Address _billingAddress;
 		private long _id;
 
@@ -27,18 +27,18 @@ namespace Magento.RestClient.Domain.Models
 		private string _paymentMethod;
 		private Address _shippingAddress;
 
-		public CartModel(IAdminClient client)
+		public CartModel(IAdminContext context)
 		{
-			this.client = client;
+			this._context = context;
 			_addressValidator = new CartAddressValidator();
 			_commitCartValidator = new CommitCartValidator();
-			this.Id = client.Carts.GetNewCartId();
+			this.Id = context.Carts.GetNewCartId();
 		}
 
 
-		public CartModel(IAdminClient client, long id)
+		public CartModel(IAdminContext context, long id)
 		{
-			this.client = client;
+			this._context = context;
 
 			_addressValidator = new CartAddressValidator();
 			_commitCartValidator = new CommitCartValidator();
@@ -86,7 +86,7 @@ namespace Magento.RestClient.Domain.Models
 
 		private CartModel UpdateMagentoValues()
 		{
-			_model = client.Carts.GetExistingCart(_id);
+			_model = _context.Carts.GetExistingCart(_id);
 
 			return this;
 		}
@@ -103,10 +103,10 @@ namespace Magento.RestClient.Domain.Models
 		{
 			if (this.ShippingAddress != null)
 			{
-				if (client.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress).Any(shippingMethod =>
+				if (_context.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress).Any(shippingMethod =>
 					shippingMethod.MethodCode == method && shippingMethod.CarrierCode == carrier))
 				{
-					client.Carts.SetShippingInformation(this.Id, _shippingAddress, this.BillingAddress, carrier,
+					_context.Carts.SetShippingInformation(this.Id, _shippingAddress, this.BillingAddress, carrier,
 						method);
 					this.ShippingInformationSet = true;
 				}
@@ -133,7 +133,7 @@ namespace Magento.RestClient.Domain.Models
 		/// <exception cref="InvalidOperationException"></exception>
 		public CartModel SetPaymentMethod(string paymentMethod)
 		{
-			var paymentMethods = client.Carts.GetPaymentMethodsForCart(this.Id);
+			var paymentMethods = _context.Carts.GetPaymentMethodsForCart(this.Id);
 			if (paymentMethods.Any(method => method.Code == paymentMethod))
 			{
 				_paymentMethod = paymentMethod;
@@ -149,7 +149,7 @@ namespace Magento.RestClient.Domain.Models
 			//todo: Add configurable product functionality
 			if (quantity > 0)
 			{
-				client.Carts.AddItemToCart(this.Id, new CartItem {Sku = sku, Qty = quantity, QuoteId = this.Id});
+				_context.Carts.AddItemToCart(this.Id, new CartItem {Sku = sku, Qty = quantity, QuoteId = this.Id});
 				return UpdateMagentoValues();
 			}
 
@@ -168,13 +168,13 @@ namespace Magento.RestClient.Domain.Models
 				throw new ArgumentNullException("Can not estimate shipping methods without items.");
 			}
 
-			return client.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress);
+			return _context.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress);
 		}
 
 
 		public List<PaymentMethod> GetPaymentMethods()
 		{
-			return client.Carts.GetPaymentMethodsForCart(this.Id);
+			return _context.Carts.GetPaymentMethodsForCart(this.Id);
 		}
 
 		/// <summary>
@@ -194,7 +194,7 @@ namespace Magento.RestClient.Domain.Models
 					throw new InvalidOperationException("Set shipping information first.");
 				}
 
-				this.OrderId = client.Carts.PlaceOrder(this.Id, _paymentMethod, this.BillingAddress);
+				this.OrderId = _context.Carts.PlaceOrder(this.Id, _paymentMethod, this.BillingAddress);
 				return this.OrderId.Value;
 			}
 
@@ -204,15 +204,15 @@ namespace Magento.RestClient.Domain.Models
 
 		public CartModel AssignCustomer(int customerId)
 		{
-			client.Carts.AssignCustomer(this.Id, _model.StoreId, customerId);
+			_context.Carts.AssignCustomer(this.Id, _model.StoreId, customerId);
 
 			return UpdateMagentoValues();
 		}
 
 		public void AddConfigurableProduct(string parentSku, string childSku, int quantity = 1)
 		{
-			var options = client.ConfigurableProducts.GetOptions(parentSku);
-			var children = client.ConfigurableProducts.GetConfigurableChildren(parentSku);
+			var options = _context.ConfigurableProducts.GetOptions(parentSku);
+			var children = _context.ConfigurableProducts.GetConfigurableChildren(parentSku);
 			var child = children.SingleOrDefault(product => product.Sku == childSku);
 
 			var cartItem = new ConfigurableCartItem();
@@ -229,7 +229,7 @@ namespace Magento.RestClient.Domain.Models
 				});
 			}
 
-			client.Carts.AddItemToCart(this.Id, cartItem);
+			_context.Carts.AddItemToCart(this.Id, cartItem);
 		}
 	}
 }

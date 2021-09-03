@@ -30,7 +30,7 @@ namespace Magento.RestClient.Domain.Tests
 		[SetUp]
 		public void SetupCart()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 			this.existingCartId = cart.Id;
 		}
 
@@ -42,14 +42,14 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void CreateCart()
 		{
-			var cart = Client.CreateNewCartModel();
+			var cart = Context.CreateNewCartModel();
 			cart.Id.Should().NotBe(0);
 		}
 
 		[Test]
 		public void GetExistingCart()
 		{
-			var cart = Client.GetExistingCartModel(existingCartId);
+			var cart = Context.GetExistingCartModel(existingCartId);
 
 			cart.Id.Should().NotBe(0);
 		}
@@ -57,7 +57,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void Cart_AssignCustomer_ValidCustomer()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 
 			cart.AssignCustomer(1);
 
@@ -70,7 +70,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void Cart_AssignCustomer_InvalidCustomer()
 		{
-			var cart = Client.CreateNewCartModel();
+			var cart = Context.CreateNewCartModel();
 
 
 			Assert.Throws<EntityNotFoundException>(
@@ -86,7 +86,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void Cart_AddSimpleProduct_ValidItem()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 			cart.AddSimpleProduct(SimpleProductSku, 3);
 
 			cart.Items.Any(item => item.Sku == SimpleProductSku && item.Qty == 3).Should().BeTrue();
@@ -95,7 +95,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void Cart_AddSimpleProduct_InvalidItem()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 
 			Assert.Throws<MagentoException>(() => {
 				cart.AddSimpleProduct("DOESNOTEXIST", 3);
@@ -105,7 +105,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void Cart_AddConfigurableProduct()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 			cart.AddConfigurableProduct("TESTSKU-CONF", "TESTSKU-CONF-option 1-option 2", 3);
 		}
 
@@ -113,7 +113,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void ShippingMethods_GetMethods_ShippingAddressSet()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 			cart.AddSimpleProduct(SimpleProductSku, 3);
 
 			cart.BillingAddress = ScunthorpePostOffice;
@@ -126,7 +126,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void ShippingMethods_GetMethods_ShippingAddressSet_ItemsEmpty()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 			cart.BillingAddress = ScunthorpePostOffice;
 			cart.ShippingAddress = ScunthorpePostOffice;
 
@@ -138,7 +138,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void ShippingMethods_GetMethods_ShippingAddressNotSet()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 
 			cart.AddSimpleProduct(SimpleProductSku, 3);
 
@@ -149,7 +149,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void ShippingMethods_SetShippingMethod_Cheapest()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 
 			cart.AddSimpleProduct(SimpleProductSku, 3);
 
@@ -169,7 +169,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void ShippingMethods_SetShippingMethod_InvalidShippingMethod()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 
 			cart.AddSimpleProduct(SimpleProductSku, 3);
 
@@ -184,7 +184,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void PaymentMethods_GetMethods()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 
 			var methods = cart.GetPaymentMethods();
 			methods.Should().NotBeNullOrEmpty();
@@ -197,7 +197,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void PaymentMethods_SetPaymentMethods_InvalidPaymentMethod()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 
 
 			Assert.Throws<InvalidOperationException>(() => {
@@ -208,7 +208,7 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void PaymentMethods_SetPaymentMethods_ValidPaymentMethod()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 
 			var paymentMethod = cart.GetPaymentMethods()
 				.First();
@@ -221,7 +221,7 @@ namespace Magento.RestClient.Domain.Tests
 		/// <exception cref="InvalidOperationException">Ignore.</exception>
 		public void CommitOrder_ValidOrder()
 		{
-			var cart = new CartModel(Client);
+			var cart = new CartModel(Context);
 
 			cart.ShippingAddress = ScunthorpePostOffice;
 			cart.BillingAddress = ScunthorpePostOffice;

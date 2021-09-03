@@ -16,7 +16,7 @@ namespace Magento.RestClient.Domain.Tests
 		[SetUp]
 		public void SetupAttributeSets()
 		{
-			var attributeSet = Client.GetAttributeSetModel(this.ExistingAttributeSet);
+			var attributeSet = Context.GetAttributeSetModel(this.ExistingAttributeSet);
 			attributeSet.Save();
 		}
 
@@ -26,14 +26,14 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		public void GetAttributeSetModel_Existing()
 		{
-			var attributeSet =  Client.GetAttributeSetModel(this.ExistingAttributeSet);
+			var attributeSet =  Context.GetAttributeSetModel(this.ExistingAttributeSet);
 
 			attributeSet.IsPersisted.Should().BeTrue();
 		}
 		[Test]
 		public void GetAttributeSetModel_DoesNotExist()
 		{
-			var attributeSet = Client.GetAttributeSetModel("DOESNOTEXIST");
+			var attributeSet = Context.GetAttributeSetModel("DOESNOTEXIST");
 
 			
 			attributeSet.IsPersisted.Should().BeFalse();
@@ -43,7 +43,7 @@ namespace Magento.RestClient.Domain.Tests
 		public void Add()
 		{
 
-			var attributeSet =  Client.GetAttributeSetModel("Test Attribute Set");
+			var attributeSet =  Context.GetAttributeSetModel("Test Attribute Set");
 
 			attributeSet.AddGroup("Test Group");
 
@@ -63,11 +63,11 @@ namespace Magento.RestClient.Domain.Tests
 
 			foreach (var name in testNames)
 			{
-				var attributeSet = Client.Search.AttributeSets(builder =>
+				var attributeSet = Context.Search.AttributeSets(builder =>
 					builder.WhereEquals(set => set.AttributeSetName, name))
 					.Items.SingleOrDefault();
 
-				Client.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
+				Context.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
 			}
 
 

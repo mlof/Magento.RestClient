@@ -11,14 +11,14 @@ namespace Magento.RestClient.Domain.Models
 {
 	public class OrderModel : IOrderModel
 	{
-		private readonly IAdminClient _client;
+		private readonly IAdminContext _context;
 		private List<Invoice> _invoices;
 		private Order _model;
 		private List<Shipment> _shipments;
 
-		private OrderModel(IAdminClient client, long orderId)
+		private OrderModel(IAdminContext context, long orderId)
 		{
-			_client = client;
+			_context = context;
 			this.OrderId = orderId;
 			Refresh();
 		}
@@ -31,9 +31,9 @@ namespace Magento.RestClient.Domain.Models
 
 		public void Refresh()
 		{
-			_model = _client.Orders.GetByOrderId(this.OrderId);
-			_invoices = _client.Invoices.GetByOrderId(this.OrderId);
-			_shipments = _client.Shipments.GetByOrderId(this.OrderId);
+			_model = _context.Orders.GetByOrderId(this.OrderId);
+			_invoices = _context.Invoices.GetByOrderId(this.OrderId);
+			_shipments = _context.Shipments.GetByOrderId(this.OrderId);
 		}
 
 		public void Save()
@@ -45,20 +45,20 @@ namespace Magento.RestClient.Domain.Models
 		{
 			if (!this.IsInvoiced)
 			{
-				_client.Orders.CreateInvoice(this.OrderId);
+				_context.Orders.CreateInvoice(this.OrderId);
 			}
 
 			return this;
 		}
 
-		public static OrderModel GetExisting(IAdminClient client, long orderId)
+		public static OrderModel GetExisting(IAdminContext context, long orderId)
 		{
-			return new(client, orderId);
+			return new(context, orderId);
 		}
 
 		public OrderModel CreateShipment()
 		{
-			_client.Shipments.CreateShipment(this.OrderId);
+			_context.Shipments.CreateShipment(this.OrderId);
 			Refresh();
 			return this;
 		}

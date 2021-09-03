@@ -6,11 +6,11 @@ namespace Magento.RestClient.Domain.Models
 {
 	public class CustomerModel : IDomainModel
 	{
-		private readonly IAdminClient _client;
+		private readonly IAdminContext _context;
 
-		public CustomerModel(IAdminClient client, string emailAddress)
+		public CustomerModel(IAdminContext context, string emailAddress)
 		{
-			_client = client;
+			_context = context;
 			this.EmailAddress = emailAddress;
 		}
 
@@ -24,7 +24,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public void Refresh()
 		{
-			var existing = _client.Customers.GetByEmailAddress(this.EmailAddress);
+			var existing = _context.Customers.GetByEmailAddress(this.EmailAddress);
 			if (existing != null)
 			{
 				this.IsPersisted = true;
@@ -46,11 +46,11 @@ namespace Magento.RestClient.Domain.Models
 			};
 			if (this.IsPersisted)
 			{
-				_client.Customers.Update(this.Id, customer);
+				_context.Customers.Update(this.Id, customer);
 			}
 			else
 			{
-				_client.Customers.Create(customer);
+				_context.Customers.Create(customer);
 			}
 
 			Refresh();

@@ -8,7 +8,7 @@ namespace Magento.RestClient.Domain.Tests.Abstractions
 {
 	public abstract class AbstractDomainObjectTest
 	{
-		protected IAdminClient Client;
+		protected IAdminContext Context;
 		protected string SimpleProductSku = "TESTSKU";
 		protected string VirtualProductSku = "TESTSKU_VIRTUAL";
 
@@ -16,7 +16,7 @@ namespace Magento.RestClient.Domain.Tests.Abstractions
 		public void Setup()
 		{
 			Log.Logger = new LoggerConfiguration().WriteTo.Debug().CreateLogger();
-			this.Client = new MagentoClient("http://localhost/").AuthenticateAsIntegration(
+			this.Context = new MagentoClient("http://localhost/").AuthenticateAsIntegration(
 				IntegrationCredentials.ConsumerKey, IntegrationCredentials.ConsumerSecret,
 				IntegrationCredentials.AccessToken, IntegrationCredentials.AccessTokenSecret);
 
@@ -30,16 +30,16 @@ namespace Magento.RestClient.Domain.Tests.Abstractions
 			};
 
 
-			this.Client.Products.CreateProduct(simpleProduct);
+			this.Context.Products.CreateProduct(simpleProduct);
 
-			this.Client.Products.CreateProduct(virtualProduct);
+			this.Context.Products.CreateProduct(virtualProduct);
 		}
 
 		[TearDown]
 		public void Teardown()
 		{
-			this.Client.Products.DeleteProduct(SimpleProductSku);
-			this.Client.Products.DeleteProduct(VirtualProductSku);
+			this.Context.Products.DeleteProduct(SimpleProductSku);
+			this.Context.Products.DeleteProduct(VirtualProductSku);
 		}
 	}
 }

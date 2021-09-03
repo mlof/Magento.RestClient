@@ -15,13 +15,13 @@ namespace Magento.RestClient.Tests.Repositories
 		{
 
 			
-			Client.Products.CreateProduct(new Product() {
+			Context.Products.CreateProduct(new Product() {
 				Sku = ParentSku, Price = 0, Name = "Configurable Parent", TypeId = ProductType.Configurable
 			});
-			Client.Products.CreateProduct(new Product() {
+			Context.Products.CreateProduct(new Product() {
 				Sku = FirstChildSku, Name = "Configurable Child 1", Price = 30, TypeId = ProductType.Simple
 			});
-			Client.Products.CreateProduct(new Product() {
+			Context.Products.CreateProduct(new Product() {
 				Sku = SecondChildSku, Name = "Configurable Child 2", Price = 30, TypeId = ProductType.Simple
 			});
 		}
@@ -29,24 +29,24 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void CreateOptions()
 		{
-			Client.Search.AttributeSets();
+			Context.Search.AttributeSets();
 
-			//Client.ConfigurableProducts.CreateOptions();
+			//Context.ConfigurableProducts.CreateOptions();
 		}
 
 		[Test]
 		public void CreateChild()
 		{
-			Client.ConfigurableProducts.CreateChild(ParentSku, FirstChildSku);
+			Context.ConfigurableProducts.CreateChild(ParentSku, FirstChildSku);
 		}
 
 
 		[TearDown]
 		public void TeardownConfigurableProducts()
 		{
-			Client.Products.DeleteProduct(ParentSku);
-			Client.Products.DeleteProduct(FirstChildSku);
-			Client.Products.DeleteProduct(SecondChildSku);
+			Context.Products.DeleteProduct(ParentSku);
+			Context.Products.DeleteProduct(FirstChildSku);
+			Context.Products.DeleteProduct(SecondChildSku);
 		}
 	}
 }

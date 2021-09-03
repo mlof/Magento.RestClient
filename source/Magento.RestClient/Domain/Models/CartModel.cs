@@ -17,6 +17,7 @@ namespace Magento.RestClient.Domain.Models
 	{
 		private readonly CartAddressValidator _addressValidator;
 		private readonly CommitCartValidator _commitCartValidator;
+		private readonly IAdminClient client;
 		private Address _billingAddress;
 		private long _id;
 
@@ -25,7 +26,6 @@ namespace Magento.RestClient.Domain.Models
 
 		private string _paymentMethod;
 		private Address _shippingAddress;
-		private readonly IAdminClient client;
 
 		public CartModel(IAdminClient client)
 		{
@@ -144,12 +144,12 @@ namespace Magento.RestClient.Domain.Models
 		}
 
 
-		public CartModel AddSimpleProduct(string sku, int quantity)
+		public CartModel AddSimpleProduct(string sku, int quantity = 1)
 		{
 			//todo: Add configurable product functionality
 			if (quantity > 0)
 			{
-				client.Carts.AddItemToCart(this.Id, new CartItem() {Sku = sku, Qty = quantity, QuoteId = this.Id});
+				client.Carts.AddItemToCart(this.Id, new CartItem {Sku = sku, Qty = quantity, QuoteId = this.Id});
 				return UpdateMagentoValues();
 			}
 
@@ -201,16 +201,6 @@ namespace Magento.RestClient.Domain.Models
 			throw new CartAlreadyCommittedException(this.Id);
 		}
 
-		/// <summary>
-		///     Sets the shipping method for this cart.
-		/// </summary>
-		/// <param name="shippingMethod"></param>
-		/// <returns></returns>
-		/// <exception cref="InvalidOperationException"></exception>
-		public CartModel SetShippingMethod(ShippingMethod shippingMethod)
-		{
-			return SetShippingMethod(shippingMethod.CarrierCode, shippingMethod.MethodCode);
-		}
 
 		public CartModel AssignCustomer(int customerId)
 		{
@@ -228,20 +218,18 @@ namespace Magento.RestClient.Domain.Models
 			var cartItem = new ConfigurableCartItem();
 			cartItem.Sku = parentSku;
 			cartItem.Qty = quantity;
-			cartItem.QuoteId = Id;
+			cartItem.QuoteId = this.Id;
 
 
 			foreach (var option in options)
 			{
-
 				var s = child.CustomAttributes.SingleOrDefault(attribute => attribute.AttributeCode == option.Label);
-				cartItem.ConfigurableItemOptions.Add(new ConfigurableItemOption() {
-					OptionId = option.AttributeId.ToString(),
-					OptionValue = Convert.ToInt64(s.Value)
+				cartItem.ConfigurableItemOptions.Add(new ConfigurableItemOption {
+					OptionId = option.AttributeId.ToString(), OptionValue = Convert.ToInt64(s.Value)
 				});
 			}
 
-			client.Carts.AddItemToCart(Id, cartItem);
+			client.Carts.AddItemToCart(this.Id, cartItem);
 		}
 	}
 }

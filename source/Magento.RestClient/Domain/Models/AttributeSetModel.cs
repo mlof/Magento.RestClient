@@ -139,6 +139,10 @@ namespace Magento.RestClient.Domain.Models
 			{
 				_attributeGroups.Add(new AttributeGroup {AttributeGroupName = groupName});
 			}
+			else
+			{
+				throw new InvalidOperationException("Attribute Set already contains group by this name.");
+			}
 		}
 
 		public void AssignAttribute(string attributeGroup, string attributeCode)

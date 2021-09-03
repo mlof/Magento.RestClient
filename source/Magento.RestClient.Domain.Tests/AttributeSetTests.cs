@@ -35,7 +35,24 @@ namespace Magento.RestClient.Domain.Tests
 		{
 			var attributeSet = Client.GetAttributeSetModel("DOESNOTEXIST");
 
+			
 			attributeSet.IsPersisted.Should().BeFalse();
+		}
+
+		[Test]
+		public void Add()
+		{
+
+			var attributeSet =  Client.GetAttributeSetModel("Test Attribute Set");
+
+			attributeSet.AddGroup("Test Group");
+
+
+
+
+
+			attributeSet.Save();
+			
 		}
 
 

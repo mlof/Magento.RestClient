@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Domain.Tests.Abstractions;
 using Magento.RestClient.Models.Products;
@@ -12,7 +14,6 @@ namespace Magento.RestClient.Domain.Tests
 {
 	class ProductTests : AbstractDomainObjectTest
 	{
-		public string Sku = "NEWSKU";
 
 		[SetUp]
 		public void ProductSetup()
@@ -21,9 +22,10 @@ namespace Magento.RestClient.Domain.Tests
 
 
 		[Test]
-		public void CreateProduct()
+		public void CreateSimpleProduct()
 		{
-			var product = new ProductModel(this.Client, Sku);
+			var sku = "TEST-SIMPLEPRODUCT";
+			var product = new ProductModel(this.Client, sku);
 
 			product.Name = "TestProduct";
 			product.AttributeSetId = 28;
@@ -37,11 +39,39 @@ namespace Magento.RestClient.Domain.Tests
 			product.Save();
 		}
 
+		[Test]
+		public void CreateConfigurableProduct()
+		{
+			var sku = "TEST-CONFIGURABLEPRODUCT";
+			var product = new ProductModel(this.Client, sku);
+			product.Name = "TestProduct";
+			product.AttributeSetId = 28;
+			product.Visibility = ProductVisibility.Both;
+			product.Price = 50;
+			product.SetAttribute("test_attr", "Xyz");
+
+			
+
+			product.Save();
+
+			var persistedProduct= new ProductModel(this.Client, sku);
+
+			product.Name.Should().BeEquivalentTo("TestProduct");
+
+		}
+
+		[Test]
+		public void GetExistingProduct()
+		{
+			var product = Client.GetProductModel(SimpleProductSku);
+
+			product.Name.Should().NotBeNullOrWhiteSpace();
+		}
 
 		[TearDown]
 		public void ProductTeardown()
 		{
-			Client.Products.DeleteProduct(Sku);
+			Client.Products.DeleteProduct("TEST-SIMPLEPRODUCT");
 		}
 	}
 }

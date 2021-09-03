@@ -52,6 +52,8 @@ namespace Magento.RestClient.Domain.Models
 			var existingProduct = _client.Products.GetProductBySku(this.Sku, this.Scope);
 			if (existingProduct == null)
 			{
+				this.AttributeSetId = _client.Search.GetDefaultAttributeSet(EntityType.CatalogProduct).AttributeSetId
+					.GetValueOrDefault();
 			}
 			else
 			{
@@ -61,15 +63,30 @@ namespace Magento.RestClient.Domain.Models
 				this.Visibility = Enum.Parse<ProductVisibility>(existingProduct.Visibility.ToString());
 				this.CustomAttributes = existingProduct.CustomAttributes;
 				this.IsPersisted = true;
+				this.Type = existingProduct.TypeId;
+
+				if (this.Type == ProductType.Configurable)
+				{
+					this.Children = this._client.ConfigurableProducts.GetConfigurableChildren(Sku);
+				}
 			}
 		}
+
+		public List<Product> Children { get; set; }
+
+		public ProductType Type { get; set; }
 
 		public void Save()
 		{
 			var existingProduct = _client.Products.GetProductBySku(this.Sku);
 
 			var product = new Product {
-				Sku = this.Sku, Name = this.Name, Price = this.Price, Visibility = (long) this.Visibility
+				Sku = this.Sku,
+				Name = this.Name,
+				Price = this.Price,
+				AttributeSetId = this.AttributeSetId,
+				Visibility = (long) this.Visibility,
+				TypeId = Type
 			};
 			if (this.StockItem != null)
 			{

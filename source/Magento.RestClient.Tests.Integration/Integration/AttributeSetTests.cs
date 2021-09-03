@@ -21,8 +21,8 @@ namespace Magento.RestClient.Tests.Integration.Integration
 		[SetUp]
 		public void AttributeSetSetup()
 		{
-			var attributes = File.ReadAllText(Path.Join("Fixtures", "complex", "attributes.json"));
-			var attributeSets = File.ReadAllText(Path.Join("Fixtures","complex", "attribute-sets.json"));
+			var attributes = File.ReadAllText(Path.Join("Fixtures", "luma", "attributes.json"));
+			var attributeSets = File.ReadAllText(Path.Join("Fixtures","luma", "attribute-sets.json"));
 			this.attributeSetFixtures = JsonConvert.DeserializeObject<List<AttributeSetFixture>>(attributeSets);
 			this.attributeFixtures = JsonConvert.DeserializeObject<List<AttributeFixture>>(attributes);
 		}
@@ -60,6 +60,7 @@ namespace Magento.RestClient.Tests.Integration.Integration
 			}*/
 
 
+			/*
 			foreach (var fixture in attributeSetFixtures)
 			{
 				var attributeSet = Client.GetAttributeSetModel(fixture.AttributeSetName);
@@ -88,13 +89,13 @@ namespace Magento.RestClient.Tests.Integration.Integration
 				}
 
 				attributeSet.Save();
-			}
+			}*/
 		}
 
 		[TearDown]
 		public void TeardownAttributeSets()
 		{
-			foreach (var attributeSet in attributeSetFixtures)
+			/*foreach (var attributeSet in attributeSetFixtures)
 			{
 				try
 				{
@@ -121,7 +122,7 @@ namespace Magento.RestClient.Tests.Integration.Integration
 			foreach (var fixture in attributeFixtures)
 			{
 				Client.Attributes.DeleteProductAttribute(fixture.AttributeCode);
-			}
+			}*/
 		}
 	}
 }

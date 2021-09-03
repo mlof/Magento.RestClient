@@ -86,6 +86,8 @@ Alright, this one's a doozy. There's no real way to get an option ID for an attr
 
 ### Creating a attribute set
 
+
+
 ### Creating a category
 
 ### Creating a simple product
@@ -94,14 +96,9 @@ Alright, this one's a doozy. There's no real way to get an option ID for an attr
 
 ### Creating an order
 
-
-
-
-When creating an order directly in Magento, it won't calculate things like order line prices, shipping costs, etc. Probably useful, if you need to create a backlog of orders in bulk, but not so much if you actually want these things done for you. For this, you'll have to create a cart and jump through hoops. To make this process a bit less painful, I've added the Cart class.
+When creating an order directly in Magento, it won't calculate things like order line prices, shipping costs, etc. Probably useful, if you need to create a backlog of orders in bulk, but not so much if you actually want these things done for you. For this, you'll have to create a cart and jump through hoops. To make this process a bit less painful, I've added the CartModel class.
 
 ```csharp
-var cart = Cart.CreateNew(Client.Carts); // Creates a new cart.
-
 var address = new Address(){
 	Firstname = "Scunthorpe",
     Lastname = "Post Office",
@@ -112,29 +109,48 @@ var address = new Address(){
     Postcode = "DN15 6EN",
     CountryId = "GB"
 };
+
+var cart = new CartModel(Client); // Creates a new cart.
+
 // setting the addresses. This step is validated client side for your convenience. 
 cart.ShippingAddress = address;
 cart.BillingAddress = address;
 
 
-//Adding an item, with quantity.
-cart.AddItem("Your product SKU", 3);
 
-// Gotcha here. The results in this step are based on your address and
+//Adding a simple or virtual product, with quantity.
+cart.AddSimpleProduct("Your product SKU", 3);
+
+// Adding a simple or virtual product, without quantity.
+// Defaults to a quantity of 1
+cart.AddSimpleProduct("Your product SKU");
+
+// Adding a configurable product, with quantity.
+cart.AddConfigurableProduct("Parent SKU", "Child SKU");
+
+// Adding a configurable product, without quantity.
+// Defaults to a quantity of 1
+cart.AddConfigurableProduct("Parent SKU", "Child SKU");
+
+
+// Gotcha here. Available shipping methods
+// in this step are based on your address and
 // cart items. So the order of what you're doing matters.
 var shippingMethods = cart.EstimateShippingMethods();
+cart.SetShippingMethod(shippingMethods.First());
 
-var paymentMethods = cart.GetPaymentMethods();
-var paymentMethod = paymentMethods.First();
 
-    
-cart.SetPaymentMethod(paymentMethod.Code);
-var shippingMethod = shippingMethods.First();
-cart.SetShippingMethod(shippingMethod.CarrierCode, shippingMethod.MethodCode);
+var paymentMethods = cart.GetPaymentMethods();   
+cart.SetPaymentMethod(paymentMethods.First(););
 
+// Commit the cart
+// This turns it into a proper sales order.
 var orderId = cart.Commit();
 
-// You now have committed the cart. You can proceed by adding an invoice to the order. 
+// Congratulations.
+// You now have committed the cart. 
+// You can proceed by adding an invoice to the order. 
+// This marks the order as fully paid.
 Client.Orders.CreateInvoice(orderId);
 
 

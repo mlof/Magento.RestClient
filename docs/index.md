@@ -55,7 +55,7 @@ var accessToken = "";
 var accessTokenSecret = "";
 
 var client = new MagentoClient("http://localhost/rest/V1/");
-this.IntegrationClient = client.AuthenticateAsIntegration(consumerKey, consumerSecret, accessToken, accessTokenSecret);
+this.IntegrationContext = client.AuthenticateAsIntegration(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 ```
 
 ## Search
@@ -110,7 +110,7 @@ var address = new Address(){
     CountryId = "GB"
 };
 
-var cart = new CartModel(Client); // Creates a new cart.
+var cart = new CartModel(Context); // Creates a new cart.
 
 // setting the addresses. This step is validated client side for your convenience. 
 cart.ShippingAddress = address;
@@ -151,7 +151,7 @@ var orderId = cart.Commit();
 // You now have committed the cart. 
 // You can proceed by adding an invoice to the order. 
 // This marks the order as fully paid.
-Client.Orders.CreateInvoice(orderId);
+Context.Orders.CreateInvoice(orderId);
 
 
 ```

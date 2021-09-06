@@ -99,7 +99,8 @@ namespace Magento.RestClient.Domain.Models
 			if (this.Id == 0)
 			{
 				Debug.Assert(_skeletonId != null, nameof(_skeletonId) + " != null");
-				_context.AttributeSets.Create(this.EntityType, _skeletonId.Value, attributeSet);
+				var set = _context.AttributeSets.Create(this.EntityType, _skeletonId.Value, attributeSet);
+				this.Id = set.AttributeSetId.Value;
 			}
 
 			var currentAttributeGroups = _context.Search.ProductAttributeGroups(builder =>
@@ -162,6 +163,11 @@ namespace Magento.RestClient.Domain.Models
 			_attributeAssignments.Add(new AttributeAssignment {
 				AttributeCode = attributeCode, GroupName = attributeGroup
 			});
+		}
+
+		public void Delete()
+		{
+			_context.AttributeSets.Delete(Id);
 		}
 	}
 }

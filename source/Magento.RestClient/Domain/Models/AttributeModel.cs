@@ -59,7 +59,7 @@ namespace Magento.RestClient.Domain.Models
 		{
 			var existing = _context.Attributes.GetByCode(this.AttributeCode);
 			var attribute = new ProductAttribute(this.AttributeCode);
-
+			attribute.DefaultFrontendLabel = DefaultFrontendLabel;
 			attribute.FrontendInput = this.FrontendInput;
 			if (existing != null && _frontendInputChanged)
 			{
@@ -88,6 +88,11 @@ namespace Magento.RestClient.Domain.Models
 			}
 
 			Refresh();
+		}
+
+		public void Delete()
+		{
+			_context.Attributes.DeleteProductAttribute(AttributeCode);
 		}
 
 

@@ -11,7 +11,7 @@ using Magento.RestClient.Extensions;
 
 namespace Magento.RestClient.Domain.Models
 {
-	public class ProductModel : IDomainModel
+	public class ProductModel : IProductModel, IDomainModel
 	{
 		private readonly IAdminContext _context;
 		private readonly ProductValidator _productValidator;
@@ -54,6 +54,9 @@ namespace Magento.RestClient.Domain.Models
 			{
 				this.AttributeSetId = _context.Search.GetDefaultAttributeSet(EntityType.CatalogProduct).AttributeSetId
 					.GetValueOrDefault();
+				this.Name = Sku;
+				this.CustomAttributes = new List<CustomAttribute>();
+				
 			}
 			else
 			{
@@ -86,6 +89,7 @@ namespace Magento.RestClient.Domain.Models
 				Price = this.Price,
 				AttributeSetId = this.AttributeSetId,
 				Visibility = (long) this.Visibility,
+				CustomAttributes = this.CustomAttributes,
 				TypeId = Type
 			};
 			if (this.StockItem != null)
@@ -114,8 +118,50 @@ namespace Magento.RestClient.Domain.Models
 		}
 
 
-		public ProductModel SetAttribute(string attributeCode, string value)
+		public void SetStock(long quantity)
 		{
+			this.StockItem = new StockItem {IsInStock = quantity > 0, Qty = quantity};
+		}
+
+		public ConfigurableProductModel GetConfigurableProductModel()
+		{
+			return new ConfigurableProductModel(_context, this.Sku);
+		}
+
+		public ProductGalleryModel GetGalleryModel()
+		{
+			return new ProductGalleryModel(_context, this.Sku);
+		}
+
+
+		public dynamic this[string attributeCode] {
+			get => GetAttribute(attributeCode);
+			set => SetAttribute(attributeCode, value);
+		}
+
+		private dynamic GetAttribute(string attributeCode)
+		{
+			return this.CustomAttributes.SingleOrDefault(attribute => attribute.AttributeCode == attributeCode)?.Value;
+		}
+
+		private ProductModel SetAttribute(string attributeCode, dynamic inputValue)
+		{
+			// validateValue 
+			var attribute = _context.Attributes.GetByCode(attributeCode);
+
+			dynamic value;
+			if (attribute.Options.Any() && !string.IsNullOrWhiteSpace(inputValue as string))
+			{
+				var option = attribute.Options.SingleOrDefault(option => option.Label.Equals(inputValue as string));
+
+				value = option != null ? option.Value : inputValue;
+			}
+			else
+			{
+				value = inputValue;
+			}
+
+
 			if (this.CustomAttributes.Any(attribute => attribute.AttributeCode == attributeCode))
 			{
 				this.CustomAttributes.Single(attribute => attribute.AttributeCode == attributeCode).Value =
@@ -127,11 +173,6 @@ namespace Magento.RestClient.Domain.Models
 			}
 
 			return this;
-		}
-
-		public void SetStock(long quantity)
-		{
-			this.StockItem = new StockItem {IsInStock = quantity > 0, Qty = quantity};
 		}
 	}
 }

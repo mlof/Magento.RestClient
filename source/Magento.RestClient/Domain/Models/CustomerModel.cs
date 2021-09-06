@@ -55,5 +55,10 @@ namespace Magento.RestClient.Domain.Models
 
 			Refresh();
 		}
+
+		public void Delete()
+		{
+			_context.Customers.DeleteById(Id);
+		}
 	}
 }

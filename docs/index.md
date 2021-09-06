@@ -94,6 +94,60 @@ Alright, this one's a doozy. There's no real way to get an option ID for an attr
 
 ### Creating a configurable product
 
+```csharp
+var sizeAttribute = Context.GetAttributeModel("monitor_sizes");
+sizeAttribute.DefaultFrontendLabel = "Monitor Size";
+sizeAttribute.FrontendInput = "select";
+sizeAttribute.AddOption("13 inch");
+sizeAttribute.AddOption("14 inch");
+sizeAttribute.AddOption("15 inch");
+sizeAttribute.AddOption("17 inch");
+
+sizeAttribute.Save();
+    
+var attributeSet = Context.GetAttributeSetModel("Laptops");
+attributeSet.AddGroup("Monitor");
+attributeSet.AssignAttribute("Monitor", "monitor_sizes");
+attributeSet.Save();
+
+var product = new ProductModel(this.Context, "HP-ZBOOK-FURY") {
+	Name = "HP ZBook Fury",
+	AttributeSetId = LaptopAttributeSet,
+	Visibility = ProductVisibility.Both,
+	Price = 50,
+	Type = ProductType.Configurable
+};
+product.Save();
+
+var smallProduct = new ProductModel(this.Context, "HP-ZBOOK-FURY-13") {
+	Price = 2339,
+	AttributeSetId = attributeSet.Id,
+	Visibility = ProductVisibility.NotVisibleIndividually,
+	Type = ProductType.Simple,
+	["monitor_sizes"] = "13 inch"
+};
+smallProduct.Save();
+
+var largeProduct = new ProductModel(this.Context, "HP-ZBOOK-FURY-17") {
+	Price = 2279,
+	AttributeSetId = attributeSet.Id,
+	Visibility = ProductVisibility.NotVisibleIndividually,
+	Type = ProductType.Simple,
+	["monitor_sizes"] = "17 inch"
+};
+
+largeProduct.Save();
+
+var configurableProduct = product.GetConfigurableProductModel();
+configurableProduct.AddConfigurableOption("monitor_sizes");
+configurableProduct.Save();
+configurableProduct.AddChild(smallProduct);
+configurableProduct.AddChild(largeProduct);
+configurableProduct.Save();
+```
+
+
+
 ### Creating an order
 
 When creating an order directly in Magento, it won't calculate things like order line prices, shipping costs, etc. Probably useful, if you need to create a backlog of orders in bulk, but not so much if you actually want these things done for you. For this, you'll have to create a cart and jump through hoops. To make this process a bit less painful, I've added the CartModel class.

@@ -7,6 +7,7 @@ using Magento.RestClient.Data.Models.Carts.ConfigurableCartItems;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Customers;
 using Magento.RestClient.Data.Repositories.Abstractions;
+using Magento.RestClient.Domain.Abstractions;
 using Magento.RestClient.Domain.Validators;
 using Magento.RestClient.Exceptions;
 using Newtonsoft.Json;
@@ -180,7 +181,7 @@ namespace Magento.RestClient.Domain.Models
 		/// <summary>
 		///     Commits the cart and creates an order.
 		/// </summary>
-		/// <exception cref="CartAlreadyCommittedException"></exception>
+		/// <exception cref="CartCommittedException"></exception>
 		/// <returns>Order ID</returns>
 		/// <exception cref="InvalidOperationException"></exception>
 		public long Commit()
@@ -198,7 +199,7 @@ namespace Magento.RestClient.Domain.Models
 				return this.OrderId.Value;
 			}
 
-			throw new CartAlreadyCommittedException(this.Id);
+			throw new CartCommittedException(this.Id);
 		}
 
 

@@ -15,5 +15,6 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 		ProductAttribute GetByCode(string code);
 		ProductAttribute Update(string attributeCode, ProductAttribute attribute);
 		void DeleteProductAttributeOption(string attributeCode, string optionValue);
+		ProductAttribute GetById(long id);
 	}
 }

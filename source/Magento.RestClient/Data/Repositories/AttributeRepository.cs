@@ -119,5 +119,16 @@ namespace Magento.RestClient.Data.Repositories
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.AddOrUpdateParameter("optionValue", optionValue, ParameterType.UrlSegment);
 		}
+
+		public ProductAttribute GetById(long id)
+		{
+			var request = new RestRequest("products/attributes/{id}");
+			request.Method = Method.GET;
+			request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
+			request.SetScope("all");
+
+			var response = _client.Execute<ProductAttribute>(request);
+			return HandleResponse(response);
+		}
 	}
 }

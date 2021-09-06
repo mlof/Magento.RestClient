@@ -6,6 +6,18 @@ using Serilog;
 
 namespace Magento.RestClient.Tests
 {
+	public class ConnectionTest
+	{
+		[Test]
+		public void TestConnection()
+		{
+
+			var magentoClient = new MagentoClient("http://localhost");
+			var context = magentoClient.AuthenticateAsAdmin("user", "bitnami1");
+
+			var products = context.Search.Products(builder => builder.WithPage(1).WithPageSize(10)).Items;
+		}
+	}
     public abstract class AbstractIntegrationTest
     {
         protected IAdminContext Context;

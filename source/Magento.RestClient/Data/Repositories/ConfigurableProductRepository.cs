@@ -2,6 +2,7 @@
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
@@ -54,14 +55,15 @@ namespace Magento.RestClient.Data.Repositories
 			return HandleResponse(response);
 		}
 
-		public void CreateOption(string parentSku, long attributeId, int valueId, string label)
+		
+
+		
+		public void CreateOption(string parentSku, ConfigurableProductOption option)
 		{
 			var request = new RestRequest("configurable-products/{sku}/options");
 			request.Method = Method.POST;
 			request.AddJsonBody(new {
-				option = new {
-					attribute_id = attributeId, label, values = new List<object> {new {value_index = valueId}}
-				}
+				option = option 
 			});
 			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
 			client.Execute(request);

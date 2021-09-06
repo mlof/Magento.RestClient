@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentAssertions;
+using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Domain.Tests.Abstractions;
 using NUnit.Framework;

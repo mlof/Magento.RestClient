@@ -21,13 +21,7 @@ namespace Magento.RestClient.Domain.Tests
 
 			customer.FirstName.Should().BeEquivalentTo("First Name");
 		}
-
-		[Test]
-		public void UpdateCustomer()
-		{
-
-		}
-
+		
 		[TearDown]
 		public void CustomerTeardown()
 		{

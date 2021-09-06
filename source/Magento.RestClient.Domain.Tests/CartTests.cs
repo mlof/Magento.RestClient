@@ -11,6 +11,9 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Domain.Tests
 {
+
+
+	
 	public class CartTests : AbstractDomainObjectTest
 	{
 		private long existingCartId;
@@ -31,11 +34,22 @@ namespace Magento.RestClient.Domain.Tests
 		{
 			var cart = new CartModel(Context);
 			this.existingCartId = cart.Id;
+
+
+			var product = Context.GetProductModel(this.CartProductSku);
+
+			product.Price = 10;
+			product.Name = "CART_PRODUCT";
+			product.SetStock(10);
+			product.Save();
 		}
+
+		public string CartProductSku { get; set; } = "TEST_CART_PRODUCT";
 
 		[TearDown]
 		public void TearDownCart()
 		{
+			Context.Products.DeleteProduct("TEST_CART_PRODUCT");
 		}
 
 		[Test]
@@ -86,9 +100,9 @@ namespace Magento.RestClient.Domain.Tests
 		public void Cart_AddSimpleProduct_ValidItem()
 		{
 			var cart = new CartModel(Context);
-			cart.AddSimpleProduct(SimpleProductSku, 3);
+			cart.AddSimpleProduct(CartProductSku, 3);
 
-			cart.Items.Any(item => item.Sku == SimpleProductSku && item.Qty == 3).Should().BeTrue();
+			cart.Items.Any(item => item.Sku == CartProductSku && item.Qty == 3).Should().BeTrue();
 		}
 
 		[Test]
@@ -113,7 +127,7 @@ namespace Magento.RestClient.Domain.Tests
 		public void ShippingMethods_GetMethods_ShippingAddressSet()
 		{
 			var cart = new CartModel(Context);
-			cart.AddSimpleProduct(SimpleProductSku, 3);
+			cart.AddSimpleProduct(CartProductSku, 3);
 
 			cart.BillingAddress = ScunthorpePostOffice;
 			cart.ShippingAddress = ScunthorpePostOffice;
@@ -139,7 +153,7 @@ namespace Magento.RestClient.Domain.Tests
 		{
 			var cart = new CartModel(Context);
 
-			cart.AddSimpleProduct(SimpleProductSku, 3);
+			cart.AddSimpleProduct(CartProductSku, 3);
 
 			Assert.Throws<ArgumentNullException>(() =>
 				cart.EstimateShippingMethods());
@@ -150,7 +164,7 @@ namespace Magento.RestClient.Domain.Tests
 		{
 			var cart = new CartModel(Context);
 
-			cart.AddSimpleProduct(SimpleProductSku, 3);
+			cart.AddSimpleProduct(CartProductSku, 3);
 
 			cart.ShippingAddress = ScunthorpePostOffice;
 			var shippingMethods = cart.EstimateShippingMethods();
@@ -170,7 +184,7 @@ namespace Magento.RestClient.Domain.Tests
 		{
 			var cart = new CartModel(Context);
 
-			cart.AddSimpleProduct(SimpleProductSku, 3);
+			cart.AddSimpleProduct(CartProductSku, 3);
 
 			cart.BillingAddress = ScunthorpePostOffice;
 			cart.ShippingAddress = ScunthorpePostOffice;
@@ -225,7 +239,7 @@ namespace Magento.RestClient.Domain.Tests
 			cart.ShippingAddress = ScunthorpePostOffice;
 			cart.BillingAddress = ScunthorpePostOffice;
 
-			cart.AddSimpleProduct(SimpleProductSku, 3);
+			cart.AddSimpleProduct(CartProductSku, 3);
 
 			var cheapestShipping = cart.EstimateShippingMethods()
 				.OrderByDescending(method => method.PriceInclTax)

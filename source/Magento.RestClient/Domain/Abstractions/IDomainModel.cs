@@ -7,5 +7,6 @@
 
 		public void Refresh();
 		public void Save();
+		public void Delete();
 	}
 }

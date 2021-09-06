@@ -9,6 +9,11 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Domain.Tests
 {
+
+	public class AttributeTests : AbstractDomainObjectTest
+	{
+
+	}
 	public class AttributeSetTests : AbstractDomainObjectTest
 	{
 		[SetUp]

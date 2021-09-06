@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Orders;
@@ -37,6 +38,12 @@ namespace Magento.RestClient.Domain.Models
 
 		public void Save()
 		{
+		}
+
+		public void Delete()
+		{
+			// don't get me started
+			throw new NotSupportedException();
 		}
 
 

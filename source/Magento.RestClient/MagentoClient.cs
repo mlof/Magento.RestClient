@@ -19,7 +19,7 @@ namespace Magento.RestClient
 		private readonly string baseUrl;
 		private readonly string customerTokenUrl;
 
-		public MagentoClient(string host)
+		public MagentoClient(string host, string defaultScope = "default")
 		{
 			baseUrl = "";
 			if (host.EndsWith("/"))
@@ -33,7 +33,7 @@ namespace Magento.RestClient
 			_client = new RestSharp.RestClient(baseUrl);
 
 
-			_client.AddDefaultUrlSegment("scope", "default");
+			_client.AddDefaultUrlSegment("scope", defaultScope);
 			_client.UseNewtonsoftJson(new JsonSerializerSettings {
 				NullValueHandling = NullValueHandling.Ignore,
 				Culture = CultureInfo.InvariantCulture,

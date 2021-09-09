@@ -2,6 +2,10 @@
 {
 	public class SearchFilter
 	{
+		public SearchFilter()
+		{
+		}
+
 		public SearchFilter(string propertyName, SearchCondition condition, object value)
 		{
 			this.PropertyName = propertyName;

@@ -1,6 +1,6 @@
 ﻿namespace Magento.RestClient.Abstractions
 {
-	public interface IGuestContext
+	public interface IGuestContext 
 	{
 	}
 }

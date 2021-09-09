@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Magento.RestClient.Tests.Configuration\Magento.RestClient.Tests.Configuration.csproj" />
     <ProjectReference Include="..\Magento.RestClient\Magento.RestClient.csproj" />
   </ItemGroup>
 

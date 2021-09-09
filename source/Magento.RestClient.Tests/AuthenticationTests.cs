@@ -1,6 +1,7 @@
 using Magento.RestClient.Tests.Configuration;
 using Magento.RestClient.Tests.Constants;
 using NUnit.Framework;
+using Remotion.Linq.Parsing.ExpressionVisitors.Transformation.PredefinedTransformations;
 
 namespace Magento.RestClient.Tests
 {
@@ -22,7 +23,7 @@ namespace Magento.RestClient.Tests
 				conf.ConsumerKey, conf.ConsumerSecret,
 				conf.AccessToken, conf.AccessTokenSecret);
 
-		
+
 			var websites = c.Stores.GetWebsites();
 
 			Assert.IsNotEmpty(websites);

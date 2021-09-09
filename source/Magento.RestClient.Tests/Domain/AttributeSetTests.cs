@@ -3,17 +3,12 @@ using System.IO;
 using System.Linq;
 using FluentAssertions;
 using Magento.RestClient.Domain.Extensions;
-using Magento.RestClient.Domain.Tests.Abstractions;
+using Magento.RestClient.Tests.Domain.Abstractions;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Domain.Tests
 {
-
-	public class AttributeTests : AbstractDomainObjectTest
-	{
-
-	}
 	public class AttributeSetTests : AbstractDomainObjectTest
 	{
 		[SetUp]

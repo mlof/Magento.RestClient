@@ -4,7 +4,7 @@ using Magento.RestClient.Domain.Tests.Constants;
 using NUnit.Framework;
 using Serilog;
 
-namespace Magento.RestClient.Domain.Tests.Abstractions
+namespace Magento.RestClient.Tests.Domain.Abstractions
 {
 	public abstract class AbstractDomainObjectTest
 	{

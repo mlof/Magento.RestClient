@@ -5,8 +5,8 @@ using FluentAssertions;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models;
-using Magento.RestClient.Domain.Tests.Abstractions;
 using Magento.RestClient.Exceptions;
+using Magento.RestClient.Tests.Domain.Abstractions;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Domain.Tests

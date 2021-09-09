@@ -82,5 +82,4 @@ namespace Magento.RestClient.Data.Repositories
 			var response = _client.Execute<Product>(request);
 		}
 	}
-	
 }

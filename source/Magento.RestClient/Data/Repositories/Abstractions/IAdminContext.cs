@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Magento.RestClient.Data.Models.Attributes;
-
-namespace Magento.RestClient.Data.Repositories.Abstractions
+﻿namespace Magento.RestClient.Data.Repositories.Abstractions
 {
 	public interface IAdminContext : ICanGetModules
 	{
@@ -21,9 +18,5 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 		IAttributeRepository Attributes { get; }
 		IShipmentRepository Shipments { get; }
 		IBulkRepository Bulk { get; }
-	}
-
-	public interface IProductAttributeGroupRepository : IQueryable<AttributeGroup>
-	{
 	}
 }

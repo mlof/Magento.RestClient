@@ -45,6 +45,16 @@ namespace Magento.RestClient.Domain.Models
 
 		public StockItem StockItem { get; set; }
 
+		public List<Product> Children { get; set; }
+
+		public ProductType Type { get; set; }
+
+
+		public dynamic this[string attributeCode] {
+			get => GetAttribute(attributeCode);
+			set => SetAttribute(attributeCode, value);
+		}
+
 		public bool IsPersisted { get; set; }
 
 		public void Refresh()
@@ -52,11 +62,10 @@ namespace Magento.RestClient.Domain.Models
 			var existingProduct = _context.Products.GetProductBySku(this.Sku, this.Scope);
 			if (existingProduct == null)
 			{
-				this.AttributeSetId = _context.AttributeSets.GetDefaultAttributeSet(EntityType.CatalogProduct).AttributeSetId
+				this.AttributeSetId = _context.AttributeSets.GetDefaultAttributeSet().AttributeSetId
 					.GetValueOrDefault();
-				this.Name = Sku;
+				this.Name = this.Sku;
 				this.CustomAttributes = new List<CustomAttribute>();
-				
 			}
 			else
 			{
@@ -70,14 +79,10 @@ namespace Magento.RestClient.Domain.Models
 
 				if (this.Type == ProductType.Configurable)
 				{
-					this.Children = this._context.ConfigurableProducts.GetConfigurableChildren(Sku);
+					this.Children = _context.ConfigurableProducts.GetConfigurableChildren(this.Sku);
 				}
 			}
 		}
-
-		public List<Product> Children { get; set; }
-
-		public ProductType Type { get; set; }
 
 		public void Save()
 		{
@@ -90,7 +95,7 @@ namespace Magento.RestClient.Domain.Models
 				AttributeSetId = this.AttributeSetId,
 				Visibility = (long) this.Visibility,
 				CustomAttributes = this.CustomAttributes,
-				TypeId = Type
+				TypeId = this.Type
 			};
 			if (this.StockItem != null)
 			{
@@ -125,18 +130,12 @@ namespace Magento.RestClient.Domain.Models
 
 		public ConfigurableProductModel GetConfigurableProductModel()
 		{
-			return new ConfigurableProductModel(_context, this.Sku);
+			return new(_context, this.Sku);
 		}
 
 		public ProductGalleryModel GetGalleryModel()
 		{
-			return new ProductGalleryModel(_context, this.Sku);
-		}
-
-
-		public dynamic this[string attributeCode] {
-			get => GetAttribute(attributeCode);
-			set => SetAttribute(attributeCode, value);
+			return new(_context, this.Sku);
 		}
 
 		private dynamic GetAttribute(string attributeCode)

@@ -21,11 +21,9 @@
 
 	public static class SearchConditionExtensions
 	{
-
 		public static string GetMagentoCondition(this SearchCondition condition)
 		{
-			return condition switch
-			{
+			return condition switch {
 				SearchCondition.Equals => "eq",
 				SearchCondition.InSet => "finset",
 				SearchCondition.From => "from",

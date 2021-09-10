@@ -45,8 +45,8 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Search\Abstractions\" />
-      <Folder Include="Search\Extensions\" />
+        <Folder Include="Search\Abstractions\" />
+        <Folder Include="Search\Extensions\" />
     </ItemGroup>
 
 </Project>

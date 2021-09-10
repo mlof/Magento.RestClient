@@ -7,7 +7,7 @@ namespace Magento.RestClient.Data.Repositories
 	public abstract class AbstractRepository
 	{
 		/// <summary>
-		/// Handles a magento response and returns the value.
+		///     Handles a magento response and returns the value.
 		/// </summary>
 		/// <param name="response"></param>
 		/// <returns></returns>
@@ -28,7 +28,7 @@ namespace Magento.RestClient.Data.Repositories
 		}
 
 		/// <summary>
-		/// Handles a magento response. 
+		///     Handles a magento response.
 		/// </summary>
 		/// <param name="response"></param>
 		/// <exception cref="MagentoException"></exception>

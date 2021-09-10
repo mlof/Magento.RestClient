@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
-using AgileObjects.NetStandardPolyfills;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Abstractions;
@@ -13,24 +11,20 @@ namespace Magento.RestClient.Domain.Models
 {
 	public class ConfigurableProductModel : IDomainModel
 	{
-		public string Sku { get; }
+		private readonly List<string> _addedChildren = new();
 		private readonly IAdminContext _context;
-		private List<ConfigurableProductOption> _options;
-		private List<Product> _children;
-		private readonly List<string> _removedChildren = new List<string>();
-		private readonly List<string> _addedChildren = new List<string>();
-		private List<ProductAttribute> _optionAttributes;
 		private readonly ProductModel _parent;
-
-		public IReadOnlyList<Product> Children => _children.AsReadOnly();
-		public IReadOnlyList<ConfigurableProductOption> Options => _options.AsReadOnly();
+		private readonly List<string> _removedChildren = new();
+		private List<Product> _children;
+		private List<ProductAttribute> _optionAttributes;
+		private List<ConfigurableProductOption> _options;
 
 		public ConfigurableProductModel(IAdminContext context, string sku)
 		{
 			this.Sku = sku;
-			this._context = context;
+			_context = context;
 
-			this._parent = context.GetProductModel(sku);
+			_parent = context.GetProductModel(sku);
 			if (_parent == null)
 			{
 				throw new InvalidConfigurableProductException("Parent product has not been persisted.");
@@ -39,26 +33,17 @@ namespace Magento.RestClient.Domain.Models
 			Refresh();
 		}
 
+		public string Sku { get; }
+
+		public IReadOnlyList<Product> Children => _children.AsReadOnly();
+		public IReadOnlyList<ConfigurableProductOption> Options => _options.AsReadOnly();
+
 		public bool IsPersisted { get; }
 
 		public void Refresh()
 		{
 			RefreshOptions();
-			this._children = _context.ConfigurableProducts.GetConfigurableChildren(this.Sku);
-		}
-
-		private void RefreshOptions()
-		{
-			this._options = _context.ConfigurableProducts.GetOptions(this.Sku);
-
-			var attributes = new List<ProductAttribute>();
-			foreach (var option in _options)
-			{
-				var attribute = _context.Attributes.GetById(option.AttributeId);
-				attributes.Add(attribute);
-			}
-
-			this._optionAttributes = attributes;
+			_children = _context.ConfigurableProducts.GetConfigurableChildren(this.Sku);
 		}
 
 		public void Save()
@@ -67,20 +52,20 @@ namespace Magento.RestClient.Domain.Models
 			{
 				if (option.Id == 0)
 				{
-					_context.ConfigurableProducts.CreateOption(Sku, option);
+					_context.ConfigurableProducts.CreateOption(this.Sku, option);
 				}
 			}
 
 
 			foreach (var child in _addedChildren)
 			{
-				_context.ConfigurableProducts.CreateChild(Sku, child);
+				_context.ConfigurableProducts.CreateChild(this.Sku, child);
 			}
 
 			_addedChildren.Clear();
 			foreach (var child in _removedChildren)
 			{
-				_context.ConfigurableProducts.DeleteChild(Sku, child);
+				_context.ConfigurableProducts.DeleteChild(this.Sku, child);
 			}
 
 			_removedChildren.Clear();
@@ -91,7 +76,21 @@ namespace Magento.RestClient.Domain.Models
 
 		public void Delete()
 		{
-			_context.GetProductModel(Sku).Delete();
+			_context.GetProductModel(this.Sku).Delete();
+		}
+
+		private void RefreshOptions()
+		{
+			_options = _context.ConfigurableProducts.GetOptions(this.Sku);
+
+			var attributes = new List<ProductAttribute>();
+			foreach (var option in _options)
+			{
+				var attribute = _context.Attributes.GetById(option.AttributeId);
+				attributes.Add(attribute);
+			}
+
+			_optionAttributes = attributes;
 		}
 
 
@@ -101,19 +100,19 @@ namespace Magento.RestClient.Domain.Models
 
 			if (_options.All(option => option.AttributeId != attribute.AttributeId))
 			{
-				_options.Add(new ConfigurableProductOption() {
+				_options.Add(new ConfigurableProductOption {
 						AttributeId = attribute.AttributeId,
 						Label = attribute.DefaultFrontendLabel,
 						Values = attribute.Options
 							.Where(option => !string.IsNullOrWhiteSpace(option.Value))
-							.Select(option => new Value() {ValueIndex = Convert.ToInt64(option.Value)}).ToList()
+							.Select(option => new Value {ValueIndex = Convert.ToInt64(option.Value)}).ToList()
 					}
 				);
 			}
 		}
 
 		/// <summary>
-		/// AddChild
+		///     AddChild
 		/// </summary>
 		/// <param name="product"></param>
 		/// <exception cref="InvalidConfigurableProductException"></exception>
@@ -126,7 +125,7 @@ namespace Magento.RestClient.Domain.Models
 					"No configurable options have been defined for this product");
 			}
 
-			if (Children.Any(çhild => çhild.Sku == product.Sku))
+			if (this.Children.Any(çhild => çhild.Sku == product.Sku))
 			{
 				throw new InvalidChildProductException("The product is already attached.");
 			}

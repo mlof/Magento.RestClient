@@ -6,7 +6,6 @@ using System.Linq.Expressions;
 using Magento.RestClient.Data.Models.Shipping;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Expressions;
-using Magento.RestClient.Search;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
@@ -15,13 +14,13 @@ namespace Magento.RestClient.Data.Repositories
 	{
 		private readonly IRestClient _client;
 
-		private IQueryable<Shipment> _shipmentRepositoryImplementation =>
-			new MagentoQueryable<Shipment>(_client, "shipments");
-
 		public ShipmentRepository(IRestClient client)
 		{
 			_client = client;
 		}
+
+		private IQueryable<Shipment> _shipmentRepositoryImplementation =>
+			new MagentoQueryable<Shipment>(_client, "shipments");
 
 
 		public List<Shipment> GetByOrderId(long orderId)
@@ -43,18 +42,18 @@ namespace Magento.RestClient.Data.Repositories
 
 		public IEnumerator<Shipment> GetEnumerator()
 		{
-			return _shipmentRepositoryImplementation.GetEnumerator();
+			return this._shipmentRepositoryImplementation.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IEnumerable) _shipmentRepositoryImplementation).GetEnumerator();
+			return ((IEnumerable) this._shipmentRepositoryImplementation).GetEnumerator();
 		}
 
-		public Type ElementType => _shipmentRepositoryImplementation.ElementType;
+		public Type ElementType => this._shipmentRepositoryImplementation.ElementType;
 
-		public Expression Expression => _shipmentRepositoryImplementation.Expression;
+		public Expression Expression => this._shipmentRepositoryImplementation.Expression;
 
-		public IQueryProvider Provider => _shipmentRepositoryImplementation.Provider;
+		public IQueryProvider Provider => this._shipmentRepositoryImplementation.Provider;
 	}
 }

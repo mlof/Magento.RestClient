@@ -18,14 +18,14 @@ namespace Magento.RestClient.Data.Repositories
 		private readonly IRestClient _client;
 		private readonly CategoryValidator categoryValidator;
 
-		private IQueryable<Category> _categoryRepositoryImplementation =>
-			new MagentoQueryable<Category>(_client, "categories/list");
-
 		public CategoryRepository(IRestClient client)
 		{
 			_client = client;
 			categoryValidator = new CategoryValidator();
 		}
+
+		private IQueryable<Category> _categoryRepositoryImplementation =>
+			new MagentoQueryable<Category>(_client, "categories/list");
 
 		public Category GetCategoryById(long categoryId)
 		{
@@ -122,18 +122,18 @@ namespace Magento.RestClient.Data.Repositories
 
 		public IEnumerator<Category> GetEnumerator()
 		{
-			return _categoryRepositoryImplementation.GetEnumerator();
+			return this._categoryRepositoryImplementation.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IEnumerable) _categoryRepositoryImplementation).GetEnumerator();
+			return ((IEnumerable) this._categoryRepositoryImplementation).GetEnumerator();
 		}
 
-		public Type ElementType => _categoryRepositoryImplementation.ElementType;
+		public Type ElementType => this._categoryRepositoryImplementation.ElementType;
 
-		public Expression Expression => _categoryRepositoryImplementation.Expression;
+		public Expression Expression => this._categoryRepositoryImplementation.Expression;
 
-		public IQueryProvider Provider => _categoryRepositoryImplementation.Provider;
+		public IQueryProvider Provider => this._categoryRepositoryImplementation.Provider;
 	}
 }

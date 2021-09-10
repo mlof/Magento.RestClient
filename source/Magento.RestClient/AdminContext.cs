@@ -8,7 +8,6 @@ using Magento.RestClient.Data.Repositories;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Expressions;
-using Magento.RestClient.Search;
 using RestSharp;
 
 namespace Magento.RestClient
@@ -41,7 +40,6 @@ namespace Magento.RestClient
 		public IShipmentRepository Shipments => new ShipmentRepository(_client);
 
 		/// <inheritdoc cref="ICanGetModules" />
-		/// <exception cref="MagentoException"></exception>
 		public List<string> GetModules()
 		{
 			var request = new RestRequest("modules");
@@ -59,29 +57,30 @@ namespace Magento.RestClient
 
 	internal class ProductAttributeGroupRepository : IProductAttributeGroupRepository
 	{
-		private IQueryable<AttributeGroup> _productAttributeGroupRepositoryImplementation =>
-			new MagentoQueryable<AttributeGroup>(_client, "products/attribute-sets/groups/list");
 		private readonly IRestClient _client;
 
 		public ProductAttributeGroupRepository(IRestClient client)
 		{
-			this._client = client;
+			_client = client;
 		}
+
+		private IQueryable<AttributeGroup> _productAttributeGroupRepositoryImplementation =>
+			new MagentoQueryable<AttributeGroup>(_client, "products/attribute-sets/groups/list");
 
 		public IEnumerator<AttributeGroup> GetEnumerator()
 		{
-			return _productAttributeGroupRepositoryImplementation.GetEnumerator();
+			return this._productAttributeGroupRepositoryImplementation.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IEnumerable) _productAttributeGroupRepositoryImplementation).GetEnumerator();
+			return ((IEnumerable) this._productAttributeGroupRepositoryImplementation).GetEnumerator();
 		}
 
-		public Type ElementType => _productAttributeGroupRepositoryImplementation.ElementType;
+		public Type ElementType => this._productAttributeGroupRepositoryImplementation.ElementType;
 
-		public Expression Expression => _productAttributeGroupRepositoryImplementation.Expression;
+		public Expression Expression => this._productAttributeGroupRepositoryImplementation.Expression;
 
-		public IQueryProvider Provider => _productAttributeGroupRepositoryImplementation.Provider;
+		public IQueryProvider Provider => this._productAttributeGroupRepositoryImplementation.Provider;
 	}
 }

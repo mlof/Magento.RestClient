@@ -9,6 +9,7 @@ namespace Magento.RestClient.Data.Models.Carts.ConfigurableCartItems
 		{
 			this.ConfigurableItemOptions = new List<ConfigurableItemOption>();
 		}
+
 		[JsonProperty("configurable_item_options")]
 
 		public List<ConfigurableItemOption> ConfigurableItemOptions { get; set; }

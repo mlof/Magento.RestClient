@@ -17,6 +17,5 @@ namespace Magento.RestClient.Data.Models.Carts.ConfigurableCartItems
 		[JsonIgnore]
 		public List<ConfigurableItemOption> ConfigurableItemOptions =>
 			this.ProductOption.ExtensionAttributes.ConfigurableItemOptions;
-
 	}
 }

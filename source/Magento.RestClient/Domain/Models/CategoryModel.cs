@@ -92,17 +92,17 @@ namespace Magento.RestClient.Domain.Models
 			Refresh();
 		}
 
+		public void Delete()
+		{
+			_context.Categories.DeleteCategoryById(this.Id);
+		}
+
 		public void AddChild(string name, bool isActive = true)
 		{
 			if (!_children.Any(c => c.Name == name))
 			{
 				_children.Add(new Category {Name = name, IsActive = isActive});
 			}
-		}
-
-		public void Delete()
-		{
-			_context.Categories.DeleteCategoryById(this.Id);
 		}
 
 		public void AddProduct(string productSku)

@@ -63,7 +63,7 @@ namespace Magento.RestClient.Data.Repositories
 
 			request.AddOrUpdateParameter("categoryId", categoryId, ParameterType.UrlSegment);
 
-			var response = _client.Execute(request);
+			_client.Execute(request);
 		}
 
 		public void MoveCategory(int categoryId, int parentId, int? afterId = null)

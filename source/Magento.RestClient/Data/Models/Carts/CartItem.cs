@@ -19,7 +19,5 @@ namespace Magento.RestClient.Data.Models.Carts
 		[JsonProperty("product_type")] public string? ProductType { get; set; }
 
 		[JsonProperty("quote_id")] public long QuoteId { get; set; }
-
-	
 	}
 }

@@ -6,6 +6,12 @@ namespace Magento.RestClient.Data.Repositories
 {
 	public abstract class AbstractRepository
 	{
+		/// <summary>
+		/// Handles a magento response and returns the value.
+		/// </summary>
+		/// <param name="response"></param>
+		/// <returns></returns>
+		/// <exception cref="MagentoException"></exception>
 		protected T HandleResponse<T>(IRestResponse<T> response) where T : class
 		{
 			if (response.IsSuccessful)
@@ -21,6 +27,11 @@ namespace Magento.RestClient.Data.Repositories
 			throw MagentoException.Parse(response.Content);
 		}
 
+		/// <summary>
+		/// Handles a magento response. 
+		/// </summary>
+		/// <param name="response"></param>
+		/// <exception cref="MagentoException"></exception>
 		protected void HandleResponse(IRestResponse response)
 		{
 			if (!response.IsSuccessful)

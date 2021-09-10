@@ -30,7 +30,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public CartModel(IAdminContext context)
 		{
-			this._context = context;
+			_context = context;
 			_addressValidator = new CartAddressValidator();
 			_commitCartValidator = new CommitCartValidator();
 			this.Id = context.Carts.GetNewCartId();
@@ -39,7 +39,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public CartModel(IAdminContext context, long id)
 		{
-			this._context = context;
+			_context = context;
 
 			_addressValidator = new CartAddressValidator();
 			_commitCartValidator = new CommitCartValidator();

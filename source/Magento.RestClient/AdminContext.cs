@@ -41,6 +41,7 @@ namespace Magento.RestClient
 		public IShipmentRepository Shipments => new ShipmentRepository(_client);
 
 		/// <inheritdoc cref="ICanGetModules" />
+		/// <exception cref="MagentoException"></exception>
 		public List<string> GetModules()
 		{
 			var request = new RestRequest("modules");

@@ -6,7 +6,6 @@ namespace Magento.RestClient.Domain.Models
 {
 	public class ProductGalleryModel : IDomainModel
 	{
-		public string Sku { get; }
 		private readonly IAdminContext _context;
 
 		public ProductGalleryModel(IAdminContext context, string sku)
@@ -15,7 +14,10 @@ namespace Magento.RestClient.Domain.Models
 			_context = context;
 		}
 
+		public string Sku { get; }
+
 		public bool IsPersisted { get; }
+
 		public void Refresh()
 		{
 			throw new NotImplementedException();

@@ -1,8 +1,9 @@
-﻿using Magento.RestClient.Data.Models.Attributes;
+﻿using System.Linq;
+using Magento.RestClient.Data.Models.Attributes;
 
 namespace Magento.RestClient.Data.Repositories.Abstractions
 {
-	public interface IAttributeSetRepository : IReadAttributeSetRepository, IWriteAttributeSetRepository
+	public interface IAttributeSetRepository : IReadAttributeSetRepository, IWriteAttributeSetRepository, IQueryable<AttributeSet>
 	{
 		void Delete(long attributeSetId);
 

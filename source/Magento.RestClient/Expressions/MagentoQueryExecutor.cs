@@ -10,10 +10,10 @@ namespace Magento.RestClient.Expressions
 {
 	public class MagentoQueryExecutor : IQueryExecutor
 	{
-		private readonly RestSharp.RestClient _client;
+		private readonly IRestClient _client;
 		private readonly RestRequest _restRequest;
 
-		public MagentoQueryExecutor(RestSharp.RestClient client, string resource)
+		public MagentoQueryExecutor(IRestClient client, string resource)
 		{
 			this._client = client;
 			_restRequest = new RestRequest(resource);

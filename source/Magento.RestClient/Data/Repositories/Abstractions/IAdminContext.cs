@@ -1,10 +1,11 @@
-﻿using Magento.RestClient.Search.Abstractions;
+﻿using System.Linq;
+using Magento.RestClient.Data.Models.Attributes;
 
 namespace Magento.RestClient.Data.Repositories.Abstractions
 {
 	public interface IAdminContext : ICanGetModules
 	{
-		ISearchService Search { get; }
+		IProductAttributeGroupRepository ProductAttributeGroups { get; }
 		IStoreRepository Stores { get; }
 		IProductRepository Products { get; }
 		IProductMediaRepository ProductMedia { get; }
@@ -20,5 +21,9 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 		IAttributeRepository Attributes { get; }
 		IShipmentRepository Shipments { get; }
 		IBulkRepository Bulk { get; }
+	}
+
+	public interface IProductAttributeGroupRepository : IQueryable<AttributeGroup>
+	{
 	}
 }

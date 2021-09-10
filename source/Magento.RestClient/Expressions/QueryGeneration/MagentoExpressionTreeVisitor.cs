@@ -25,6 +25,18 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			throw new NotImplementedException();
 		}
 
+		protected override Expression VisitUnary(UnaryExpression expression)
+		{
+			//_currentFilter.PropertyName = expression.;
+
+			if (expression.NodeType == ExpressionType.Convert)
+			{
+				Visit(expression.Operand);
+				var x = 9;
+			}
+			return expression;
+		}
+
 		protected override Expression VisitBinary(BinaryExpression expression)
 		{
 			Visit(expression.Left);
@@ -40,7 +52,7 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 				_ => SearchCondition.Equals
 			};
 
-			if (expression.NodeType == ExpressionType.OrElse)
+			if (expression.NodeType == ExpressionType.AndAlso)
 			{
 				_aggregator.CreateNewFilterGroup();
 			}

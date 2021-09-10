@@ -1,9 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Repositories;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
+using Magento.RestClient.Expressions;
 using Magento.RestClient.Search;
-using Magento.RestClient.Search.Abstractions;
 using RestSharp;
 
 namespace Magento.RestClient
@@ -19,7 +24,7 @@ namespace Magento.RestClient
 
 
 		public IBulkRepository Bulk => new BulkRepository(_client);
-		public ISearchService Search => new SearchService(_client);
+		public IProductAttributeGroupRepository ProductAttributeGroups => new ProductAttributeGroupRepository(_client);
 		public IStoreRepository Stores => new StoreRepository(_client);
 		public IProductRepository Products => new ProductRepository(_client);
 		public IProductMediaRepository ProductMedia => new ProductMediaRepository(_client);
@@ -49,5 +54,33 @@ namespace Magento.RestClient
 
 			throw MagentoException.Parse(response.Content);
 		}
+	}
+
+	internal class ProductAttributeGroupRepository : IProductAttributeGroupRepository
+	{
+		private IQueryable<AttributeGroup> _productAttributeGroupRepositoryImplementation =>
+			new MagentoQueryable<AttributeGroup>(_client, "products/attribute-sets/groups/list");
+		private readonly IRestClient _client;
+
+		public ProductAttributeGroupRepository(IRestClient client)
+		{
+			this._client = client;
+		}
+
+		public IEnumerator<AttributeGroup> GetEnumerator()
+		{
+			return _productAttributeGroupRepositoryImplementation.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return ((IEnumerable) _productAttributeGroupRepositoryImplementation).GetEnumerator();
+		}
+
+		public Type ElementType => _productAttributeGroupRepositoryImplementation.ElementType;
+
+		public Expression Expression => _productAttributeGroupRepositoryImplementation.Expression;
+
+		public IQueryProvider Provider => _productAttributeGroupRepositoryImplementation.Provider;
 	}
 }

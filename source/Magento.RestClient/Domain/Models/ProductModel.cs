@@ -52,7 +52,7 @@ namespace Magento.RestClient.Domain.Models
 			var existingProduct = _context.Products.GetProductBySku(this.Sku, this.Scope);
 			if (existingProduct == null)
 			{
-				this.AttributeSetId = _context.Search.GetDefaultAttributeSet(EntityType.CatalogProduct).AttributeSetId
+				this.AttributeSetId = _context.AttributeSets.GetDefaultAttributeSet(EntityType.CatalogProduct).AttributeSetId
 					.GetValueOrDefault();
 				this.Name = Sku;
 				this.CustomAttributes = new List<CustomAttribute>();

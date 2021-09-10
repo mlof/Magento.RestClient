@@ -29,8 +29,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void CreateOptions()
 		{
-			Context.Search.AttributeSets();
-
+			
 			//Context.ConfigurableProducts.CreateOptions();
 		}
 

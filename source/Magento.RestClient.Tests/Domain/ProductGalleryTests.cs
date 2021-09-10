@@ -1,6 +1,6 @@
 ﻿using Magento.RestClient.Tests.Domain.Abstractions;
 
-namespace Magento.RestClient.Domain.Tests
+namespace Magento.RestClient.Tests.Domain
 {
 	public class ProductGalleryTests : AbstractDomainObjectTest
 	{

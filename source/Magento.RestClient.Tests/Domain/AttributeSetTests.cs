@@ -1,13 +1,11 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using FluentAssertions;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Tests.Domain.Abstractions;
-using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace Magento.RestClient.Domain.Tests
+namespace Magento.RestClient.Tests.Domain
 {
 	public class AttributeSetTests : AbstractDomainObjectTest
 	{
@@ -61,9 +59,7 @@ namespace Magento.RestClient.Domain.Tests
 
 			foreach (var name in testNames)
 			{
-				var attributeSet = Context.Search.AttributeSets(builder =>
-					builder.WhereEquals(set => set.AttributeSetName, name))
-					.Items.SingleOrDefault();
+				var attributeSet = Context.AttributeSets.SingleOrDefault(set => set.AttributeSetName == name);
 
 				Context.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
 			}

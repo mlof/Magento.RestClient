@@ -54,13 +54,12 @@ namespace Magento.RestClient.Domain.Models
 
 		public void Refresh()
 		{
-			var searchResponse = _context.Search.AttributeSets(builder =>
-				builder.WhereEquals(set => set.AttributeSetName, this.Name)
-					.WhereEquals(set => set.EntityTypeId, this.EntityType));
-			if (searchResponse.TotalCount == 1)
+			var searchResponse = _context.AttributeSets.Where(set =>
+				set.AttributeSetName == this.Name && set.EntityTypeId == this.EntityType).ToList();
+			if (searchResponse.Count == 1)
 			{
 				this.IsPersisted = true;
-				var r = searchResponse.Items.Single();
+				var r = searchResponse.Single();
 				this.Id = r.AttributeSetId.Value;
 
 				var _model = _context.AttributeSets.Get(this.Id);
@@ -68,10 +67,9 @@ namespace Magento.RestClient.Domain.Models
 				this.Name = _model.AttributeSetName;
 
 				_attributes = _context.Attributes.GetProductAttributes(this.Id).ToList();
-				var attributeGroups = _context.Search.ProductAttributeGroups(builder =>
-					builder.WhereEquals(group => group.AttributeSetId, this.Id)
-						.WithPageSize(0));
-				_attributeGroups = attributeGroups.Items.ToList();
+				var attributeGroups =
+					_context.ProductAttributeGroups.Where(group => group.AttributeSetId == Id).ToList();
+				_attributeGroups = attributeGroups.ToList();
 			}
 			else
 			{
@@ -81,7 +79,7 @@ namespace Magento.RestClient.Domain.Models
 				_attributeGroups = new List<AttributeGroup>();
 				if (_skeletonId == null)
 				{
-					var attributeSetId = _context.Search.GetDefaultAttributeSet(this.EntityType).AttributeSetId;
+					var attributeSetId = _context.AttributeSets.GetDefaultAttributeSet(this.EntityType).AttributeSetId;
 					if (attributeSetId != null)
 					{
 						_skeletonId = attributeSetId.Value;
@@ -103,14 +101,13 @@ namespace Magento.RestClient.Domain.Models
 				this.Id = set.AttributeSetId.Value;
 			}
 
-			var currentAttributeGroups = _context.Search.ProductAttributeGroups(builder =>
-				builder.WhereEquals(group => group.AttributeSetId, this.Id)
-					.WithPageSize(0));
+			var currentAttributeGroups =
+				_context.ProductAttributeGroups.Where(group => group.AttributeSetId == Id).ToList();
 
 
 			foreach (var attributeGroup in _attributeGroups)
 			{
-				if (!currentAttributeGroups.Items.Select(group => group.AttributeGroupName)
+				if (!currentAttributeGroups.Select(group => group.AttributeGroupName)
 					.Contains(attributeGroup.AttributeGroupName))
 				{
 					attributeGroup.AttributeGroupId = _context.AttributeSets.CreateProductAttributeGroup(this.Id,
@@ -118,7 +115,7 @@ namespace Magento.RestClient.Domain.Models
 				}
 				else
 				{
-					attributeGroup.AttributeGroupId = currentAttributeGroups.Items
+					attributeGroup.AttributeGroupId = currentAttributeGroups
 						.Where(group => group.AttributeGroupName == attributeGroup.AttributeGroupName)
 						.Select(group => group.AttributeGroupId).SingleOrDefault();
 				}

@@ -2,7 +2,7 @@
 using Magento.RestClient.Tests.Domain.Abstractions;
 using NUnit.Framework;
 
-namespace Magento.RestClient.Domain.Tests
+namespace Magento.RestClient.Tests.Domain
 {
 	class OrderTests : AbstractDomainObjectTest
 	{

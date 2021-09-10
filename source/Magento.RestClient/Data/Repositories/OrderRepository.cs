@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using FluentValidation;
 using Magento.RestClient.Data.Models.Orders;
 using Magento.RestClient.Data.Repositories.Abstractions;
+using Magento.RestClient.Expressions;
 using Magento.RestClient.Validators;
 using RestSharp;
 
@@ -11,6 +16,7 @@ namespace Magento.RestClient.Data.Repositories
 	{
 		private readonly IRestClient _client;
 		private readonly OrderValidator _orderValidator;
+		private IQueryable<Order> _orderRepositoryImplementation => new MagentoQueryable<Order>(_client, "orders");
 
 		public OrderRepository(IRestClient client)
 		{
@@ -72,5 +78,21 @@ namespace Magento.RestClient.Data.Repositories
 			request.AddJsonBody(new {capture = true, notify = true});
 			var response = _client.Execute(request);
 		}
+
+		public IEnumerator<Order> GetEnumerator()
+		{
+			return _orderRepositoryImplementation.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return ((IEnumerable) _orderRepositoryImplementation).GetEnumerator();
+		}
+
+		public Type ElementType => _orderRepositoryImplementation.ElementType;
+
+		public Expression Expression => _orderRepositoryImplementation.Expression;
+
+		public IQueryProvider Provider => _orderRepositoryImplementation.Provider;
 	}
 }

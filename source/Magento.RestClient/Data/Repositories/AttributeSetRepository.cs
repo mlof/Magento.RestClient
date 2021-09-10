@@ -1,7 +1,13 @@
-﻿using Magento.RestClient.Data.Models.Attributes;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
+using Magento.RestClient.Expressions;
 using Magento.RestClient.Search.Extensions;
 using RestSharp;
 
@@ -10,6 +16,7 @@ namespace Magento.RestClient.Data.Repositories
 	internal class AttributeSetRepository : AbstractRepository, IAttributeSetRepository
 	{
 		private readonly IRestClient _client;
+		private IQueryable<AttributeSet> _attributeSetRepositoryImplementation => new MagentoQueryable<AttributeSet>(_client, "eav/attribute-sets/list");
 
 		public AttributeSetRepository(IRestClient client)
 		{
@@ -85,5 +92,21 @@ namespace Magento.RestClient.Data.Repositories
 
 			_client.Execute(request);
 		}
+
+		public IEnumerator<AttributeSet> GetEnumerator()
+		{
+			return _attributeSetRepositoryImplementation.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return ((IEnumerable) _attributeSetRepositoryImplementation).GetEnumerator();
+		}
+
+		public Type ElementType => _attributeSetRepositoryImplementation.ElementType;
+
+		public Expression Expression => _attributeSetRepositoryImplementation.Expression;
+
+		public IQueryProvider Provider => _attributeSetRepositoryImplementation.Provider;
 	}
 }

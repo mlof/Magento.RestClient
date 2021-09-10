@@ -1,7 +1,13 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Net;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
+using Magento.RestClient.Expressions;
 using Magento.RestClient.Search.Extensions;
 using RestSharp;
 
@@ -10,6 +16,9 @@ namespace Magento.RestClient.Data.Repositories
 	public class ProductRepository : IProductRepository
 	{
 		private readonly IRestClient _client;
+
+		private IQueryable<Product> ProductRepositoryImplementation =>
+			new MagentoQueryable<Product>(_client, "Products");
 
 		public ProductRepository(IRestClient client)
 		{
@@ -81,5 +90,21 @@ namespace Magento.RestClient.Data.Repositories
 
 			var response = _client.Execute<Product>(request);
 		}
+
+		public IEnumerator<Product> GetEnumerator()
+		{
+			return this.ProductRepositoryImplementation.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return ((IEnumerable) this.ProductRepositoryImplementation).GetEnumerator();
+		}
+
+		public Type ElementType => this.ProductRepositoryImplementation.ElementType;
+
+		public Expression Expression => this.ProductRepositoryImplementation.Expression;
+
+		public IQueryProvider Provider => this.ProductRepositoryImplementation.Provider;
 	}
 }

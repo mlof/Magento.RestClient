@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using FluentValidation;
 using Magento.RestClient.Data.Models.Category;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
+using Magento.RestClient.Expressions;
 using Magento.RestClient.Search.Extensions;
 using RestSharp;
 
@@ -13,6 +17,9 @@ namespace Magento.RestClient.Data.Repositories
 	{
 		private readonly IRestClient _client;
 		private readonly CategoryValidator categoryValidator;
+
+		private IQueryable<Category> _categoryRepositoryImplementation =>
+			new MagentoQueryable<Category>(_client, "categories/list");
 
 		public CategoryRepository(IRestClient client)
 		{
@@ -112,5 +119,21 @@ namespace Magento.RestClient.Data.Repositories
 			var response = _client.Execute<Category>(request);
 			return HandleResponse(response);
 		}
+
+		public IEnumerator<Category> GetEnumerator()
+		{
+			return _categoryRepositoryImplementation.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return ((IEnumerable) _categoryRepositoryImplementation).GetEnumerator();
+		}
+
+		public Type ElementType => _categoryRepositoryImplementation.ElementType;
+
+		public Expression Expression => _categoryRepositoryImplementation.Expression;
+
+		public IQueryProvider Provider => _categoryRepositoryImplementation.Provider;
 	}
 }

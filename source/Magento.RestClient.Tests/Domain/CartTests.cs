@@ -9,7 +9,7 @@ using Magento.RestClient.Exceptions;
 using Magento.RestClient.Tests.Domain.Abstractions;
 using NUnit.Framework;
 
-namespace Magento.RestClient.Domain.Tests
+namespace Magento.RestClient.Tests.Domain
 {
 
 
@@ -100,9 +100,9 @@ namespace Magento.RestClient.Domain.Tests
 		public void Cart_AddSimpleProduct_ValidItem()
 		{
 			var cart = new CartModel(Context);
-			cart.AddSimpleProduct(CartProductSku, 3);
+			cart.AddSimpleProduct(this.CartProductSku, 3);
 
-			cart.Items.Any(item => item.Sku == CartProductSku && item.Qty == 3).Should().BeTrue();
+			cart.Items.Any(item => item.Sku == this.CartProductSku && item.Qty == 3).Should().BeTrue();
 		}
 
 		[Test]
@@ -127,7 +127,7 @@ namespace Magento.RestClient.Domain.Tests
 		public void ShippingMethods_GetMethods_ShippingAddressSet()
 		{
 			var cart = new CartModel(Context);
-			cart.AddSimpleProduct(CartProductSku, 3);
+			cart.AddSimpleProduct(this.CartProductSku, 3);
 
 			cart.BillingAddress = ScunthorpePostOffice;
 			cart.ShippingAddress = ScunthorpePostOffice;
@@ -153,7 +153,7 @@ namespace Magento.RestClient.Domain.Tests
 		{
 			var cart = new CartModel(Context);
 
-			cart.AddSimpleProduct(CartProductSku, 3);
+			cart.AddSimpleProduct(this.CartProductSku, 3);
 
 			Assert.Throws<ArgumentNullException>(() =>
 				cart.EstimateShippingMethods());
@@ -164,7 +164,7 @@ namespace Magento.RestClient.Domain.Tests
 		{
 			var cart = new CartModel(Context);
 
-			cart.AddSimpleProduct(CartProductSku, 3);
+			cart.AddSimpleProduct(this.CartProductSku, 3);
 
 			cart.ShippingAddress = ScunthorpePostOffice;
 			var shippingMethods = cart.EstimateShippingMethods();
@@ -184,7 +184,7 @@ namespace Magento.RestClient.Domain.Tests
 		{
 			var cart = new CartModel(Context);
 
-			cart.AddSimpleProduct(CartProductSku, 3);
+			cart.AddSimpleProduct(this.CartProductSku, 3);
 
 			cart.BillingAddress = ScunthorpePostOffice;
 			cart.ShippingAddress = ScunthorpePostOffice;
@@ -239,7 +239,7 @@ namespace Magento.RestClient.Domain.Tests
 			cart.ShippingAddress = ScunthorpePostOffice;
 			cart.BillingAddress = ScunthorpePostOffice;
 
-			cart.AddSimpleProduct(CartProductSku, 3);
+			cart.AddSimpleProduct(this.CartProductSku, 3);
 
 			var cheapestShipping = cart.EstimateShippingMethods()
 				.OrderByDescending(method => method.PriceInclTax)

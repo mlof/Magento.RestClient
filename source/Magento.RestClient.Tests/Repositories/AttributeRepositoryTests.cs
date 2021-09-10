@@ -11,6 +11,16 @@ using Magento.RestClient.Extensions;
 
 namespace Magento.RestClient.Tests.Repositories
 {
+
+	public class QueryableTests : AbstractIntegrationTest
+	{
+
+		[Test]
+		public void CanGetDefaultAttributeSet()
+		{
+			Context.AttributeSets.GetDefaultAttributeSet(EntityType.CatalogProduct);
+		}
+	}
 	[TestFixture]
 	public class AttributeRepositoryTests : AbstractIntegrationTest
 	{
@@ -29,22 +39,23 @@ namespace Magento.RestClient.Tests.Repositories
 				new AttributeSet() {AttributeSetName = attributeSetName});
 		}
 
+
+
 		[TearDown]
 		public void TeardownAttributes()
 		{
-			var id = this.Context.Search.AttributeSets(builder =>
-					builder.WhereEquals(set => set.AttributeSetName, attributeSetName)
-						.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct))
-				.Items.SingleOrDefault()
+			var id = Context.AttributeSets.SingleOrDefault(set =>
+					set.AttributeSetName == attributeSetName && set.EntityTypeId == EntityType.CatalogProduct)?
 				.AttributeSetId;
 			this.Context.AttributeSets.Delete(id.Value);
 			this.Context.Attributes.DeleteProductAttribute(attributeCode);
 		}
 
+
 		[Test]
 		public void GetProductAttributes_NewAttributeSet_HasDefaultAttributes()
 		{
-			var defaultAttributeSet = Context.Search.GetDefaultAttributeSet(EntityType.CatalogProduct);
+			var defaultAttributeSet = Context.AttributeSets.GetDefaultAttributeSet(EntityType.CatalogProduct);
 			var defaultAttributes = attributeRepository.GetProductAttributes(
 					defaultAttributeSet.AttributeSetId.Value)
 				.OrderBy(attribute => attribute.AttributeCode);
@@ -80,7 +91,6 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void DeleteProductAttribute()
 		{
-
 			// Arrange
 
 			ProductAttribute deleteThis = new ProductAttribute("deletethis");
@@ -93,9 +103,9 @@ namespace Magento.RestClient.Tests.Repositories
 			attributeRepository.DeleteProductAttribute(
 				result.AttributeCode);
 
-			
+
 			// Assert
-			
+
 			var assert = Context.AttributeSets.Get(result.AttributeId);
 			assert.Should().BeNull();
 			Assert.Fail();

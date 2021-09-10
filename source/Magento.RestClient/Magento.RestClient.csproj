@@ -24,9 +24,6 @@
     <ItemGroup>
         <PackageReference Include="JsonExts.JsonPath" Version="1.0.1" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-
-    </ItemGroup>
-    <ItemGroup>
         <PackageReference Include="Remotion.Linq" Version="2.2.0" />
 
         <PackageReference Include="AgileObjects.AgileMapper" Version="1.8.0" />
@@ -46,6 +43,10 @@
             <Pack>True</Pack>
             <PackagePath></PackagePath>
         </None>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Search\Abstractions\" />
+      <Folder Include="Search\Extensions\" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
-using Magento.RestClient.Domain.Tests.Constants;
+using Magento.RestClient.Tests.Domain.Constants;
 using NUnit.Framework;
 using Serilog;
 

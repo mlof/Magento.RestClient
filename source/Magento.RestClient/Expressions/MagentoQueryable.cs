@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using Remotion.Linq;
 using Remotion.Linq.Parsing.Structure;
+using RestSharp;
 
 namespace Magento.RestClient.Expressions
 {
@@ -19,7 +20,7 @@ namespace Magento.RestClient.Expressions
 		{
 		}
 
-		public MagentoQueryable(RestSharp.RestClient restClient, string resource) : base(
+		public MagentoQueryable(IRestClient restClient, string resource) : base(
 			new DefaultQueryProvider(typeof(MagentoQueryable<>),
 				QueryParser.CreateDefault(), new MagentoQueryExecutor(restClient, resource)))
 		{

@@ -1,3 +1,4 @@
+using System.Linq;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Tests.Configuration;
 using Magento.RestClient.Tests.Constants;
@@ -15,7 +16,7 @@ namespace Magento.RestClient.Tests
 			var magentoClient = new MagentoClient("http://localhost");
 			var context = magentoClient.AuthenticateAsAdmin("user", "bitnami1");
 
-			var products = context.Search.Products(builder => builder.WithPage(1).WithPageSize(10)).Items;
+			var products = context.Products.Take(10).ToList();
 		}
 	}
     public abstract class AbstractIntegrationTest

@@ -1,20 +1,17 @@
 ﻿using System.Linq;
 using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Models.Common;
-using Magento.RestClient.Search.Abstractions;
+using Magento.RestClient.Data.Repositories.Abstractions;
 
 namespace Magento.RestClient.Extensions
 {
 	public static class SearchExtensions
 	{
-		public static AttributeSet GetDefaultAttributeSet(this ISearchService search,
+		public static AttributeSet GetDefaultAttributeSet(this IAttributeSetRepository attributeSets,
 			EntityType entityType = EntityType.CatalogProduct)
 		{
-			var response = search.AttributeSets(builder =>
-				builder.WhereEquals(set => set.AttributeSetName, "Default")
-					.WhereEquals(set => set.EntityTypeId, entityType)
-					.WithPageSize(0));
-			return response.Items.Single();
+			return attributeSets.Single(set =>
+				set.AttributeSetName == "Default" && set.EntityTypeId == entityType);
 		}
 	}
 }

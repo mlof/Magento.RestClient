@@ -13,26 +13,12 @@ namespace Magento.RestClient.Tests.Repositories
         [Test]
         public void SearchOrders_WithDefaultSettings()
         {
-            var orderResponse = Context.Search.Orders();
+            var orderResponse = Context.Orders.ToList();
 
 
-            orderResponse.SearchCriteria.CurrentPage.Should().Be(SearchBuilder<Order>.DefaultPage);
-            orderResponse.SearchCriteria.PageSize.Should().Be(SearchBuilder<Order>.DefaultPageSize);
-            orderResponse.SearchCriteria.SortOrders.Should().BeNullOrEmpty();
-            orderResponse.SearchCriteria.FilterGroups.Should().BeNullOrEmpty();
-            orderResponse.TotalCount.Should().BeGreaterOrEqualTo(0);
         }
 
-        [Test]
-        public void SearchOrders_WhereOrderCurrencyCode_EqualsEuro()
-        {
-            var orderResponse = Context.Search.Orders(builder =>
-                builder.WhereEquals(order => order.OrderCurrencyCode,  "EUR"));
-
-            orderResponse.SearchCriteria.FilterGroups.Should().HaveCount(1);
-            orderResponse.SearchCriteria.FilterGroups.Single().Filters.Should()
-                .ContainEquivalentOf(new Filter() {Value = "EUR", ConditionType = "eq", Field = "order_currency_code"});
-        }
+    
 
         [Test]
         public void CreateOrder_InvalidOrder()

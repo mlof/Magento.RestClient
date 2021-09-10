@@ -25,71 +25,30 @@ namespace Magento.RestClient.Tests.Repositories
 		[TearDown]
 		public void AttributeSetTearDown()
 		{
-			var response = Context.Search.AttributeSets(builder => builder
-				.WithPageSize(100)
-				.WithPage(1)
-				.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct)
-				.WhereEquals(set => set.AttributeSetName, "Laptops"));
-
-			var attributeSet = response.Items.First();
+			var attributeSet = Context.AttributeSets.SingleOrDefault(attributeSet =>
+				attributeSet.AttributeSetName == "Laptops" &&
+				attributeSet.EntityTypeId == EntityType.CatalogProduct);
 			Context.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
 		}
 
 		[Test]
 		public void Search_Existing()
 		{
-			var response = Context.Search.AttributeSets(builder => builder
-				.WithPageSize(100)
-				.WithPage(1)
-				.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct)
-				.WhereEquals(set => set.AttributeSetName, "Laptops"));
+			var items = Context.AttributeSets.Where(attributeSet =>
+				attributeSet.AttributeSetName == "Laptops" &&
+				attributeSet.EntityTypeId == EntityType.CatalogProduct).ToList();
 
-			response.Items.Should().HaveCount(1);
+			items.Should().HaveCount(1);
 		}
 
 		[Test]
 		public void Search_NonExistent()
 		{
-			var response = Context.Search.AttributeSets(builder => builder
-				.WithPageSize(100)
-				.WithPage(1)
-				.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct)
-				.WhereEquals(set => set.AttributeSetName, "Hamsters"));
-
-			response.Items.Should().HaveCount(0);
+			var response = Context.AttributeSets.Where(set => set.AttributeSetName == "Hamsters").ToList();
+			response.Should().HaveCount(0);
 		}
 
-		[Test]
-		public void GetProductAttributes_Existent()
-		{
-			var response = Context.Search.AttributeSets(builder => builder
-				.WithPageSize(100)
-				.WithPage(1)
-				.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct));
-
-			var attributeSet = response.Items.First();
-
-
-			var attributes = Context.Attributes.GetProductAttributes(attributeSet.AttributeSetId.Value);
-
-			attributes.Should().NotBeEmpty();
-		}
-
-		[Test]
-		public void GetProductAttributeGroups_Existent()
-		{
-			var response = Context.Search.AttributeSets(builder => builder
-				.WithPageSize(100)
-				.WithPage(1)
-				.WhereEquals(set => set.EntityTypeId, EntityType.CatalogProduct));
-
-			var attributeSet = response.Items.First();
-
-
-
-			//attributes.Should().NotBeEmpty();
-		}
-
+		
 		[Test]
 		public void GetProductAttributes_NonExistent()
 		{

@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using FluentValidation;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Customers;
 using Magento.RestClient.Data.Repositories.Abstractions;
+using Magento.RestClient.Expressions;
 using Magento.RestClient.Search;
 using Magento.RestClient.Validators;
 using RestSharp;
@@ -15,6 +19,7 @@ namespace Magento.RestClient.Data.Repositories
 	{
 		private readonly IRestClient _client;
 		private readonly CustomerValidator _customerValidator;
+		private IQueryable<Customer> _customerRepositoryImplementation => new MagentoQueryable<Customer>(_client, "customers/search");
 
 		public CustomerRepository(IRestClient client)
 		{
@@ -24,17 +29,15 @@ namespace Magento.RestClient.Data.Repositories
 
 		public Customer GetByEmailAddress(string emailAddress)
 		{
-			var results = _client.Search().Customers(builder =>
-				builder.WhereEquals(customer => customer.Email, emailAddress));
+			var customer = this.SingleOrDefault(customer => customer.Email == emailAddress);
 
-
-			if (!results.Items.Any())
+			if (customer == null)
 			{
 				Log.Warning("Customer by {emailAddress} was not found.", emailAddress);
 				return null;
 			}
 
-			return results.Items.Single();
+			return customer;
 		}
 
 		public Customer GetById(long customerId)
@@ -109,5 +112,21 @@ namespace Magento.RestClient.Data.Repositories
 
 			return HandleResponse(response);
 		}
+
+		public IEnumerator<Customer> GetEnumerator()
+		{
+			return _customerRepositoryImplementation.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return ((IEnumerable) _customerRepositoryImplementation).GetEnumerator();
+		}
+
+		public Type ElementType => _customerRepositoryImplementation.ElementType;
+
+		public Expression Expression => _customerRepositoryImplementation.Expression;
+
+		public IQueryProvider Provider => _customerRepositoryImplementation.Provider;
 	}
 }

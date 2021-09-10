@@ -12,7 +12,7 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			new List<Filter>()
 		};
 
-		public List<OrderClause> Orderings { get; set; }
+		public List<OrderClause> Orderings { get; set; } = new List<OrderClause>();
 
 		public void CreateNewFilterGroup()
 		{

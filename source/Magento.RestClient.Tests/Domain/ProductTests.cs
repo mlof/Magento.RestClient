@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Tests.Domain.Abstractions;
 using NUnit.Framework;
 
-namespace Magento.RestClient.Domain.Tests
+namespace Magento.RestClient.Tests.Domain
 {
 	class ProductTests : AbstractDomainObjectTest
 	{
@@ -85,7 +80,7 @@ namespace Magento.RestClient.Domain.Tests
 		{
 			var product = new ProductModel(this.Context, "HP-ZBOOK-FURY") {
 				Name = "HP ZBook Fury",
-				AttributeSetId = LaptopAttributeSet,
+				AttributeSetId = this.LaptopAttributeSet,
 				Visibility = ProductVisibility.Both,
 				Price = 50,
 				Type = ProductType.Configurable
@@ -94,7 +89,7 @@ namespace Magento.RestClient.Domain.Tests
 
 			var smallProduct = new ProductModel(this.Context, "HP-ZBOOK-FURY-13") {
 				Price = 2339,
-				AttributeSetId = LaptopAttributeSet,
+				AttributeSetId = this.LaptopAttributeSet,
 				Visibility = ProductVisibility.NotVisibleIndividually,
 				Type = ProductType.Simple,
 				["monitor_sizes"] = "13 inch"
@@ -102,7 +97,7 @@ namespace Magento.RestClient.Domain.Tests
 			smallProduct.Save();
 			var largeProduct = new ProductModel(this.Context, "HP-ZBOOK-FURY-17") {
 				Price = 2279,
-				AttributeSetId = LaptopAttributeSet,
+				AttributeSetId = this.LaptopAttributeSet,
 				Visibility = ProductVisibility.NotVisibleIndividually,
 				Type = ProductType.Simple,
 				["monitor_sizes"] = "15 inch"

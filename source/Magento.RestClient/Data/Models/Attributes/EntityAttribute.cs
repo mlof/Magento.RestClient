@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Magento.RestClient.Data.Models.Common;
+using Magento.RestClient.Data.Models.Products;
 using Newtonsoft.Json;
 
 namespace Magento.RestClient.Data.Models.Attributes
@@ -10,7 +11,7 @@ namespace Magento.RestClient.Data.Models.Attributes
 
 		[JsonProperty("attribute_code")] public string AttributeCode { get; set; }
 
-		[JsonProperty("frontend_input")] public string FrontendInput { get; set; }
+		[JsonProperty("frontend_input")] public AttributeFrontendInput? FrontendInput { get; set; }
 
 		[JsonProperty("entity_type_id")] public EntityType EntityTypeId { get; set; }
 

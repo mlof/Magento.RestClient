@@ -18,7 +18,7 @@ namespace Magento.RestClient.Data.Repositories
 		private readonly IRestClient _client;
 
 		private IQueryable<Product> ProductRepositoryImplementation =>
-			new MagentoQueryable<Product>(_client, "Products");
+			new MagentoQueryable<Product>(_client, "products");
 
 		public ProductRepository(IRestClient client)
 		{

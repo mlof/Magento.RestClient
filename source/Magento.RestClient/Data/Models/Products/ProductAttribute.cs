@@ -9,7 +9,7 @@ namespace Magento.RestClient.Data.Models.Products
         {
         }
 
-        public ProductAttribute(string code, string frontendInput = "text", bool isRequired = false)
+        public ProductAttribute(string code, AttributeFrontendInput frontendInput = AttributeFrontendInput.Text, bool isRequired = false)
         {
             this.AttributeCode = code;
             this.FrontendInput = frontendInput;

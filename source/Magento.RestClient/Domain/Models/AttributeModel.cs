@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Models.Products;
@@ -10,7 +11,7 @@ namespace Magento.RestClient.Domain.Models
 	public class AttributeModel : IDomainModel
 	{
 		private readonly IAdminContext _context;
-		private string _frontendInput;
+		private AttributeFrontendInput _frontendInput;
 		private bool _frontendInputChanged;
 		private List<Option> _options;
 
@@ -23,7 +24,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public string AttributeCode { get; }
 
-		public string FrontendInput {
+		public AttributeFrontendInput FrontendInput {
 			get => _frontendInput;
 			set {
 				_frontendInput = value;
@@ -50,7 +51,7 @@ namespace Magento.RestClient.Domain.Models
 				this.IsPersisted = true;
 
 				this.DefaultFrontendLabel = existing.DefaultFrontendLabel;
-				_frontendInput = existing.FrontendInput;
+				_frontendInput = existing.FrontendInput.Value;
 				_options = _context.Attributes.GetProductAttributeOptions(this.AttributeCode);
 			}
 		}
@@ -98,13 +99,20 @@ namespace Magento.RestClient.Domain.Models
 
 		public void AddOption(string option)
 		{
+
 			if (option != null)
 			{
-				if (_options.All(o => o.Label != option))
+				if (option.Trim().Equals("0"))
+				{
+					throw new Exception("Magento does not allow 0 as an attribute option value.");
+				}
+				else if (_options.All(o => o.Label != option))
 				{
 					_options.Add(new Option {Label = option});
 				}
 			}
 		}
+
+	
 	}
 }

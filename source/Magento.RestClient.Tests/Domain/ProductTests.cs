@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models;
@@ -14,7 +15,7 @@ namespace Magento.RestClient.Tests.Domain
 		{
 			var sizeAttribute = Context.GetAttributeModel("monitor_sizes");
 			sizeAttribute.DefaultFrontendLabel = "Monitor Size";
-			sizeAttribute.FrontendInput = "select";
+			sizeAttribute.FrontendInput = AttributeFrontendInput.Select;
 			sizeAttribute.AddOption("13 inch");
 			sizeAttribute.AddOption("14 inch");
 			sizeAttribute.AddOption("15 inch");

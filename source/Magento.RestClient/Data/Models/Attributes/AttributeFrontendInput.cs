@@ -46,5 +46,8 @@ namespace Magento.RestClient.Data.Models.Attributes
 
 		///<Summary>Fixed Product Tax </Summary>
 		[EnumMember(Value = "weee")] Weee,
+		[EnumMember(Value = "gallery")] Gallery,
+		[EnumMember(Value = "weight")] Weight,
+
 	}
 }

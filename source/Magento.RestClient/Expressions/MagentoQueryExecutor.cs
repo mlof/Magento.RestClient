@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Magento.RestClient.Data.Models.Search;
 using Magento.RestClient.Expressions.QueryGeneration;
 using Remotion.Linq;
@@ -33,19 +34,26 @@ namespace Magento.RestClient.Expressions
 				: ExecuteCollection<T>(queryModel).Single();
 		}
 
+	
 		public IEnumerable<T> ExecuteCollection<T>(QueryModel queryModel)
 		{
 			var visitor = new QueryModelVisitor();
 			visitor.VisitQueryModel(queryModel);
 			var r = visitor.GetRequest(_restRequest);
 
-			var result = 
-			_client.Execute<SearchResponse<T>>(r);
+			var result =
+				_client.Execute<SearchResponse<T>>(r);
 
 			if (result.IsSuccessful)
 			{
-				return result.Data.Items;
-
+				if (result.Data != null)
+				{
+					return result.Data.Items;
+				}
+				else
+				{
+					return new List<T>();
+				}
 			}
 			else
 			{

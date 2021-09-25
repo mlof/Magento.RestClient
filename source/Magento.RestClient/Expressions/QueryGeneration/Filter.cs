@@ -1,4 +1,5 @@
-﻿using Magento.RestClient.Search;
+﻿using System;
+using Magento.RestClient.Search;
 
 namespace Magento.RestClient.Expressions.QueryGeneration
 {
@@ -20,5 +21,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 		public SearchCondition Condition { get; set; } = SearchCondition.Equals;
 
 		public string PropertyName { get; set; }
+		public Type PropertyType { get; set; }
 	}
 }

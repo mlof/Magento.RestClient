@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.Serialization;
 using Magento.RestClient.Extensions;
 using Magento.RestClient.Search;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Remotion.Linq.Parsing;
 
 namespace Magento.RestClient.Expressions.QueryGeneration
@@ -34,6 +38,7 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 				Visit(expression.Operand);
 				var x = 9;
 			}
+
 			return expression;
 		}
 
@@ -52,10 +57,7 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 				_ => SearchCondition.Equals
 			};
 
-			if (expression.NodeType == ExpressionType.AndAlso)
-			{
-				_aggregator.CreateNewFilterGroup();
-			}
+			_aggregator.CreateNewFilterGroup();
 
 			Visit(expression.Right);
 
@@ -76,6 +78,7 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 				_currentFilter.Condition = SearchCondition.Like;
 				Visit(expression.Arguments.Single());
 			}
+		
 
 
 			return expression;
@@ -86,8 +89,23 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 		{
 			_currentFilter.PropertyName = expression.Member.GetPropertyName();
 
+			if (expression.Member is PropertyInfo member)
+			{
+				_currentFilter.PropertyType = member.PropertyType;
+			}
+
 
 			return expression;
+		}
+
+		public static string ToEnumString<T>(T type)
+		{
+			var enumType = typeof(T);
+			var name = Enum.GetName(enumType, type);
+			var enumMemberAttribute =
+				((EnumMemberAttribute[]) enumType.GetField(name).GetCustomAttributes(typeof(EnumMemberAttribute), true))
+				.Single();
+			return enumMemberAttribute.Value;
 		}
 
 		protected override Expression VisitConstant(ConstantExpression expression)
@@ -98,6 +116,30 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			if (_currentFilter.Condition == SearchCondition.Like && _currentFilter.Value is string s)
 			{
 				_currentFilter.Value = $"%{s}%";
+			}
+			else
+			{
+				if (_currentFilter.PropertyType.IsEnum)
+				{
+					var value = Enum.ToObject(_currentFilter.PropertyType, (int) expression.Value);
+					var name = value.ToString();
+					if (name != null)
+					{
+
+
+
+						var enumMemberAttribute = _currentFilter.PropertyType.GetField(name)
+							.GetCustomAttributes(typeof(EnumMemberAttribute)).OfType<EnumMemberAttribute>()
+							.SingleOrDefault();
+						if (enumMemberAttribute != null)
+						{
+							_currentFilter.Value = enumMemberAttribute.Value;
+						}
+					}
+				}
+
+
+				var x = 9;
 			}
 
 			_aggregator.AddToLastFilterGroup(new Filter(_currentFilter));

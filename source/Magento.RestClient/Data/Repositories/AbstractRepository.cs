@@ -19,12 +19,18 @@ namespace Magento.RestClient.Data.Repositories
 				return response.Data;
 			}
 
-			if (response.StatusCode == HttpStatusCode.NotFound)
+			else if (response.ErrorException != null)
+			{
+				throw response.ErrorException;
+			}
+			else if (response.StatusCode == HttpStatusCode.NotFound)
 			{
 				return null;
 			}
-
-			throw MagentoException.Parse(response.Content);
+			else
+			{
+				throw MagentoException.Parse(response.Content);
+			}
 		}
 
 		/// <summary>

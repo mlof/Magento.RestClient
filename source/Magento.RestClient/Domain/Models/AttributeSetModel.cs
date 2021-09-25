@@ -20,7 +20,7 @@ namespace Magento.RestClient.Domain.Models
 		private long? _skeletonId;
 
 		public AttributeSetModel(IAdminContext adminContext, string name, EntityType entityType,
-			long? skeletonId)
+			long? skeletonId = null)
 		{
 			_context = adminContext;
 

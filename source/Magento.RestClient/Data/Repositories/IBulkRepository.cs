@@ -1,7 +1,13 @@
-﻿namespace Magento.RestClient.Data.Repositories
+﻿using System.Linq;
+
+namespace Magento.RestClient.Data.Repositories
 {
-	public interface IBulkRepository
+	public interface IBulkRepository : IQueryable<BulkOperation>
 	{
 		BulkActionStatus GetStatus(string uuid);
+	}
+
+	public class BulkOperation
+	{
 	}
 }

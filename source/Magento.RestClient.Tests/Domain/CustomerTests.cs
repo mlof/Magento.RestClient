@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FluentAssertions;
 using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Tests.Domain.Abstractions;
@@ -8,7 +9,7 @@ namespace Magento.RestClient.Tests.Domain
 	public class CustomerTests : AbstractDomainObjectTest
 	{
 		[Test]
-		public void CreateCustomer()
+		async public Task CreateCustomer()
 		{
 			var customer = new CustomerModel(this.Context, "user@example.org");
 			customer.FirstName = "First Name";
@@ -16,12 +17,12 @@ namespace Magento.RestClient.Tests.Domain
 
 			customer.IsPersisted.Should().BeFalse();
 
-			customer.Save();
+			await customer.SaveAsync();
 			customer.IsPersisted.Should().BeTrue();
 
 			customer.FirstName.Should().BeEquivalentTo("First Name");
 		}
-		
+
 		[TearDown]
 		public void CustomerTeardown()
 		{

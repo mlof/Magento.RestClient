@@ -1,8 +1,9 @@
 ﻿using System.Net;
 using Magento.RestClient.Exceptions;
+using Newtonsoft.Json;
 using RestSharp;
 
-namespace Magento.RestClient.Data.Repositories
+namespace Magento.RestClient.Data.Repositories.Abstractions
 {
 	public abstract class AbstractRepository
 	{
@@ -19,7 +20,7 @@ namespace Magento.RestClient.Data.Repositories
 				return response.Data;
 			}
 
-			else if (response.ErrorException != null)
+			else if (response.ErrorException != null && response.ErrorException is not JsonSerializationException)
 			{
 				throw response.ErrorException;
 			}

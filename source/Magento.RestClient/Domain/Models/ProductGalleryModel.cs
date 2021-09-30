@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Abstractions;
 
@@ -18,17 +20,17 @@ namespace Magento.RestClient.Domain.Models
 
 		public bool IsPersisted { get; }
 
-		public void Refresh()
+		public async Task Refresh()
 		{
 			throw new NotImplementedException();
 		}
 
-		public void Save()
+		public async Task SaveAsync()
 		{
 			throw new NotImplementedException();
 		}
 
-		public void Delete()
+		public async Task Delete()
 		{
 			throw new NotImplementedException();
 		}

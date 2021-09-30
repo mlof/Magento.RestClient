@@ -1,6 +1,6 @@
 ﻿using RestSharp;
 
-namespace Magento.RestClient.Search.Extensions
+namespace Magento.RestClient.Extensions
 {
 	public static class RestRequestExtensions
 	{

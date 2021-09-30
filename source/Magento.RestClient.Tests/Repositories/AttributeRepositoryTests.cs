@@ -2,6 +2,7 @@
 using RestSharp;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Models.Common;
@@ -31,11 +32,11 @@ namespace Magento.RestClient.Tests.Repositories
 		private long attributeSetId => attributeSet.AttributeSetId.Value;
 
 		[SetUp]
-		public void SetupAttributes()
+		async public Task SetupAttributes()
 		{
 			this.attributeSetName = "AttributeTestSet";
 			this.attributeRepository = this.Context.Attributes;
-			this.attributeSet = this.Context.AttributeSets.Create(EntityType.CatalogProduct, 4,
+			this.attributeSet = await this.Context.AttributeSets.Create(EntityType.CatalogProduct, 4,
 				new AttributeSet() {AttributeSetName = attributeSetName});
 		}
 
@@ -44,7 +45,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[TearDown]
 		public void TeardownAttributes()
 		{
-			var id = Context.AttributeSets.SingleOrDefault(set =>
+			var id = Context.AttributeSets.AsQueryable().SingleOrDefault(set =>
 					set.AttributeSetName == attributeSetName && set.EntityTypeId == EntityType.CatalogProduct)?
 				.AttributeSetId;
 			this.Context.AttributeSets.Delete(id.Value);
@@ -53,16 +54,14 @@ namespace Magento.RestClient.Tests.Repositories
 
 
 		[Test]
-		public void GetProductAttributes_NewAttributeSet_HasDefaultAttributes()
+		async public Task GetProductAttributes_NewAttributeSet_HasDefaultAttributes()
 		{
 			var defaultAttributeSet = Context.AttributeSets.GetDefaultAttributeSet(EntityType.CatalogProduct);
-			var defaultAttributes = attributeRepository.GetProductAttributes(
-					defaultAttributeSet.AttributeSetId.Value)
-				.OrderBy(attribute => attribute.AttributeCode);
+			var defaultAttributes = await attributeRepository.GetProductAttributes(
+				defaultAttributeSet.AttributeSetId.Value);
 			// Act
-			var result = attributeRepository.GetProductAttributes(
-					attributeSetId)
-				.OrderBy(attribute => attribute.AttributeCode);
+			var result = await attributeRepository.GetProductAttributes(
+				attributeSetId);
 
 			// Assert
 			foreach (var attribute in defaultAttributes)
@@ -73,14 +72,14 @@ namespace Magento.RestClient.Tests.Repositories
 		}
 
 		[Test]
-		public void Create_ValidAttribute()
+		async public Task Create_ValidAttribute()
 		{
 			// Arrange
 			ProductAttribute attribute = new ProductAttribute(this.attributeCode);
 			attribute.DefaultFrontendLabel = this.attributeCode;
 
 			// Act
-			var result = attributeRepository.Create(
+			var result = await attributeRepository.Create(
 				attribute);
 
 			// Assert
@@ -89,18 +88,18 @@ namespace Magento.RestClient.Tests.Repositories
 		}
 
 		[Test]
-		public void DeleteProductAttribute()
+		async public Task DeleteProductAttribute()
 		{
 			// Arrange
 
 			ProductAttribute deleteThis = new ProductAttribute("deletethis");
 			deleteThis.DefaultFrontendLabel = "deletethis";
 
-			var result = attributeRepository.Create(
+			var result = await attributeRepository.Create(
 				deleteThis);
 
 			// Act 
-			attributeRepository.DeleteProductAttribute(
+			await attributeRepository.DeleteProductAttribute(
 				result.AttributeCode);
 
 

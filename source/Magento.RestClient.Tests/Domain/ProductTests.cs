@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
 using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Domain.Extensions;
@@ -11,7 +12,7 @@ namespace Magento.RestClient.Tests.Domain
 	class ProductTests : AbstractDomainObjectTest
 	{
 		[SetUp]
-		public void ProductSetup()
+		async public Task ProductSetup()
 		{
 			var sizeAttribute = Context.GetAttributeModel("monitor_sizes");
 			sizeAttribute.DefaultFrontendLabel = "Monitor Size";
@@ -22,20 +23,20 @@ namespace Magento.RestClient.Tests.Domain
 			sizeAttribute.AddOption("17 inch");
 
 
-			sizeAttribute.Save();
+			await sizeAttribute.SaveAsync();
 
 
 			var attributeSet = Context.GetAttributeSetModel("Laptops");
 			attributeSet.AddGroup("Monitor");
 			attributeSet.AssignAttribute("Monitor", "monitor_sizes");
-			attributeSet.Save();
+			await attributeSet.SaveAsync();
 			this.LaptopAttributeSet = attributeSet.Id;
 		}
 
 		public long LaptopAttributeSet { get; set; }
 
 		[TearDown]
-		public void ProductTeardown()
+		async public Task ProductTeardown()
 		{
 			DeleteIfExists("TEST-SIMPLEPRODUCT");
 			DeleteIfExists("HP-ZBOOK-FURY");
@@ -44,8 +45,8 @@ namespace Magento.RestClient.Tests.Domain
 			DeleteIfExists("HP-ZBOOK-FURY-17");
 
 
-			Context.GetAttributeSetModel("Laptops").Delete();
-			Context.GetAttributeModel("monitor_sizes").Delete();
+			await Context.GetAttributeSetModel("Laptops").Delete();
+			await Context.GetAttributeModel("monitor_sizes").Delete();
 		}
 
 		private void DeleteIfExists(string sku)
@@ -59,7 +60,7 @@ namespace Magento.RestClient.Tests.Domain
 		}
 
 		[Test]
-		public void CreateSimpleProduct()
+		async public Task CreateSimpleProduct()
 		{
 			var sku = "TEST-SIMPLEPRODUCT";
 			var product = new ProductModel(this.Context, sku);
@@ -73,20 +74,19 @@ namespace Magento.RestClient.Tests.Domain
 			product["test_attr"] = "Xyz";
 
 
-			product.Save();
+			await product.SaveAsync();
 		}
 
 		[Test]
-		public void CreateConfigurableProduct()
+		async public Task CreateConfigurableProduct()
 		{
-			var product = new ProductModel(this.Context, "HP-ZBOOK-FURY") {
+			var product = new ConfigurableProductModel(this.Context, "HP-ZBOOK-FURY") {
 				Name = "HP ZBook Fury",
 				AttributeSetId = this.LaptopAttributeSet,
 				Visibility = ProductVisibility.Both,
 				Price = 50,
 				Type = ProductType.Configurable
 			};
-			product.Save();
 
 			var smallProduct = new ProductModel(this.Context, "HP-ZBOOK-FURY-13") {
 				Price = 2339,
@@ -95,7 +95,7 @@ namespace Magento.RestClient.Tests.Domain
 				Type = ProductType.Simple,
 				["monitor_sizes"] = "13 inch"
 			};
-			smallProduct.Save();
+			product.AddChild(smallProduct);
 			var largeProduct = new ProductModel(this.Context, "HP-ZBOOK-FURY-17") {
 				Price = 2279,
 				AttributeSetId = this.LaptopAttributeSet,
@@ -104,17 +104,13 @@ namespace Magento.RestClient.Tests.Domain
 				["monitor_sizes"] = "15 inch"
 			};
 
-			largeProduct.Save();
-
-			var configurableProduct = product.GetConfigurableProductModel();
+			product.AddChild(largeProduct);
 
 
-			configurableProduct.AddConfigurableOption("monitor_sizes");
-			configurableProduct.Save();
-			configurableProduct.AddChild(smallProduct);
-			configurableProduct.AddChild(largeProduct);
-			
-			configurableProduct.Save();
+
+			await product.AddConfigurableOptions("monitor_sizes");
+
+			await product.SaveAsync();
 		}
 
 		[Test]

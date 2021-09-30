@@ -15,7 +15,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[TearDown]
 		public void TeardownCategories()
 		{
-			var category = Context.Categories.SingleOrDefault(category1 => category1.Name == "Should Be Created");
+			var category = Context.Categories.AsQueryable().SingleOrDefault(category1 => category1.Name == "Should Be Created");
 
 
 			if (category != null)
@@ -42,7 +42,7 @@ namespace Magento.RestClient.Tests.Repositories
 			var created = this.Context.Categories.CreateCategory(shouldBeCreated);
 
 
-			var category = Context.Categories.SingleOrDefault(category1 => category1.Name == "Should Be Created");
+			var category = Context.Categories.AsQueryable().SingleOrDefault(category1 => category1.Name == "Should Be Created");
 			category.Name.Should().BeEquivalentTo(shouldBeCreated.Name);
 			category.IsActive.Should().BeTrue();
 		}
@@ -55,7 +55,7 @@ namespace Magento.RestClient.Tests.Repositories
 			this.Context.Categories.CreateCategory(shouldBeCreated);
 
 
-			var category = Context.Categories.SingleOrDefault(category1 => category1.Name == "Should Be Created");
+			var category = Context.Categories.AsQueryable().SingleOrDefault(category1 => category1.Name == "Should Be Created");
 			category.Name.Should().BeEquivalentTo(shouldBeCreated.Name);
 			category.IsActive.Should().BeTrue();
 		}

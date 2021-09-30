@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Category;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
@@ -22,7 +24,7 @@ namespace Magento.RestClient.Domain.Models
 		{
 			_context = context;
 			this.Id = id;
-			Refresh();
+			Refresh().GetAwaiter().GetResult();
 		}
 
 		public long ParentId { get; private set; }
@@ -43,17 +45,18 @@ namespace Magento.RestClient.Domain.Models
 
 		public bool IsPersisted => this.Id != 0;
 
-		public void Refresh()
+		public async Task Refresh()
 		{
-			var tree = _context.Categories.GetCategoryTree(this.Id);
+			var tree = await _context.Categories.GetCategoryTree(this.Id);
 
 			this.Id = tree.Id;
 			this.ParentId = tree.ParentId;
 			_children = tree.ChildrenData.ToList();
-			_products = _context.Categories.GetProducts(this.Id).ToList();
+			var productsResponse = await _context.Categories.GetProducts(this.Id);
+			_products = productsResponse.ToList();
 		}
 
-		public void Save()
+		public async Task SaveAsync()
 		{
 			var _model = new Category {Name = this.Name};
 			// don't update the root category.
@@ -61,7 +64,7 @@ namespace Magento.RestClient.Domain.Models
 			{
 				if (this.IsPersisted)
 				{
-					_context.Categories.UpdateCategory(this.Id, _model);
+					await _context.Categories.UpdateCategory(this.Id, _model);
 				}
 				else
 				{
@@ -75,26 +78,26 @@ namespace Magento.RestClient.Domain.Models
 				child.ParentId = this.Id;
 				if (child.Id == 0)
 				{
-					_context.Categories.CreateCategory(child);
+					await _context.Categories.CreateCategory(child);
 				}
 				else
 				{
-					_context.Categories.UpdateCategory(child.Id, child);
+					await _context.Categories.UpdateCategory(child.Id, child);
 				}
 			}
 
 			foreach (var link in _products)
 			{
-				_context.Categories.AddProduct(this.Id, link);
+				await _context.Categories.AddProduct(this.Id, link);
 			}
 
 
-			Refresh();
+			await Refresh();
 		}
 
-		public void Delete()
+		public async Task Delete()
 		{
-			_context.Categories.DeleteCategoryById(this.Id);
+			await _context.Categories.DeleteCategoryById(this.Id);
 		}
 
 		public void AddChild(string name, bool isActive = true)

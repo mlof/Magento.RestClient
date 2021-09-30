@@ -31,6 +31,10 @@ services:
     image: docker.io/bitnami/elasticsearch:7
     volumes:
       - 'elasticsearch_data:/bitnami/elasticsearch/data'
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - '35672:15672'
 volumes:
   mariadb_data:
     driver: local

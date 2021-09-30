@@ -1,4 +1,6 @@
-﻿using Magento.RestClient.Data.Models.Customers;
+﻿using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
+using Magento.RestClient.Data.Models.Customers;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Abstractions;
 
@@ -22,7 +24,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public bool IsPersisted { get; private set; }
 
-		public void Refresh()
+		public async Task Refresh()
 		{
 			var existing = _context.Customers.GetByEmailAddress(this.EmailAddress);
 			if (existing != null)
@@ -39,26 +41,26 @@ namespace Magento.RestClient.Domain.Models
 			}
 		}
 
-		public void Save()
+		public async Task SaveAsync()
 		{
 			var customer = new Customer {
 				Firstname = this.FirstName, Lastname = this.LastName, Email = this.EmailAddress
 			};
 			if (this.IsPersisted)
 			{
-				_context.Customers.Update(this.Id, customer);
+				await _context.Customers.Update(this.Id, customer);
 			}
 			else
 			{
-				_context.Customers.Create(customer);
+				await _context.Customers.Create(customer);
 			}
 
-			Refresh();
+			await Refresh();
 		}
 
-		public void Delete()
+		public async Task Delete()
 		{
-			_context.Customers.DeleteById(this.Id);
+			await _context.Customers.DeleteById(this.Id);
 		}
 	}
 }

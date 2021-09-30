@@ -5,7 +5,7 @@ namespace Magento.RestClient
 {
 	public class GuestContext : IGuestContext
 	{
-		public GuestContext(IRestClient client)
+		public GuestContext(MagentoClient client)
 		{
 		}
 	}

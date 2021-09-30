@@ -5,7 +5,6 @@ using Newtonsoft.Json.Converters;
 namespace Magento.RestClient.Data.Models.Attributes
 {
 	[JsonConverter(typeof(StringEnumConverter))]
-
 	public enum AttributeFrontendInput
 	{
 		///<Summary>Text Field </Summary>
@@ -48,6 +47,5 @@ namespace Magento.RestClient.Data.Models.Attributes
 		[EnumMember(Value = "weee")] Weee,
 		[EnumMember(Value = "gallery")] Gallery,
 		[EnumMember(Value = "weight")] Weight,
-
 	}
 }

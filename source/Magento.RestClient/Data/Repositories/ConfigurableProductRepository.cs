@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
@@ -16,67 +18,70 @@ namespace Magento.RestClient.Data.Repositories
 			this.client = client;
 		}
 
-		public void CreateChild(string parentSku, string childSku)
+		async public Task CreateChild(string parentSku, string childSku)
 		{
 			var request = new RestRequest("configurable-products/{sku}/child");
 			request.Method = Method.POST;
 			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
 			request.AddJsonBody(new {childSku});
 
-			var response = client.Execute(request);
-			if (!response.IsSuccessful)
-			{
-				throw MagentoException.Parse(response.Content);
-			}
+			var response = await client.ExecuteAsync(request);
+			HandleResponse(response);
 		}
 
-		public void DeleteChild(string parentSku, string childSku)
+		async public Task DeleteChild(string parentSku, string childSku)
 		{
 			var request = new RestRequest("configurable-products/{sku}/child/{childSku}");
 			request.Method = Method.DELETE;
 			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
 			request.AddOrUpdateParameter("childSku", childSku);
 
-			var response = client.Execute(request);
+			var response = await client.ExecuteAsync(request);
 			if (!response.IsSuccessful)
 			{
 				throw MagentoException.Parse(response.Content);
 			}
 		}
 
-		public List<Product> GetConfigurableChildren(string parentSku)
+		async public Task<List<Product>> GetConfigurableChildren(string parentSku)
 		{
 			var request = new RestRequest("configurable-products/{sku}/children");
 			request.Method = Method.GET;
 
 			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
 
-			var response = client.Execute<List<Product>>(request);
-			return HandleResponse(response);
+			var response = await client.ExecuteAsync<List<Product>>(request);
+			return HandleResponse(response) ?? new List<Product>();
 		}
 
-		
 
-		
-		public void CreateOption(string parentSku, ConfigurableProductOption option)
+		async public Task CreateOption(string parentSku, ConfigurableProductOption option)
 		{
 			var request = new RestRequest("configurable-products/{sku}/options");
 			request.Method = Method.POST;
-			request.AddJsonBody(new {
-				option = option 
-			});
+			request.AddJsonBody(new {option = option});
 			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
-			client.Execute(request);
+			await client.ExecuteAsync(request);
 		}
 
-		public List<ConfigurableProductOption> GetOptions(string parentSku)
+		async public Task<List<ConfigurableProductOption>> GetOptions(string parentSku)
 		{
 			var request = new RestRequest("configurable-products/{sku}/options/all");
 			request.Method = Method.GET;
 
 			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
-			var response = client.Execute<List<ConfigurableProductOption>>(request);
+			var response = await client.ExecuteAsync<List<ConfigurableProductOption>>(request);
 			return HandleResponse(response);
+		}
+
+		public async Task UpdateOption(string parentSku, long optionId, ConfigurableProductOption option)
+		{
+			var request = new RestRequest("configurable-products/{sku}/options/{optionId}");
+			request.Method = Method.PUT;
+			request.AddJsonBody(new {option = option});
+			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
+			request.AddOrUpdateParameter("optionId", optionId, ParameterType.UrlSegment);
+			await client.ExecuteAsync(request);
 		}
 	}
 }

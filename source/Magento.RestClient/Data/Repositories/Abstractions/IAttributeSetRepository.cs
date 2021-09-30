@@ -1,16 +1,21 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Attributes;
+using Magento.RestClient.Data.Models.Common;
 
 namespace Magento.RestClient.Data.Repositories.Abstractions
 {
-	public interface IAttributeSetRepository : IReadAttributeSetRepository, IWriteAttributeSetRepository, IQueryable<AttributeSet>
+	public interface IAttributeSetRepository : IHasQueryable<AttributeSet>
 	{
-		void Delete(long attributeSetId);
+		Task<AttributeSet> Create(EntityType entityTypeCode, long skeletonId, AttributeSet attributeSet);
 
-		void AssignProductAttribute(long attributeSetId, long attributeGroupId, string attributeCode,
+		Task Delete(long attributeSetId);
+
+		Task AssignProductAttribute(long attributeSetId, long attributeGroupId, string attributeCode,
 			int sortOrder = 1);
 
-		long CreateProductAttributeGroup(long attributeSetId, string attributeGroupName);
-		AttributeSet Get(long id);
+		Task<long> CreateProductAttributeGroup(long attributeSetId, string attributeGroupName);
+		Task<AttributeSet> Get(long id);
 	}
 }

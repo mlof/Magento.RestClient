@@ -10,7 +10,7 @@ namespace Magento.RestClient.Extensions
 		public static AttributeSet GetDefaultAttributeSet(this IAttributeSetRepository attributeSets,
 			EntityType entityType = EntityType.CatalogProduct)
 		{
-			return attributeSets.Single(set =>
+			return attributeSets.AsQueryable().Single(set =>
 				set.AttributeSetName == "Default" && set.EntityTypeId == entityType);
 		}
 	}

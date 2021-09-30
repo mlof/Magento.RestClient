@@ -1,7 +1,6 @@
 ﻿namespace Magento.RestClient.Data.Models.Customers
 {
-    public record CustomerGroup
-    {
-
-    }
+	public record CustomerGroup
+	{
+	}
 }

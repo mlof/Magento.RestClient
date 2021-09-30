@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
@@ -5,30 +6,30 @@ namespace Magento.RestClient.Tests.Repositories
     public class StoreTests : AbstractIntegrationTest
     {
         [Test]
-        public void CanGetWebsites()
+        async public Task CanGetWebsites()
         {
-            var websites = this.Context.Stores.GetWebsites();
+            var websites = await this.Context.Stores.GetWebsites();
             Assert.IsNotEmpty(websites);
         }
 
         [Test]
-        public void CanGetStoreViews()
+        async public Task CanGetStoreViews()
         {
-            var storeViews = this.Context.Stores.GetStoreViews();
+            var storeViews = await this.Context.Stores.GetStoreViews();
             Assert.IsNotEmpty(storeViews);
         }
 
         [Test]
-        public void CanGetStoreConfigs()
+        async public Task CanGetStoreConfigs()
         {
-            var storeConfigs = this.Context.Stores.GetStoreConfigs();
+            var storeConfigs = await this.Context.Stores.GetStoreConfigs();
             Assert.IsNotEmpty(storeConfigs);
         }
 
         [Test]
-        public void CanGetStoreGroups()
+        async public Task CanGetStoreGroups()
         {
-            var storeGroups = this.Context.Stores.GetStoreGroups();
+            var storeGroups = await this.Context.Stores.GetStoreGroups();
             Assert.IsNotEmpty(storeGroups);
         }
     }

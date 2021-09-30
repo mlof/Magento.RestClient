@@ -1,4 +1,6 @@
-﻿namespace Magento.RestClient.Data.Repositories.Abstractions
+﻿using Magento.RestClient.Data.Repositories.Abstractions;
+
+namespace Magento.RestClient.Abstractions
 {
 	public interface IAdminContext : ICanGetModules
 	{
@@ -18,5 +20,6 @@
 		IAttributeRepository Attributes { get; }
 		IShipmentRepository Shipments { get; }
 		IBulkRepository Bulk { get; }
+		ISpecialPriceRepository SpecialPrices { get; }
 	}
 }

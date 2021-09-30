@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Expressions;
-using Magento.RestClient.Search.Extensions;
+using Magento.RestClient.Extensions;
+using Microsoft.Extensions.Caching.Memory;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
@@ -16,15 +18,16 @@ namespace Magento.RestClient.Data.Repositories
 	internal class AttributeSetRepository : AbstractRepository, IAttributeSetRepository
 	{
 		private readonly IRestClient _client;
-		private IQueryable<AttributeSet> _attributeSetRepositoryImplementation => new MagentoQueryable<AttributeSet>(_client, "eav/attribute-sets/list");
+		private readonly MemoryCache cache;
 
-		public AttributeSetRepository(IRestClient client)
+		public AttributeSetRepository(IRestClient client, MemoryCache memoryCache)
 		{
 			_client = client;
+			this.cache = memoryCache;
 		}
 
 
-		public AttributeSet Create(EntityType entityTypeCode, long skeletonId, AttributeSet attributeSet)
+		async public Task<AttributeSet> Create(EntityType entityTypeCode, long skeletonId, AttributeSet attributeSet)
 		{
 			var request = new RestRequest("eav/attribute-sets");
 
@@ -32,20 +35,20 @@ namespace Magento.RestClient.Data.Repositories
 			request.AddJsonBody(new {attributeSet, skeletonId, entityTypeCode = entityTypeCode.ToTypeCode()});
 
 
-			var response = _client.Execute<AttributeSet>(request);
+			var response = await _client.ExecuteAsync<AttributeSet>(request);
 			return HandleResponse(response);
 		}
 
-		public void Delete(long attributeSetId)
+		async public Task Delete(long attributeSetId)
 		{
 			var request = new RestRequest("eav/attribute-sets/{id}");
 			request.Method = Method.DELETE;
 			request.AddOrUpdateParameter("id", attributeSetId, ParameterType.UrlSegment);
-			_client.Execute(request);
+			await _client.ExecuteAsync(request);
 		}
 
 
-		public long CreateProductAttributeGroup(long attributeSetId, string attributeGroupName)
+		async public Task<long> CreateProductAttributeGroup(long attributeSetId, string attributeGroupName)
 		{
 			var request = new RestRequest("products/attribute-sets/{attributeSetId}/groups");
 			request.Method = Method.PUT;
@@ -54,7 +57,7 @@ namespace Magento.RestClient.Data.Repositories
 			request.AddJsonBody(new {
 				group = new {attribute_group_name = attributeGroupName, attribute_set_id = attributeSetId}
 			});
-			var response = _client.Execute<AttributeGroup>(request);
+			var response = await _client.ExecuteAsync<AttributeGroup>(request);
 
 			if (response.IsSuccessful)
 			{
@@ -64,49 +67,40 @@ namespace Magento.RestClient.Data.Repositories
 			throw MagentoException.Parse(response.Content);
 		}
 
-		public AttributeSet Get(long id)
+		async public Task<AttributeSet> Get(long id)
 		{
 			var request = new RestRequest("eav/attribute-sets/{id}");
 			request.Method = Method.GET;
 			request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
-			var response = _client.Execute<AttributeSet>(request);
+			var response = await _client.ExecuteAsync<AttributeSet>(request);
 			return HandleResponse(response);
 		}
 
-		public void AssignProductAttribute(long attributeSetId, long attributeGroupId, string attributeCode,
+		async public Task AssignProductAttribute(long attributeSetId, long attributeGroupId, string attributeCode,
 			int sortOrder = 1)
 		{
 			var request = new RestRequest("products/attribute-sets/attributes");
 			request.Method = Method.POST;
 
 			request.AddJsonBody(new {attributeSetId, attributeCode, attributeGroupId, sortOrder});
-			_client.Execute(request);
+			await _client.ExecuteAsync(request);
 		}
 
-		public void RemoveProductAttribute(long attributeSetId, string attributeCode)
+		async public Task RemoveProductAttribute(long attributeSetId, string attributeCode)
 		{
 			var request = new RestRequest("products/attribute-sets/{attributeSetId}/attributes/{attributeCode}");
 			request.Method = Method.DELETE;
 			request.AddOrUpdateParameter("attributeSetId", attributeSetId, ParameterType.UrlSegment);
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 
-			_client.Execute(request);
+			await _client.ExecuteAsync(request);
 		}
 
-		public IEnumerator<AttributeSet> GetEnumerator()
+
+		public IQueryable<AttributeSet> AsQueryable()
 		{
-			return _attributeSetRepositoryImplementation.GetEnumerator();
+			return new MagentoQueryable<AttributeSet>(_client, "eav/attribute-sets/list", cache,
+				TimeSpan.FromMinutes(1));
 		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return ((IEnumerable) _attributeSetRepositoryImplementation).GetEnumerator();
-		}
-
-		public Type ElementType => _attributeSetRepositoryImplementation.ElementType;
-
-		public Expression Expression => _attributeSetRepositoryImplementation.Expression;
-
-		public IQueryProvider Provider => _attributeSetRepositoryImplementation.Provider;
 	}
 }

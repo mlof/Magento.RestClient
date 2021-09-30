@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Tests.Domain.Abstractions;
@@ -10,10 +11,10 @@ namespace Magento.RestClient.Tests.Domain
 	public class AttributeSetTests : AbstractDomainObjectTest
 	{
 		[SetUp]
-		public void SetupAttributeSets()
+		async public Task SetupAttributeSets()
 		{
 			var attributeSet = Context.GetAttributeSetModel(this.ExistingAttributeSet);
-			attributeSet.Save();
+			await attributeSet.SaveAsync();
 		}
 
 		public string ExistingAttributeSet { get; set; } = "SHOULD EXIST";
@@ -36,7 +37,7 @@ namespace Magento.RestClient.Tests.Domain
 		}
 
 		[Test]
-		public void Add()
+		async public Task Add()
 		{
 
 			var attributeSet =  Context.GetAttributeSetModel("Test Attribute Set");
@@ -47,7 +48,7 @@ namespace Magento.RestClient.Tests.Domain
 
 
 
-			attributeSet.Save();
+			await attributeSet.SaveAsync();
 			
 		}
 
@@ -59,7 +60,7 @@ namespace Magento.RestClient.Tests.Domain
 
 			foreach (var name in testNames)
 			{
-				var attributeSet = Context.AttributeSets.SingleOrDefault(set => set.AttributeSetName == name);
+				var attributeSet = Context.AttributeSets.AsQueryable().SingleOrDefault(set => set.AttributeSetName == name);
 
 				Context.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
 			}

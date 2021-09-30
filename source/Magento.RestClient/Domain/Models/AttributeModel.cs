@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
@@ -19,16 +21,25 @@ namespace Magento.RestClient.Domain.Models
 		{
 			_context = context;
 			this.AttributeCode = attributeCode;
-			Refresh();
+			Refresh().GetAwaiter().GetResult();
 		}
 
 		public string AttributeCode { get; }
+		public bool Required { get; set; }
+		public bool Visible { get; set; }
+		public bool Searchable { get; set; }
+		public bool UseInLayeredNavigation { get; set; }
+		public bool Comparable { get; set; }
 
 		public AttributeFrontendInput FrontendInput {
 			get => _frontendInput;
 			set {
+				if (_frontendInput != value)
+				{
+					_frontendInputChanged = true;
+				}
+
 				_frontendInput = value;
-				_frontendInputChanged = true;
 			}
 		}
 
@@ -37,9 +48,9 @@ namespace Magento.RestClient.Domain.Models
 
 		public bool IsPersisted { get; private set; }
 
-		public void Refresh()
+		public async Task Refresh()
 		{
-			var existing = _context.Attributes.GetByCode(this.AttributeCode);
+			var existing = await _context.Attributes.GetByCode(this.AttributeCode);
 
 			if (existing == null)
 			{
@@ -52,59 +63,63 @@ namespace Magento.RestClient.Domain.Models
 
 				this.DefaultFrontendLabel = existing.DefaultFrontendLabel;
 				_frontendInput = existing.FrontendInput.Value;
-				_options = _context.Attributes.GetProductAttributeOptions(this.AttributeCode);
+
+				_options = await _context.Attributes.GetProductAttributeOptions(this.AttributeCode);
 			}
 		}
 
-		public void Save()
+		public async Task SaveAsync()
 		{
-			var existing = _context.Attributes.GetByCode(this.AttributeCode);
+			var existing = await _context.Attributes.GetByCode(this.AttributeCode);
 			var attribute = new ProductAttribute(this.AttributeCode);
+			attribute.IsRequired = Required;
+			attribute.IsVisible = Visible;
 			attribute.DefaultFrontendLabel = DefaultFrontendLabel;
 			attribute.FrontendInput = this.FrontendInput;
 			if (existing != null && _frontendInputChanged)
 			{
-				_context.Attributes.DeleteProductAttribute(this.AttributeCode);
+				await _context.Attributes.DeleteProductAttribute(this.AttributeCode);
 			}
 
 			attribute = existing != null
-				? _context.Attributes.Update(this.AttributeCode, attribute)
-				: _context.Attributes.Create(attribute);
+				? await _context.Attributes.Update(this.AttributeCode, attribute)
+				: await _context.Attributes.Create(attribute);
 
 			if (_options.Any())
 			{
-				var existingOptions = _context.Attributes.GetProductAttributeOptions(this.AttributeCode);
+				var existingOptions = await _context.Attributes.GetProductAttributeOptions(this.AttributeCode);
 
 				foreach (var option in _options.Where(option =>
 					!existingOptions.Select(option1 => option1.Label).Contains(option.Label)))
 				{
-					_context.Attributes.CreateProductAttributeOption(this.AttributeCode, option);
+					await _context.Attributes.CreateProductAttributeOption(this.AttributeCode, option);
 				}
 
 				foreach (var option in existingOptions.Where(option =>
 					!_options.Select(o => o.Label).Contains(option.Label) && !string.IsNullOrEmpty(option.Value)))
 				{
-					_context.Attributes.DeleteProductAttributeOption(this.AttributeCode, option.Value);
+					await _context.Attributes.DeleteProductAttributeOption(this.AttributeCode, option.Value);
 				}
 			}
 
-			Refresh();
+			await Refresh();
 		}
 
-		public void Delete()
+		public async Task Delete()
 		{
-			_context.Attributes.DeleteProductAttribute(AttributeCode);
+			await _context.Attributes.DeleteProductAttribute(AttributeCode);
 		}
 
 
 		public void AddOption(string option)
 		{
-
 			if (option != null)
 			{
 				if (option.Trim().Equals("0"))
 				{
-					throw new Exception("Magento does not allow 0 as an attribute option value.");
+					_options.Add(new Option {Label = "0 (Zero)"});
+
+					//throw new Exception("Magento does not allow 0 as an attribute option value.");
 				}
 				else if (_options.All(o => o.Label != option))
 				{
@@ -112,7 +127,5 @@ namespace Magento.RestClient.Domain.Models
 				}
 			}
 		}
-
-	
 	}
 }

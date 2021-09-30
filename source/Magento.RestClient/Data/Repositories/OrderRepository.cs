@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using FluentValidation;
 using Magento.RestClient.Data.Models.Orders;
 using Magento.RestClient.Data.Repositories.Abstractions;
@@ -16,7 +17,6 @@ namespace Magento.RestClient.Data.Repositories
 	{
 		private readonly IRestClient _client;
 		private readonly OrderValidator _orderValidator;
-		private IQueryable<Order> _orderRepositoryImplementation => new MagentoQueryable<Order>(_client, "orders");
 
 		public OrderRepository(IRestClient client)
 		{
@@ -25,74 +25,64 @@ namespace Magento.RestClient.Data.Repositories
 		}
 
 
-		public Order CreateOrder(Order order)
+		async public Task<Order> CreateOrder(Order order)
 		{
-			_orderValidator.Validate(order, options => options.ThrowOnFailures());
+			await _orderValidator.ValidateAsync(order, options => options.ThrowOnFailures());
 
 			var request = new RestRequest("orders");
 			request.Method = Method.POST;
 			request.AddJsonBody(new {entity = order});
 
-			var response = _client.Execute(request);
+			var response = await _client.ExecuteAsync(request);
 			return order;
 		}
 
-		public Order GetByOrderId(long orderId)
+		async public Task<Order> GetByOrderId(long orderId)
 		{
 			IRestRequest request = new RestRequest("orders/{id}");
 			request.AddOrUpdateParameter("id", orderId, ParameterType.UrlSegment);
-			var response = _client.Execute<Order>(request);
+			var response = await _client.ExecuteAsync<Order>(request);
 			return response.Data;
 		}
 
-		public void Cancel(long orderId)
+		public Task Cancel(long orderId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void Hold(long orderId)
+		public Task Hold(long orderId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void Unhold(long orderId)
+		public Task Unhold(long orderId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void Refund(long orderId)
+		public Task Refund(long orderId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void Ship(long orderId)
+		public Task Ship(long orderId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void CreateInvoice(long orderId)
+		async public Task CreateInvoice(long orderId)
 		{
 			IRestRequest request = new RestRequest("order/{id}/invoice");
 			request.Method = Method.POST;
 			request.AddOrUpdateParameter("id", orderId, ParameterType.UrlSegment);
 			request.AddJsonBody(new {capture = true, notify = true});
-			var response = _client.Execute(request);
+			var response = await _client.ExecuteAsync(request);
 		}
 
-		public IEnumerator<Order> GetEnumerator()
+
+		public IQueryable<Order> AsQueryable()
 		{
-			return _orderRepositoryImplementation.GetEnumerator();
+			return new MagentoQueryable<Order>(_client, "orders");
 		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return ((IEnumerable) _orderRepositoryImplementation).GetEnumerator();
-		}
-
-		public Type ElementType => _orderRepositoryImplementation.ElementType;
-
-		public Expression Expression => _orderRepositoryImplementation.Expression;
-
-		public IQueryProvider Provider => _orderRepositoryImplementation.Provider;
 	}
 }

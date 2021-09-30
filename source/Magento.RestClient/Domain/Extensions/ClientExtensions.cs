@@ -1,4 +1,5 @@
-﻿using Magento.RestClient.Data.Models.Common;
+﻿using Magento.RestClient.Abstractions;
+using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Models;
 

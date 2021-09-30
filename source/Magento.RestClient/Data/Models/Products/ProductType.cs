@@ -7,6 +7,7 @@ namespace Magento.RestClient.Data.Models.Products
 	[JsonConverter(typeof(StringEnumConverter))]
 	public enum ProductType
 	{
+		None,
 		[EnumMember(Value = "simple")] Simple,
 		[EnumMember(Value = "configurable")] Configurable,
 		[EnumMember(Value = "grouped")] Grouped,

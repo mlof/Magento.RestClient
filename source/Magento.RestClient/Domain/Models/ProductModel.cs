@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
+using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Models.Stock;
+using Magento.RestClient.Data.Repositories;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Abstractions;
 using Magento.RestClient.Domain.Validators;
@@ -13,16 +18,28 @@ namespace Magento.RestClient.Domain.Models
 {
 	public class ProductModel : IProductModel, IDomainModel
 	{
-		private readonly IAdminContext _context;
+		protected readonly IAdminContext _context;
 		private readonly ProductValidator _productValidator;
+		private List<SpecialPrice> _specialPrices;
 
+		/// <summary>
+		/// ctor
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="sku"></param>
+		/// <exception cref="Magento.RestClient.Domain.Models.ProductSkuInvalidException"></exception>
 		public ProductModel(IAdminContext context, string sku)
 		{
+			if (!Regex.Match(sku, "^[\\w-]*$").Success)
+			{
+				throw new ProductSkuInvalidException(sku);
+			}
+
 			_context = context;
 			this.Sku = sku;
 			_productValidator = new ProductValidator();
 			this.Scope = "all";
-			Refresh();
+			Refresh().GetAwaiter().GetResult();
 		}
 
 		public string Sku { get; }
@@ -45,21 +62,26 @@ namespace Magento.RestClient.Domain.Models
 
 		public StockItem StockItem { get; set; }
 
-		public List<Product> Children { get; set; }
 
 		public ProductType Type { get; set; }
 
 
 		public dynamic this[string attributeCode] {
 			get => GetAttribute(attributeCode);
-			set => SetAttribute(attributeCode, value);
+			set => SetAttribute(attributeCode, value).GetAwaiter().GetResult();
 		}
 
 		public bool IsPersisted { get; set; }
 
-		public void Refresh()
+		public string UrlKey {
+			get => this["url_key"];
+			set => SetAttribute("url_key", value).GetAwaiter().GetResult();
+		}
+
+		async virtual public Task Refresh()
 		{
-			var existingProduct = _context.Products.GetProductBySku(this.Sku, this.Scope);
+			var existingProduct = await _context.Products.GetProductBySku(this.Sku, this.Scope);
+
 			if (existingProduct == null)
 			{
 				this.AttributeSetId = _context.AttributeSets.GetDefaultAttributeSet().AttributeSetId
@@ -71,23 +93,44 @@ namespace Magento.RestClient.Domain.Models
 			{
 				this.Name = existingProduct.Name;
 				this.Price = existingProduct.Price;
+
 				this.AttributeSetId = existingProduct.AttributeSetId;
 				this.Visibility = Enum.Parse<ProductVisibility>(existingProduct.Visibility.ToString());
 				this.CustomAttributes = existingProduct.CustomAttributes;
 				this.IsPersisted = true;
 				this.Type = existingProduct.TypeId;
-
-				if (this.Type == ProductType.Configurable)
-				{
-					this.Children = _context.ConfigurableProducts.GetConfigurableChildren(this.Sku);
-				}
+				this._specialPrices =
+					await _context.SpecialPrices.GetSpecialPrices(this.Sku) ?? new List<SpecialPrice>();
 			}
 		}
 
-		public void Save()
+		public async virtual Task SaveAsync()
 		{
 			var existingProduct = _context.Products.GetProductBySku(this.Sku);
 
+
+			var product = GetProduct();
+
+			if (existingProduct == null)
+			{
+				await _context.Products.CreateProduct(product);
+
+				this.IsPersisted = true;
+			}
+			else
+			{
+				await _context.Products.UpdateProduct(this.Sku, product, scope: this.Scope);
+			}
+
+			foreach (var specialPrice in SpecialPrices)
+			{
+				await _context.SpecialPrices.AddOrUpdateSpecialPrices(specialPrice);
+			}
+		}
+
+
+		public Product GetProduct()
+		{
 			var product = new Product {
 				Sku = this.Sku,
 				Name = this.Name,
@@ -95,31 +138,20 @@ namespace Magento.RestClient.Domain.Models
 				AttributeSetId = this.AttributeSetId,
 				Visibility = (long) this.Visibility,
 				CustomAttributes = this.CustomAttributes,
-				TypeId = this.Type
+				TypeId = this.Type,
 			};
 			if (this.StockItem != null)
 			{
 				product.SetStockItem(this.StockItem);
 			}
 
-			if (existingProduct == null)
-			{
-				_context.Products.CreateProduct(product);
-
-				this.IsPersisted = true;
-			}
-			else
-			{
-				_context.Products.UpdateProduct(this.Sku, product, scope: this.Scope);
-			}
-
-			Refresh();
+			return product;
 		}
 
 
-		public void Delete()
+		public async Task Delete()
 		{
-			_context.Products.DeleteProduct(this.Sku);
+			await _context.Products.DeleteProduct(this.Sku);
 		}
 
 
@@ -143,15 +175,16 @@ namespace Magento.RestClient.Domain.Models
 			return this.CustomAttributes.SingleOrDefault(attribute => attribute.AttributeCode == attributeCode)?.Value;
 		}
 
-		private ProductModel SetAttribute(string attributeCode, dynamic inputValue)
+		async private Task<ProductModel> SetAttribute(string attributeCode, dynamic inputValue)
 		{
 			// validateValue 
-			var attribute = _context.Attributes.GetByCode(attributeCode);
+			var attribute = await _context.Attributes.GetByCode(attributeCode);
 
 			dynamic value;
 			if (attribute.Options.Any() && !string.IsNullOrWhiteSpace(inputValue as string))
 			{
-				var option = attribute.Options.SingleOrDefault(option => option.Label.Equals(inputValue as string));
+				var option = attribute.Options.SingleOrDefault(option =>
+					option.Label.Equals(inputValue as string, StringComparison.InvariantCultureIgnoreCase));
 
 				value = option != null ? option.Value : inputValue;
 			}
@@ -173,5 +206,23 @@ namespace Magento.RestClient.Domain.Models
 
 			return this;
 		}
+
+		async public static Task<BulkActionResponse> SaveBulk(IAdminContext context, List<ProductModel> models)
+		{
+			return await context.Products.Save(models.Select(model => model.GetProduct()).ToArray());
+		}
+
+		public void SetSpecialPrice(DateTime start, DateTime end, decimal price, long storeId = 0)
+		{
+			this._specialPrices.Add(new SpecialPrice() {
+				PriceFrom = start,
+				PriceTo = end,
+				Sku = this.Sku,
+				Price = price,
+				StoreId = storeId
+			});
+		}
+
+		public IReadOnlyCollection<SpecialPrice> SpecialPrices => _specialPrices.AsReadOnly();
 	}
 }

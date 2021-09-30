@@ -1,12 +1,14 @@
-﻿namespace Magento.RestClient.Domain.Abstractions
+﻿using System.Threading.Tasks;
+
+namespace Magento.RestClient.Domain.Abstractions
 {
 	public interface IDomainModel
 	{
 		public bool IsPersisted { get; }
 
 
-		public void Refresh();
-		public void Save();
-		public void Delete();
+		public Task Refresh();
+		public Task SaveAsync();
+		public Task Delete();
 	}
 }

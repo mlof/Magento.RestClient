@@ -25,7 +25,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[TearDown]
 		public void AttributeSetTearDown()
 		{
-			var attributeSet = Context.AttributeSets.SingleOrDefault(attributeSet =>
+			var attributeSet = Context.AttributeSets.AsQueryable().SingleOrDefault(attributeSet =>
 				attributeSet.AttributeSetName == "Laptops" &&
 				attributeSet.EntityTypeId == EntityType.CatalogProduct);
 			Context.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
@@ -34,7 +34,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void Search_Existing()
 		{
-			var items = Context.AttributeSets.Where(attributeSet =>
+			var items = Context.AttributeSets.AsQueryable().Where(attributeSet =>
 				attributeSet.AttributeSetName == "Laptops" &&
 				attributeSet.EntityTypeId == EntityType.CatalogProduct).ToList();
 
@@ -44,7 +44,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void Search_NonExistent()
 		{
-			var response = Context.AttributeSets.Where(set => set.AttributeSetName == "Hamsters").ToList();
+			var response = Context.AttributeSets.AsQueryable().Where(set => set.AttributeSetName == "Hamsters").ToList();
 			response.Should().HaveCount(0);
 		}
 

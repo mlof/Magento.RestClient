@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Magento.RestClient.Data.Models.Carts;
 using Magento.RestClient.Domain.Models;
 
@@ -6,9 +7,9 @@ namespace Magento.RestClient.Domain.Extensions
 {
 	public static class CartExtensions
 	{
-		public static CartModel SetPaymentMethod(this CartModel cart, PaymentMethod method)
+		async public static Task<CartModel> SetPaymentMethod(this CartModel cart, PaymentMethod method)
 		{
-			return cart.SetPaymentMethod(method.Code);
+			return await cart.SetPaymentMethod(method.Code);
 		}
 
 		/// <summary>
@@ -17,9 +18,9 @@ namespace Magento.RestClient.Domain.Extensions
 		/// <param name="shippingMethod"></param>
 		/// <returns></returns>
 		/// <exception cref="InvalidOperationException"></exception>
-		public static CartModel SetShippingMethod(this CartModel cart, ShippingMethod shippingMethod)
+		async public static Task<CartModel> SetShippingMethod(this CartModel cart, ShippingMethod shippingMethod)
 		{
-			return cart.SetShippingMethod(shippingMethod.CarrierCode, shippingMethod.MethodCode);
+			return await cart.SetShippingMethod(shippingMethod.CarrierCode, shippingMethod.MethodCode);
 		}
 	}
 }

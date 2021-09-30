@@ -1,3 +1,4 @@
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Tests.Domain.Constants;

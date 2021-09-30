@@ -78,7 +78,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 				_currentFilter.Condition = SearchCondition.Like;
 				Visit(expression.Arguments.Single());
 			}
-		
 
 
 			return expression;
@@ -125,9 +124,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 					var name = value.ToString();
 					if (name != null)
 					{
-
-
-
 						var enumMemberAttribute = _currentFilter.PropertyType.GetField(name)
 							.GetCustomAttributes(typeof(EnumMemberAttribute)).OfType<EnumMemberAttribute>()
 							.SingleOrDefault();

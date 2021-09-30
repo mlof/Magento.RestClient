@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Threading.Tasks;
+using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Expressions;
-using Magento.RestClient.Search.Extensions;
+using Magento.RestClient.Extensions;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
@@ -17,23 +19,20 @@ namespace Magento.RestClient.Data.Repositories
 	{
 		private readonly IRestClient _client;
 
-		private IQueryable<Product> ProductRepositoryImplementation =>
-			new MagentoQueryable<Product>(_client, "products");
-
 		public ProductRepository(IRestClient client)
 		{
 			_client = client;
 		}
 
 
-		public Product GetProductBySku(string sku, string scope = "all")
+		async public Task<Product> GetProductBySku(string sku, string scope = "all")
 		{
 			var request = new RestRequest("products/{sku}");
 			request.AddOrUpdateParameter("sku", sku, ParameterType.UrlSegment);
 			request.SetScope(scope);
 
 
-			var response = _client.Execute<Product>(request);
+			var response = await _client.ExecuteAsync<Product>(request);
 
 			if (response.IsSuccessful)
 			{
@@ -48,13 +47,13 @@ namespace Magento.RestClient.Data.Repositories
 			throw response.ErrorException;
 		}
 
-		public Product CreateProduct(Product product, bool saveOptions = true)
+		async public Task<Product> CreateProduct(Product product, bool saveOptions = true)
 		{
 			var request = new RestRequest("products") {Method = Method.POST};
 			request.SetScope("all");
 			// ReSharper disable once RedundantAnonymousTypePropertyName
 			request.AddJsonBody(new {product = product});
-			var response = _client.Execute<Product>(request);
+			var response = await _client.ExecuteAsync<Product>(request);
 			if (response.IsSuccessful)
 			{
 				return response.Data;
@@ -63,7 +62,8 @@ namespace Magento.RestClient.Data.Repositories
 			throw response.ErrorException;
 		}
 
-		public Product UpdateProduct(string sku, Product product, bool saveOptions = true, string scope = "all")
+		async public Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true,
+			string scope = "all")
 		{
 			var request = new RestRequest("products/{sku}");
 			request.SetScope(scope);
@@ -72,7 +72,7 @@ namespace Magento.RestClient.Data.Repositories
 			// ReSharper disable once RedundantAnonymousTypePropertyName
 			request.AddJsonBody(new {product = product});
 
-			var response = _client.Execute<Product>(request);
+			var response = await _client.ExecuteAsync<Product>(request);
 
 			if (response.IsSuccessful)
 			{
@@ -82,29 +82,35 @@ namespace Magento.RestClient.Data.Repositories
 			throw MagentoException.Parse(response.Content);
 		}
 
-		public void DeleteProduct(string sku)
+		public async Task DeleteProduct(string sku)
 		{
 			var request = new RestRequest("products/{sku}") {Method = Method.DELETE};
 			request.AddOrUpdateParameter("sku", sku, ParameterType.UrlSegment);
 
 
-			var response = _client.Execute<Product>(request);
+			var response = await _client.ExecuteAsync<Product>(request);
 		}
 
-		public IEnumerator<Product> GetEnumerator()
+
+		public IQueryable<Product> AsQueryable()
 		{
-			return this.ProductRepositoryImplementation.GetEnumerator();
+			return new MagentoQueryable<Product>(_client, "products");
 		}
 
-		IEnumerator IEnumerable.GetEnumerator()
+		async public Task<BulkActionResponse> Save(params Product[] models)
 		{
-			return ((IEnumerable) this.ProductRepositoryImplementation).GetEnumerator();
+			var request = new RestRequest("products");
+			request.Method = Method.POST;
+			request.SetScope("all/async/bulk");
+
+			request.AddJsonBody(
+				models.Select(product => new {product = product}).ToList()
+			);
+
+
+			var response = await _client.ExecuteAsync<BulkActionResponse>(request);
+
+			return response.Data;
 		}
-
-		public Type ElementType => this.ProductRepositoryImplementation.ElementType;
-
-		public Expression Expression => this.ProductRepositoryImplementation.Expression;
-
-		public IQueryProvider Provider => this.ProductRepositoryImplementation.Provider;
 	}
 }

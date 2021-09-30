@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using FluentValidation;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Customers;
@@ -19,7 +20,6 @@ namespace Magento.RestClient.Data.Repositories
 	{
 		private readonly IRestClient _client;
 		private readonly CustomerValidator _customerValidator;
-		private IQueryable<Customer> _customerRepositoryImplementation => new MagentoQueryable<Customer>(_client, "customers/search");
 
 		public CustomerRepository(IRestClient client)
 		{
@@ -29,7 +29,7 @@ namespace Magento.RestClient.Data.Repositories
 
 		public Customer GetByEmailAddress(string emailAddress)
 		{
-			var customer = this.SingleOrDefault(customer => customer.Email == emailAddress);
+			var customer = this.AsQueryable().SingleOrDefault(customer => customer.Email == emailAddress);
 
 			if (customer == null)
 			{
@@ -40,51 +40,51 @@ namespace Magento.RestClient.Data.Repositories
 			return customer;
 		}
 
-		public Customer GetById(long customerId)
+		async public Task<Customer> GetById(long customerId)
 		{
 			var request = new RestRequest("customers/{id}");
 
 			request.Method = Method.GET;
 
 			request.AddOrUpdateParameter("id", customerId, ParameterType.UrlSegment);
-			var response = _client.Execute<Customer>(request);
+			var response = await _client.ExecuteAsync<Customer>(request);
 			return HandleResponse(response);
 		}
 
-		public ValidationResult Validate(Customer customer)
+		public Task<ValidationResult> Validate(Customer customer)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Address GetBillingAddress(long customerId)
+		public Task<Address> GetBillingAddress(long customerId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Address GetShippingAddress(long customerId)
+		public Task<Address> GetShippingAddress(long customerId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Customer Create(Customer customer, string password)
+		async public Task<Customer> Create(Customer customer, string password = null)
 		{
-			_customerValidator.ValidateAndThrow(customer);
+			await _customerValidator.ValidateAndThrowAsync(customer);
 			var request = new RestRequest("customers");
 			request.Method = Method.POST;
 			request.AddJsonBody(new {customer, password});
-			var response = _client.Execute<Customer>(request);
+			var response = await _client.ExecuteAsync<Customer>(request);
 
 			return HandleResponse(response);
 		}
 
-		public void DeleteById(long id)
+		async public Task DeleteById(long id)
 		{
 			var request = new RestRequest("customers/{id}");
 
 			request.Method = Method.DELETE;
 
 			request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
-			_client.Execute(request);
+			await _client.ExecuteAsync(request);
 		}
 
 		public Customer GetOwnCustomer()
@@ -99,7 +99,7 @@ namespace Magento.RestClient.Data.Repositories
 			throw new NotImplementedException();
 		}
 
-		public Customer Update(long id, Customer customer)
+		async public Task<Customer> Update(long id, Customer customer)
 		{
 			_customerValidator.ValidateAndThrow(customer);
 			var request = new RestRequest("customers/{id}");
@@ -108,25 +108,15 @@ namespace Magento.RestClient.Data.Repositories
 			request.AddJsonBody(new {customer});
 			request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
 
-			var response = _client.Execute<Customer>(request);
+			var response = await _client.ExecuteAsync<Customer>(request);
 
 			return HandleResponse(response);
 		}
 
-		public IEnumerator<Customer> GetEnumerator()
+
+		public IQueryable<Customer> AsQueryable()
 		{
-			return _customerRepositoryImplementation.GetEnumerator();
+			return new MagentoQueryable<Customer>(_client, "customers/search");
 		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return ((IEnumerable) _customerRepositoryImplementation).GetEnumerator();
-		}
-
-		public Type ElementType => _customerRepositoryImplementation.ElementType;
-
-		public Expression Expression => _customerRepositoryImplementation.Expression;
-
-		public IQueryProvider Provider => _customerRepositoryImplementation.Provider;
 	}
 }

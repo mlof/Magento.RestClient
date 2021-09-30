@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Domain.Extensions;
@@ -11,9 +12,6 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Domain
 {
-
-
-	
 	public class CartTests : AbstractDomainObjectTest
 	{
 		private long existingCartId;
@@ -30,7 +28,7 @@ namespace Magento.RestClient.Tests.Domain
 		};
 
 		[SetUp]
-		public void SetupCart()
+		public async Task SetupCart()
 		{
 			var cart = new CartModel(Context);
 			this.existingCartId = cart.Id;
@@ -41,7 +39,7 @@ namespace Magento.RestClient.Tests.Domain
 			product.Price = 10;
 			product.Name = "CART_PRODUCT";
 			product.SetStock(10);
-			product.Save();
+			await product.SaveAsync();
 		}
 
 		public string CartProductSku { get; set; } = "TEST_CART_PRODUCT";
@@ -68,11 +66,11 @@ namespace Magento.RestClient.Tests.Domain
 		}
 
 		[Test]
-		public void Cart_AssignCustomer_ValidCustomer()
+		async public Task Cart_AssignCustomer_ValidCustomer()
 		{
 			var cart = new CartModel(Context);
 
-			cart.AssignCustomer(1);
+			await cart.AssignCustomer(1);
 
 			cart.Customer.Should().NotBeNull();
 			cart.Customer.Email.Should().NotBeNullOrEmpty();
@@ -86,9 +84,8 @@ namespace Magento.RestClient.Tests.Domain
 			var cart = Context.CreateNewCartModel();
 
 
-			Assert.Throws<EntityNotFoundException>(
-				() => {
-					cart.AssignCustomer(-1);
+			Assert.ThrowsAsync<EntityNotFoundException>(async () => {
+					await cart.AssignCustomer(-1);
 
 					cart.Customer.Should().BeNull();
 				}
@@ -97,10 +94,10 @@ namespace Magento.RestClient.Tests.Domain
 
 
 		[Test]
-		public void Cart_AddSimpleProduct_ValidItem()
+		async public Task Cart_AddSimpleProduct_ValidItem()
 		{
 			var cart = new CartModel(Context);
-			cart.AddSimpleProduct(this.CartProductSku, 3);
+			await cart.AddSimpleProduct(this.CartProductSku, 3);
 
 			cart.Items.Any(item => item.Sku == this.CartProductSku && item.Qty == 3).Should().BeTrue();
 		}
@@ -110,28 +107,28 @@ namespace Magento.RestClient.Tests.Domain
 		{
 			var cart = new CartModel(Context);
 
-			Assert.Throws<MagentoException>(() => {
-				cart.AddSimpleProduct("DOESNOTEXIST", 3);
+			Assert.ThrowsAsync<MagentoException>(async () => {
+				await cart.AddSimpleProduct("DOESNOTEXIST", 3);
 			});
 		}
 
 		[Test]
-		public void Cart_AddConfigurableProduct()
+		async public Task Cart_AddConfigurableProduct()
 		{
 			var cart = new CartModel(Context);
-			cart.AddConfigurableProduct("TESTSKU-CONF", "TESTSKU-CONF-option 1-option 2", 3);
+			await cart.AddConfigurableProduct("TESTSKU-CONF", "TESTSKU-CONF-option 1-option 2", 3);
 		}
 
 
 		[Test]
-		public void ShippingMethods_GetMethods_ShippingAddressSet()
+		async public Task ShippingMethods_GetMethods_ShippingAddressSet()
 		{
 			var cart = new CartModel(Context);
-			cart.AddSimpleProduct(this.CartProductSku, 3);
+			await cart.AddSimpleProduct(this.CartProductSku, 3);
 
 			cart.BillingAddress = ScunthorpePostOffice;
 			cart.ShippingAddress = ScunthorpePostOffice;
-			var shippingMethods = cart.EstimateShippingMethods();
+			var shippingMethods = await cart.EstimateShippingMethods();
 
 			Assert.IsNotEmpty(shippingMethods);
 		}
@@ -149,30 +146,26 @@ namespace Magento.RestClient.Tests.Domain
 		}
 
 		[Test]
-		public void ShippingMethods_GetMethods_ShippingAddressNotSet()
+		async public Task ShippingMethods_GetMethods_ShippingAddressNotSet()
 		{
 			var cart = new CartModel(Context);
 
-			cart.AddSimpleProduct(this.CartProductSku, 3);
+			await cart.AddSimpleProduct(this.CartProductSku, 3);
 
-			Assert.Throws<ArgumentNullException>(() =>
-				cart.EstimateShippingMethods());
+			Assert.ThrowsAsync<ArgumentNullException>(async () =>
+				await cart.EstimateShippingMethods());
 		}
 
 		[Test]
-		public void ShippingMethods_SetShippingMethod_Cheapest()
+		async public Task ShippingMethods_SetShippingMethod_Cheapest()
 		{
 			var cart = new CartModel(Context);
 
-			cart.AddSimpleProduct(this.CartProductSku, 3);
+			await cart.AddSimpleProduct(this.CartProductSku, 3);
 
 			cart.ShippingAddress = ScunthorpePostOffice;
-			var shippingMethods = cart.EstimateShippingMethods();
-			var cheapestShipping = cart.EstimateShippingMethods()
-				.OrderByDescending(method => method.PriceInclTax)
-				.First();
-
-			cart.SetShippingMethod(cheapestShipping);
+			var shippingMethods = await cart.EstimateShippingMethods();
+			await cart.SetShippingMethod(shippingMethods.First());
 		}
 
 		/// <summary>
@@ -180,26 +173,26 @@ namespace Magento.RestClient.Tests.Domain
 		/// </summary>
 		/// <exception cref="InvalidOperationException">Ignore.</exception>
 		[Test]
-		public void ShippingMethods_SetShippingMethod_InvalidShippingMethod()
+		async public Task ShippingMethods_SetShippingMethod_InvalidShippingMethod()
 		{
 			var cart = new CartModel(Context);
 
-			cart.AddSimpleProduct(this.CartProductSku, 3);
+			await cart.AddSimpleProduct(this.CartProductSku, 3);
 
 			cart.BillingAddress = ScunthorpePostOffice;
 			cart.ShippingAddress = ScunthorpePostOffice;
 
-			Assert.Throws<InvalidOperationException>(() => {
-				cart.SetShippingMethod("Yodel", "THISISNOTAVALIDSHIPPINGMETHOD");
+			Assert.ThrowsAsync<InvalidOperationException>(async () => {
+				await cart.SetShippingMethod("Yodel", "THISISNOTAVALIDSHIPPINGMETHOD");
 			});
 		}
 
 		[Test]
-		public void PaymentMethods_GetMethods()
+		async public Task PaymentMethods_GetMethods()
 		{
 			var cart = new CartModel(Context);
 
-			var methods = cart.GetPaymentMethods();
+			var methods = await cart.GetPaymentMethods();
 			methods.Should().NotBeNullOrEmpty();
 		}
 
@@ -208,49 +201,45 @@ namespace Magento.RestClient.Tests.Domain
 		/// </summary>
 		/// <exception cref="InvalidOperationException">Ignore.</exception>
 		[Test]
-		public void PaymentMethods_SetPaymentMethods_InvalidPaymentMethod()
+		public async Task PaymentMethods_SetPaymentMethods_InvalidPaymentMethodAsync()
 		{
 			var cart = new CartModel(Context);
 
 
-			Assert.Throws<InvalidOperationException>(() => {
-				cart.SetPaymentMethod("GALLONOFPCP");
+			Assert.ThrowsAsync<InvalidOperationException>(async () => {
+				await cart.SetPaymentMethod("GALLONOFPCP");
 			});
 		}
 
 		[Test]
-		public void PaymentMethods_SetPaymentMethods_ValidPaymentMethod()
+		async public Task PaymentMethods_SetPaymentMethods_ValidPaymentMethod()
 		{
 			var cart = new CartModel(Context);
 
-			var paymentMethod = cart.GetPaymentMethods()
-				.First();
-			cart.SetPaymentMethod(paymentMethod.Code);
+			var paymentMethod = await cart.GetPaymentMethods();
+			await cart.SetPaymentMethod(paymentMethod.First().Code);
 		}
 
 		/// <summary>
 		/// CommitOrder_ValidOrder
 		/// </summary>
 		/// <exception cref="InvalidOperationException">Ignore.</exception>
-		public void CommitOrder_ValidOrder()
+		async public Task CommitOrder_ValidOrder()
 		{
 			var cart = new CartModel(Context);
 
 			cart.ShippingAddress = ScunthorpePostOffice;
 			cart.BillingAddress = ScunthorpePostOffice;
 
-			cart.AddSimpleProduct(this.CartProductSku, 3);
+			await cart.AddSimpleProduct(this.CartProductSku, 3);
 
-			var cheapestShipping = cart.EstimateShippingMethods()
-				.OrderByDescending(method => method.PriceInclTax)
-				.First();
-			var paymentMethod = cart.GetPaymentMethods()
-				.First();
+			var cheapestShipping = await cart.EstimateShippingMethods();
+			var paymentMethods = await cart.GetPaymentMethods();
 
 
-			cart.SetPaymentMethod(paymentMethod)
-				.SetShippingMethod(cheapestShipping);
-			var orderId = cart.Commit();
+			await cart.SetPaymentMethod(paymentMethods.First());
+			await cart.SetShippingMethod(cheapestShipping.First());
+			var orderId = await cart.Commit();
 			orderId.Should().NotBe(0);
 		}
 	}

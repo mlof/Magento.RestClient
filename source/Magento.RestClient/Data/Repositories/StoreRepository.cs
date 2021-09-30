@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Magento.RestClient.Data.Models.Store;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using RestSharp;
@@ -14,10 +15,10 @@ namespace Magento.RestClient.Data.Repositories
 			_client = client;
 		}
 
-		public List<Website> GetWebsites()
+		async public Task<List<Website>> GetWebsites()
 		{
 			var request = new RestRequest("store/websites");
-			var response = _client.Execute<List<Website>>(request);
+			var response = await _client.ExecuteAsync<List<Website>>(request);
 
 			if (response.IsSuccessful)
 			{
@@ -27,10 +28,10 @@ namespace Magento.RestClient.Data.Repositories
 			throw response.ErrorException;
 		}
 
-		public List<StoreView> GetStoreViews()
+		async public Task<List<StoreView>> GetStoreViews()
 		{
 			var request = new RestRequest("store/storeViews");
-			var response = _client.Execute<List<StoreView>>(request);
+			var response = await _client.ExecuteAsync<List<StoreView>>(request);
 
 			if (response.IsSuccessful)
 			{
@@ -40,10 +41,10 @@ namespace Magento.RestClient.Data.Repositories
 			throw response.ErrorException;
 		}
 
-		public List<StoreGroup> GetStoreGroups()
+		async public Task<List<StoreGroup>> GetStoreGroups()
 		{
 			var request = new RestRequest("store/storeGroups");
-			var response = _client.Execute<List<StoreGroup>>(request);
+			var response = await _client.ExecuteAsync<List<StoreGroup>>(request);
 
 			if (response.IsSuccessful)
 			{
@@ -53,10 +54,10 @@ namespace Magento.RestClient.Data.Repositories
 			throw response.ErrorException;
 		}
 
-		public List<StoreConfig> GetStoreConfigs()
+		async public Task<List<StoreConfig>> GetStoreConfigs()
 		{
 			var request = new RestRequest("store/storeConfigs");
-			var response = _client.Execute<List<StoreConfig>>(request);
+			var response = await _client.ExecuteAsync<List<StoreConfig>>(request);
 
 			if (response.IsSuccessful)
 			{

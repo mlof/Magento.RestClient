@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Expressions;
@@ -15,8 +16,6 @@ namespace Magento.RestClient.Data.Repositories
 	{
 		private readonly IRestClient _client;
 
-		private IQueryable<Invoice> _invoiceRepositoryImplementation =>
-			new MagentoQueryable<Invoice>(_client, "invoices");
 
 		public InvoiceRepository(IRestClient client)
 		{
@@ -24,26 +23,15 @@ namespace Magento.RestClient.Data.Repositories
 		}
 
 
-		public List<Invoice> GetByOrderId(long orderId)
+		public Task<List<Invoice>> GetByOrderId(long orderId)
 		{
-			var response = this.Where(invoice => invoice.OrderId ==orderId).ToList();
-			return response;
+			var response = this.AsQueryable().Where(invoice => invoice.OrderId == orderId).ToList();
+			return Task.FromResult(response);
 		}
 
-		public IEnumerator<Invoice> GetEnumerator()
+		public IQueryable<Invoice> AsQueryable()
 		{
-			return _invoiceRepositoryImplementation.GetEnumerator();
+			return new MagentoQueryable<Invoice>(_client, "invoices");
 		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return ((IEnumerable) _invoiceRepositoryImplementation).GetEnumerator();
-		}
-
-		public Type ElementType => _invoiceRepositoryImplementation.ElementType;
-
-		public Expression Expression => _invoiceRepositoryImplementation.Expression;
-
-		public IQueryProvider Provider => _invoiceRepositoryImplementation.Provider;
 	}
 }

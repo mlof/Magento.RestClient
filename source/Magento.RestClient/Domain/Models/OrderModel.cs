@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Orders;
 using Magento.RestClient.Data.Models.Shipping;
@@ -20,7 +22,7 @@ namespace Magento.RestClient.Domain.Models
 		{
 			_context = context;
 			this.OrderId = orderId;
-			Refresh();
+			Refresh().GetAwaiter().GetResult();
 		}
 
 		public long OrderId { get; }
@@ -29,18 +31,18 @@ namespace Magento.RestClient.Domain.Models
 
 		public bool IsPersisted { get; }
 
-		public void Refresh()
+		public async Task Refresh()
 		{
-			_model = _context.Orders.GetByOrderId(this.OrderId);
-			_invoices = _context.Invoices.GetByOrderId(this.OrderId);
+			_model = await _context.Orders.GetByOrderId(this.OrderId);
+			_invoices = await _context.Invoices.GetByOrderId(this.OrderId);
 			_shipments = _context.Shipments.GetByOrderId(this.OrderId);
 		}
 
-		public void Save()
+		public async Task SaveAsync()
 		{
 		}
 
-		public void Delete()
+		public async Task Delete()
 		{
 			// don't get me started
 			throw new NotSupportedException();
@@ -62,10 +64,10 @@ namespace Magento.RestClient.Domain.Models
 			return new(context, orderId);
 		}
 
-		public OrderModel CreateShipment()
+		async public Task<OrderModel> CreateShipment()
 		{
-			_context.Shipments.CreateShipment(this.OrderId);
-			Refresh();
+			await _context.Shipments.CreateShipment(this.OrderId);
+			await Refresh();
 			return this;
 		}
 	}

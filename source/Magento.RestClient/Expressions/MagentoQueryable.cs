@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using Remotion.Linq;
 using Remotion.Linq.Parsing.Structure;
 using RestSharp;
@@ -22,19 +22,11 @@ namespace Magento.RestClient.Expressions
 		{
 		}
 
-		public MagentoQueryable(IRestClient restClient, string resource) : base(
+		public MagentoQueryable(IRestClient restClient, string resource, IMemoryCache cache = null,
+			TimeSpan? relativeExpiration = null) : base(
 			new DefaultQueryProvider(typeof(MagentoQueryable<>),
-				QueryParser.CreateDefault(), new MagentoQueryExecutor(restClient, resource)))
+				QueryParser.CreateDefault(), new MagentoQueryExecutor(restClient, resource, cache, relativeExpiration)))
 		{
-		}
-	}
-
-	public static class QueryableExtensions
-	{
-		public static Task<List<T>> ToListAsync<T>(this IQueryable<T> queryable)
-		{
-
-			return Task.FromResult(queryable.ToList());
 		}
 	}
 }

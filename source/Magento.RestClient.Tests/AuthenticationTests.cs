@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Magento.RestClient.Tests.Configuration;
 using Magento.RestClient.Tests.Constants;
 using NUnit.Framework;
@@ -16,7 +17,7 @@ namespace Magento.RestClient.Tests
 		}
 
 		[Test]
-		public void CanAuthenticateAsIntegration()
+		async public Task CanAuthenticateAsIntegration()
 		{
 			var conf = TestConfiguration.GetInstance();
 			var c = new MagentoClient("http://localhost/").AuthenticateAsIntegration(
@@ -24,18 +25,18 @@ namespace Magento.RestClient.Tests
 				conf.AccessToken, conf.AccessTokenSecret);
 
 
-			var websites = c.Stores.GetWebsites();
+			var websites = await c.Stores.GetWebsites();
 
 			Assert.IsNotEmpty(websites);
 		}
 
 		[Test]
-		public void CanAuthenticateAsAdmin()
+		async public Task CanAuthenticateAsAdmin()
 		{
 			var c = _client.AuthenticateAsAdmin(@"user", "bitnami1");
 
 
-			var websites = c.Stores.GetWebsites();
+			var websites = await c.Stores.GetWebsites();
 
 			Assert.IsNotEmpty(websites);
 		}

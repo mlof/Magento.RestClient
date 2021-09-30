@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Repositories.Abstractions;
@@ -33,7 +35,7 @@ namespace Magento.RestClient.Domain.Models
 
 			this.Name = name;
 			_skeletonId = skeletonId;
-			Refresh();
+			Refresh().GetAwaiter().GetResult();
 		}
 
 		private EntityType EntityType { get; }
@@ -52,9 +54,9 @@ namespace Magento.RestClient.Domain.Models
 		public bool IsPersisted { get; private set; }
 
 
-		public void Refresh()
+		public async Task Refresh()
 		{
-			var searchResponse = _context.AttributeSets.Where(set =>
+			var searchResponse = _context.AttributeSets.AsQueryable().Where(set =>
 				set.AttributeSetName == this.Name && set.EntityTypeId == this.EntityType).ToList();
 			if (searchResponse.Count == 1)
 			{
@@ -62,13 +64,17 @@ namespace Magento.RestClient.Domain.Models
 				var r = searchResponse.Single();
 				this.Id = r.AttributeSetId.Value;
 
-				var _model = _context.AttributeSets.Get(this.Id);
+				var _model = await _context.AttributeSets.Get(this.Id);
 
 				this.Name = _model.AttributeSetName;
 
-				_attributes = _context.Attributes.GetProductAttributes(this.Id).ToList();
+				var attributesResponse = await _context.Attributes.GetProductAttributes(this.Id);
+
+				_attributes =
+					attributesResponse
+						.ToList();
 				var attributeGroups =
-					_context.ProductAttributeGroups.Where(group => group.AttributeSetId == Id).ToList();
+					_context.ProductAttributeGroups.AsQueryable().Where(group => group.AttributeSetId == Id).ToList();
 				_attributeGroups = attributeGroups.ToList();
 			}
 			else
@@ -88,7 +94,7 @@ namespace Magento.RestClient.Domain.Models
 			}
 		}
 
-		public void Save()
+		public async Task SaveAsync()
 		{
 			var attributeSet = new AttributeSet();
 			attributeSet.AttributeSetName = Name;
@@ -97,12 +103,12 @@ namespace Magento.RestClient.Domain.Models
 			if (this.Id == 0)
 			{
 				Debug.Assert(_skeletonId != null, nameof(_skeletonId) + " != null");
-				var set = _context.AttributeSets.Create(this.EntityType, _skeletonId.Value, attributeSet);
+				var set = await _context.AttributeSets.Create(this.EntityType, _skeletonId.Value, attributeSet);
 				this.Id = set.AttributeSetId.Value;
 			}
 
 			var currentAttributeGroups =
-				_context.ProductAttributeGroups.Where(group => group.AttributeSetId == Id).ToList();
+				_context.ProductAttributeGroups.AsQueryable().Where(group => group.AttributeSetId == Id).ToList();
 
 
 			foreach (var attributeGroup in _attributeGroups)
@@ -110,7 +116,7 @@ namespace Magento.RestClient.Domain.Models
 				if (!currentAttributeGroups.Select(group => group.AttributeGroupName)
 					.Contains(attributeGroup.AttributeGroupName))
 				{
-					attributeGroup.AttributeGroupId = _context.AttributeSets.CreateProductAttributeGroup(this.Id,
+					attributeGroup.AttributeGroupId = await _context.AttributeSets.CreateProductAttributeGroup(this.Id,
 						attributeGroup.AttributeGroupName);
 				}
 				else
@@ -124,12 +130,12 @@ namespace Magento.RestClient.Domain.Models
 			foreach (var assignment in _attributeAssignments)
 			{
 				var groupId = _attributeGroups.Single(group => group.AttributeGroupName == assignment.GroupName);
-				_context.AttributeSets.AssignProductAttribute(this.Id, groupId.AttributeGroupId,
+				await _context.AttributeSets.AssignProductAttribute(this.Id, groupId.AttributeGroupId,
 					assignment.AttributeCode);
 			}
 
 			_attributeAssignments.Clear();
-			Refresh();
+			await Refresh();
 		}
 
 
@@ -162,9 +168,9 @@ namespace Magento.RestClient.Domain.Models
 			});
 		}
 
-		public void Delete()
+		public async Task Delete()
 		{
-			_context.AttributeSets.Delete(Id);
+			await _context.AttributeSets.Delete(Id);
 		}
 	}
 }

@@ -13,7 +13,7 @@ namespace Magento.RestClient.Tests.Repositories
         [Test]
         public void SearchOrders_WithDefaultSettings()
         {
-            var orderResponse = Context.Orders.ToList();
+            var orderResponse = Context.Orders.AsQueryable().ToList();
 
 
         }

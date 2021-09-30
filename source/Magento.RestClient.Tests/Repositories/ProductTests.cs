@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FluentAssertions;
 using Magento.RestClient.Data.Models.Products;
 using NUnit.Framework;
@@ -37,9 +38,9 @@ namespace Magento.RestClient.Tests.Repositories
         }
 
         [Test]
-        public void GetProductBySku_ProductExists()
+        async public Task GetProductBySku_ProductExists()
         {
-            var p = Context.Products.GetProductBySku(_shouldExist.Sku);
+            var p = await Context.Products.GetProductBySku(_shouldExist.Sku);
 
             p.Should().NotBeNull();
 
@@ -56,7 +57,7 @@ namespace Magento.RestClient.Tests.Repositories
         }
 
         [Test]
-        public void CreateProduct_WhenProductIsValid()
+        async public Task CreateProduct_WhenProductIsValid()
         {
             var shouldBeCreated = new Product()
             {
@@ -65,7 +66,7 @@ namespace Magento.RestClient.Tests.Repositories
                 Name = "Should Be Created",
                 Price = 30
             };
-            var p = Context.Products.CreateProduct(shouldBeCreated);
+            var p = await Context.Products.CreateProduct(shouldBeCreated);
 
             
             p.Name.Should().BeEquivalentTo(shouldBeCreated.Name);
@@ -74,13 +75,13 @@ namespace Magento.RestClient.Tests.Repositories
         }
 
         [Test ]
-        public void UpdateProduct_WhenProductIsValid()
+        async public Task UpdateProduct_WhenProductIsValid()
         {
 
             
             var updatedTitle = "Has Been Updated";
             _shouldExist.Name = updatedTitle;
-            var p = Context.Products.UpdateProduct(_shouldExist.Sku, _shouldExist);
+            var p = await Context.Products.UpdateProduct(_shouldExist.Sku, _shouldExist);
 
 
             p.Name.Should().BeEquivalentTo(updatedTitle);

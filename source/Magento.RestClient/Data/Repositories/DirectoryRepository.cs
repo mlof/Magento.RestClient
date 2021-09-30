@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using RestSharp;
@@ -15,17 +16,17 @@ namespace Magento.RestClient.Data.Repositories
 			_client = client;
 		}
 
-		public List<Country> GetCountries()
+		public Task<List<Country>> GetCountries()
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<Currency> GetCurrencies()
+		public Task<List<Currency>> GetCurrencies()
 		{
 			throw new NotImplementedException();
 		}
 
-		public Country GetCountry(string countryId)
+		public Task<Country> GetCountry(string countryId)
 		{
 			throw new NotImplementedException();
 		}

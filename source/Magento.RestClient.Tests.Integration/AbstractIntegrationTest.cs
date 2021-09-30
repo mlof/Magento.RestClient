@@ -1,3 +1,4 @@
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Tests.Configuration;
 

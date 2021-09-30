@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models;
@@ -19,13 +20,13 @@ namespace Magento.RestClient.Tests.Domain
 		}
 
 		[Test]
-		public void AddChild_ValidCategory()
+		async public Task AddChild_ValidCategory()
 		{
 			var model = new CategoryModel(Context, rootId);
 
 			model.AddChild("TEST CATEGORY");
 
-			model.Save();
+			await model.SaveAsync();
 
 			model.Children
 				.SingleOrDefault(category => category.Name == "TEST CATEGORY")
@@ -35,24 +36,24 @@ namespace Magento.RestClient.Tests.Domain
 
 
 		[Test]
-		public void AddProduct()
+		async public Task AddProduct()
 		{
 
 			var root = new CategoryModel(Context, rootId);
 
 			root.AddChild("TEST CATEGORY");
 
-			root.Save();
+			await root.SaveAsync();
 			var cat = root.Children.SingleOrDefault(category => category.Name == "TEST CATEGORY").ToModel(Context);
 			cat.AddProduct(this.SimpleProductSku);
 
 
-			cat.Save();
+			await cat.SaveAsync();
 			
 			
 		}
 		[Test]
-		public void AddChild_Nested()
+		async public Task AddChild_Nested()
 		{
 			var model = new CategoryModel(Context, rootId);
 
@@ -60,17 +61,17 @@ namespace Magento.RestClient.Tests.Domain
 
 			
 
-			model.Save();
+			await model.SaveAsync();
 
 		}
 
 		[TearDown]
-		public void CategoryTeardown()
+		async public Task CategoryTeardown()
 		{
 			var model = new CategoryModel(Context, rootId);
 
 
-			model.Children
+			await model.Children
 				.Single(category => category.Name == "TEST CATEGORY")
 				.ToModel(Context)
 				.Delete();

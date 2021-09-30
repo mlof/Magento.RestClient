@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using RestSharp;
 
@@ -14,27 +16,27 @@ namespace Magento.RestClient.Data.Repositories
 			_client = client;
 		}
 
-		public void Create(string sku, ProductMedia entry)
+		public Task Create(string sku, ProductMedia entry)
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<ProductMedia> GetForSku(string sku)
+		public Task<List<ProductMedia>> GetForSku(string sku)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void Delete(string sku, int entryId)
+		public Task Delete(string sku, int entryId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public ProductMedia Get(string sku, int entryId)
+		public Task<ProductMedia> Get(string sku, int entryId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public ProductMedia Update(string sku, int entryId, ProductMedia entry)
+		public Task<ProductMedia> Update(string sku, int entryId, ProductMedia entry)
 		{
 			throw new NotImplementedException();
 		}

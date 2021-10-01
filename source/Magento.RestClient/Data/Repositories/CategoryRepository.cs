@@ -18,27 +18,25 @@ namespace Magento.RestClient.Data.Repositories
 {
 	internal class CategoryRepository : AbstractRepository, ICategoryRepository
 	{
-		private readonly CategoryValidator categoryValidator;
+		private readonly CategoryValidator _categoryValidator;
 
 		public CategoryRepository(IContext context) : base(context)
 		{
-			categoryValidator = new CategoryValidator();
+			_categoryValidator = new CategoryValidator();
 		}
 
-
-		public async Task<Category> GetCategoryById(long categoryId)
+		public Task<Category> GetCategoryById(long categoryId)
 		{
-			var request = new RestRequest("categories/{categoryId}") {Method = Method.GET};
+			var request = new RestRequest("categories/{categoryId}", Method.GET) ;
 
 			request.AddOrUpdateParameter("categoryId", categoryId, ParameterType.UrlSegment);
 
-			var response = await Client.ExecuteAsync<Category>(request);
-			return HandleResponse(response);
+			return ExecuteAsync<Category>(request);
 		}
 
-		public async Task<CategoryTree> GetCategoryTree(long? rootCategoryId = null, long? depth = null)
+		public Task<CategoryTree> GetCategoryTree(long? rootCategoryId = null, long? depth = null)
 		{
-			var request = new RestRequest("categories") {Method = Method.GET};
+			var request = new RestRequest("categories", Method.GET) ;
 			request.SetScope("all");
 
 			if (rootCategoryId != null)
@@ -51,18 +49,16 @@ namespace Magento.RestClient.Data.Repositories
 				request.AddOrUpdateParameter("depth", depth);
 			}
 
-			var response = await Client.ExecuteAsync<CategoryTree>(request);
-			return HandleResponse(response);
+			return ExecuteAsync<CategoryTree>(request);
 		}
 
-
-		public async Task DeleteCategoryById(long categoryId)
+		public Task DeleteCategoryById(long categoryId)
 		{
-			var request = new RestRequest("categories/{categoryId}") {Method = Method.DELETE};
+			var request = new RestRequest("categories/{categoryId}", Method.DELETE) ;
 
 			request.AddOrUpdateParameter("categoryId", categoryId, ParameterType.UrlSegment);
 
-			await Client.ExecuteAsync(request);
+			return this.Client.ExecuteAsync(request);
 		}
 
 		public async Task MoveCategory(int categoryId, int parentId, int? afterId = null)
@@ -70,25 +66,21 @@ namespace Magento.RestClient.Data.Repositories
 			throw new NotImplementedException();
 		}
 
-		public async Task<List<ProductLink>> GetProducts(long categoryId)
+		public Task<List<ProductLink>> GetProducts(long categoryId)
 		{
-			var request = new RestRequest("categories/{id}/products");
+			var request = new RestRequest("categories/{id}/products", Method.GET);
 			request.AddOrUpdateParameter("id", categoryId, ParameterType.UrlSegment);
 
-			request.Method = Method.GET;
-			var response = await Client.ExecuteAsync<List<ProductLink>>(request);
-			return HandleResponse(response);
+			return ExecuteAsync<List<ProductLink>>(request);
 		}
 
-		public async Task AddProduct(long categoryId, ProductLink productLink)
+		public Task AddProduct(long categoryId, ProductLink productLink)
 		{
-			var request = new RestRequest("categories/{id}/products");
+			var request = new RestRequest("categories/{id}/products", Method.PUT);
 			request.AddOrUpdateParameter("id", categoryId, ParameterType.UrlSegment);
 
-			request.Method = Method.PUT;
 			request.AddJsonBody(new {productLink});
-			var response = await Client.ExecuteAsync(request);
-			HandleResponse(response);
+			return ExecuteAsync(request);
 		}
 
 		public Task DeleteProduct(int categoryId, string sku)
@@ -98,30 +90,26 @@ namespace Magento.RestClient.Data.Repositories
 
 		public async Task<Category> CreateCategory(Category category)
 		{
-			await categoryValidator.ValidateAndThrowAsync(category);
+			await _categoryValidator.ValidateAndThrowAsync(category).ConfigureAwait(false);
 
-			var request = new RestRequest("categories");
+			var request = new RestRequest("categories", Method.POST);
 
-			request.Method = Method.POST;
 			request.AddJsonBody(new {category});
-			var response = await Client.ExecuteAsync<Category>(request);
-			return HandleResponse(response);
+			return await ExecuteAsync<Category>(request).ConfigureAwait(false);
 		}
 
-		public async Task<Category> UpdateCategory(long categoryId, Category category)
+		public Task<Category> UpdateCategory(long categoryId, Category category)
 		{
-			var request = new RestRequest("categories/{id}");
-			request.Method = Method.PUT;
+			var request = new RestRequest("categories/{id}", Method.PUT);
 			request.AddJsonBody(new {category});
 
 			request.AddOrUpdateParameter("id", categoryId, ParameterType.UrlSegment);
-			var response = await Client.ExecuteAsync<Category>(request);
-			return HandleResponse(response);
+			return ExecuteAsync<Category>(request);
 		}
 
 		public IQueryable<Category> AsQueryable()
 		{
-			return new MagentoQueryable<Category>(Client, "categories/list");
+			return new MagentoQueryable<Category>(this.Client, "categories/list");
 		}
 	}
 }

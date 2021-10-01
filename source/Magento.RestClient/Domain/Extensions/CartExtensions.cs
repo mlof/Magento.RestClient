@@ -9,7 +9,7 @@ namespace Magento.RestClient.Domain.Extensions
 	{
 		public static async Task<CartModel> SetPaymentMethod(this CartModel cart, PaymentMethod method)
 		{
-			return await cart.SetPaymentMethod(method.Code);
+			return await cart.SetPaymentMethod(method.Code).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -20,7 +20,7 @@ namespace Magento.RestClient.Domain.Extensions
 		/// <exception cref="InvalidOperationException"></exception>
 		public static async Task<CartModel> SetShippingMethod(this CartModel cart, ShippingMethod shippingMethod)
 		{
-			return await cart.SetShippingMethod(shippingMethod.CarrierCode, shippingMethod.MethodCode);
+			return await cart.SetShippingMethod(shippingMethod.CarrierCode, shippingMethod.MethodCode).ConfigureAwait(false);
 		}
 	}
 }

@@ -8,5 +8,17 @@ namespace Magento.RestClient.Exceptions
 			$"Cart with ID: {id} has already been committed. Try getting the Order ID instead.")
 		{
 		}
+
+		public CartCommittedException() : base()
+		{
+		}
+
+		public CartCommittedException(string message) : base(message)
+		{
+		}
+
+		public CartCommittedException(string message, Exception innerException) : base(message, innerException)
+		{
+		}
 	}
 }

@@ -18,11 +18,10 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 
 		public MagentoExpressionTreeVisitor(QueryPartAggregator queryPartAggregator)
 		{
-			this._aggregator = queryPartAggregator;
+			_aggregator = queryPartAggregator;
 
-			this._currentFilter = new Filter();
+			_currentFilter = new Filter();
 		}
-
 
 		protected override Exception CreateUnhandledItemException<T>(T unhandledItem, string visitMethod)
 		{
@@ -36,7 +35,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			if (expression.NodeType == ExpressionType.Convert)
 			{
 				Visit(expression.Operand);
-				var x = 9;
 			}
 
 			return expression;
@@ -45,7 +43,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 		protected override Expression VisitBinary(BinaryExpression expression)
 		{
 			Visit(expression.Left);
-
 
 			_currentFilter.Condition = expression.NodeType switch {
 				ExpressionType.Equal => SearchCondition.Equals,
@@ -61,10 +58,8 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 
 			Visit(expression.Right);
 
-
 			return expression;
 		}
-
 
 		protected override Expression VisitMethodCall(MethodCallExpression expression)
 		{
@@ -79,10 +74,8 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 				Visit(expression.Arguments.Single());
 			}
 
-
 			return expression;
 		}
-
 
 		protected override Expression VisitMember(MemberExpression expression)
 		{
@@ -92,7 +85,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			{
 				_currentFilter.PropertyType = member.PropertyType;
 			}
-
 
 			return expression;
 		}
@@ -110,7 +102,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 		protected override Expression VisitConstant(ConstantExpression expression)
 		{
 			_currentFilter.Value = expression.Value;
-
 
 			if (_currentFilter.Condition == SearchCondition.Like && _currentFilter.Value is string s)
 			{
@@ -133,9 +124,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 						}
 					}
 				}
-
-
-				var x = 9;
 			}
 
 			_aggregator.AddToLastFilterGroup(new Filter(_currentFilter));
@@ -143,7 +131,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 
 			return expression;
 		}
-
 
 		public static void SetParameters(QueryPartAggregator aggregator, Expression whereClausePredicate)
 		{

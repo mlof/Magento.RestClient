@@ -14,75 +14,54 @@ namespace Magento.RestClient.Data.Repositories
 {
 	internal class CartRepository : AbstractRepository, ICartRepository
 	{
-
 		public CartRepository(IContext context) : base(context)
 		{
 		}
 
-		public async Task<Cart> GetExistingCart(long i)
+		public Task<Cart> GetExistingCart(long i)
 		{
-			var request = new RestRequest("carts/{id}");
-			request.Method = Method.GET;
+			var request = new RestRequest("carts/{id}", Method.GET);
 			request.AddOrUpdateParameter("id", i, ParameterType.UrlSegment);
-			var response = await Client.ExecuteAsync<Cart>(request);
-
-
-			return response.Data;
+			return ExecuteAsync<Cart>(request);
 		}
 
-
-		public async Task<CartItem> AddItemToCart(long cartId, CartItem cartItem)
+		public Task<CartItem> AddItemToCart(long cartId, CartItem cartItem)
 		{
-			var request = new RestRequest("carts/{id}/items");
-			request.Method = Method.POST;
+			var request = new RestRequest("carts/{id}/items", Method.POST);
 			request.AddOrUpdateParameter("id", cartId, ParameterType.UrlSegment);
 			request.AddJsonBody(new {cartItem = cartItem});
-			var response = await Client.ExecuteAsync<CartItem>(request);
-
-			if (response.IsSuccessful)
-			{
-				return response.Data;
-			}
-
-			throw MagentoException.Parse(response.Content);
+			return ExecuteAsync<CartItem>(request);
 		}
 
-		public async Task<List<PaymentMethod>> GetPaymentMethodsForCart(long cartId)
+		public Task<List<PaymentMethod>> GetPaymentMethodsForCart(long cartId)
 		{
-			var request = new RestRequest("carts/{id}/payment-methods");
-			request.Method = Method.GET;
+			var request = new RestRequest("carts/{id}/payment-methods", Method.GET);
 			request.AddOrUpdateParameter("id", cartId, ParameterType.UrlSegment);
-			var response = await Client.ExecuteAsync<List<PaymentMethod>>(request);
-			return response.Data;
+			return ExecuteAsync<List<PaymentMethod>>(request);
 		}
 
 		public async Task<long?> PlaceOrder(long cartId, string paymentMethodCode, Address billingAddress)
 		{
-			var request = new RestRequest("carts/{id}/order");
-			request.Method = Method.PUT;
+			var request = new RestRequest("carts/{id}/order", Method.PUT);
 			request.AddOrUpdateParameter("id", cartId, ParameterType.UrlSegment);
 			request.AddJsonBody(
 				new {paymentMethod = new {method = paymentMethodCode}, address = billingAddress});
-			var response = await Client.ExecuteAsync<long>(request);
-			return response.Data;
+			return await ExecuteAsync<long>(request).ConfigureAwait(false);
 		}
 
-		public async Task<List<ShippingMethod>> EstimateShippingMethods(long cartId, Address address)
+		public Task<List<ShippingMethod>> EstimateShippingMethods(long cartId, Address address)
 		{
-			var request = new RestRequest("carts/{id}/estimate-shipping-methods");
-			request.Method = Method.POST;
+			var request = new RestRequest("carts/{id}/estimate-shipping-methods", Method.POST);
 			request.AddOrUpdateParameter("id", cartId, ParameterType.UrlSegment);
 			request.AddJsonBody(new {address});
-			var response = await Client.ExecuteAsync<List<ShippingMethod>>(request);
-			return response.Data;
+			return ExecuteAsync<List<ShippingMethod>>(request);
 		}
 
-		public async Task SetShippingInformation(long cartId, Address shippingAddress, Address billingAddress,
+		public Task SetShippingInformation(long cartId, Address shippingAddress, Address billingAddress,
 			string methodCode,
 			string carrierCode)
 		{
-			var request = new RestRequest("carts/{id}/shipping-information");
-			request.Method = Method.POST;
+			var request = new RestRequest("carts/{id}/shipping-information", Method.POST);
 			request.AddOrUpdateParameter("id", cartId, ParameterType.UrlSegment);
 			request.AddJsonBody(new {
 				addressInformation = new {
@@ -92,40 +71,23 @@ namespace Magento.RestClient.Data.Repositories
 					shipping_method_code = methodCode
 				}
 			});
-			var response = await Client.ExecuteAsync(request);
+			return ExecuteAsync(request);
 		}
 
-		/// <summary>
-		///     AssignCustomer
-		/// </summary>
-		/// <param name="cartId"></param>
-		/// <param name="storeId"></param>
-		/// <param name="customerId"></param>
-		/// <exception cref="EntityNotFoundException"></exception>
-		public async Task AssignCustomer(long cartId, long storeId, int customerId)
+		public Task AssignCustomer(long cartId, long storeId, int customerId)
 		{
-			var request = new RestRequest("carts/{id}");
-			request.Method = Method.PUT;
+			var request = new RestRequest("carts/{id}", Method.PUT);
 			request.AddOrUpdateParameter("id", cartId, ParameterType.UrlSegment);
 			request.AddJsonBody(new {customerId, storeId});
 
-
-			var response = await Client.ExecuteAsync(request);
-			if (!response.IsSuccessful)
-			{
-				if (response.StatusCode == HttpStatusCode.NotFound)
-				{
-					throw new EntityNotFoundException(typeof(Customer), customerId.ToString());
-				}
-			}
+			return ExecuteAsync(request);
 		}
 
 		public async Task<long> GetNewCartId()
 		{
-			var request = new RestRequest("carts");
-			request.Method = Method.POST;
-			var response = await Client.ExecuteAsync<string>(request);
-			var id = Convert.ToInt64(response.Data);
+			var request = new RestRequest("carts", Method.POST);
+			var response =  await ExecuteAsync<string>(request).ConfigureAwait(false);
+			var id = Convert.ToInt64(response);
 
 			return id;
 		}

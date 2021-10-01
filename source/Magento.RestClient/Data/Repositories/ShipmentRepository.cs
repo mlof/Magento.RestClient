@@ -14,32 +14,27 @@ namespace Magento.RestClient.Data.Repositories
 {
 	internal class ShipmentRepository : AbstractRepository, IShipmentRepository
 	{
-
 		public ShipmentRepository(IContext context) : base(context)
 		{
 		}
 
-
 		public List<Shipment> GetByOrderId(long orderId)
 		{
-			var response = this.AsQueryable().Where(shipment => shipment.OrderId == orderId).ToList();
+			var response = AsQueryable().Where(shipment => shipment.OrderId == orderId).ToList();
 			return response;
 		}
 
-		public async Task<long> CreateShipment(long orderId)
+		public Task<long> CreateShipment(long orderId)
 		{
-			var request = new RestRequest("order/{orderId}/ship");
-			request.Method = Method.POST;
+			var request = new RestRequest("order/{orderId}/ship", Method.POST);
 			request.AddOrUpdateParameter("orderId", orderId, ParameterType.UrlSegment);
 
-			var response = await Client.ExecuteAsync<long>(request);
-
-			return response.Data;
+			return ExecuteAsync<long>(request);
 		}
 
 		public IQueryable<Shipment> AsQueryable()
 		{
-			return new MagentoQueryable<Shipment>(Client, "shipments");
+			return new MagentoQueryable<Shipment>(this.Client, "shipments");
 		}
 	}
 }

@@ -10,39 +10,30 @@ namespace Magento.RestClient.Data.Repositories
 {
 	internal class SpecialPriceRepository : AbstractRepository, ISpecialPriceRepository
 	{
-
 		public SpecialPriceRepository(IContext context) : base(context)
 		{
 		}
 
-		public async Task<List<SpecialPriceResponse>> AddOrUpdateSpecialPrices(params SpecialPrice[] specialPrices)
+		public Task<List<SpecialPriceResponse>> AddOrUpdateSpecialPrices(params SpecialPrice[] specialPrices)
 		{
-			var request = new RestRequest("products/special-price");
+			var request = new RestRequest("products/special-price", Method.POST);
 
-			request.Method = Method.POST;
 			request.AddJsonBody(new {prices = specialPrices});
-			var response = await Client.ExecuteAsync<List<SpecialPriceResponse>>(request);
-
-
-			return HandleResponse(response);
-
-			throw new System.NotImplementedException();
+			return ExecuteAsync<List<SpecialPriceResponse>>(request);
 		}
 
 		public async Task DeleteSpecialPrices(params SpecialPrice[] specialPrice)
 		{
-			var request = new RestRequest("products/special-price-delete");
+			var request = new RestRequest("products/special-price-delete", Method.POST);
 		}
 
-		public async Task<List<SpecialPrice>> GetSpecialPrices(params string[] skus)
+		public Task<List<SpecialPrice>> GetSpecialPrices(params string[] skus)
 		{
-			var request = new RestRequest("products/special-price-information");
+			var request = new RestRequest("products/special-price-information", Method.POST);
 
-			request.Method = Method.POST;
 			request.AddJsonBody(new {skus});
 
-			var response = await Client.ExecuteAsync<List<SpecialPrice>>(request);
-			return HandleResponse(response);
+			return ExecuteAsync<List<SpecialPrice>>(request);
 		}
 	}
 }

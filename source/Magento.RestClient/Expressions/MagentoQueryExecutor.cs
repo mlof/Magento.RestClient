@@ -16,40 +16,24 @@ namespace Magento.RestClient.Expressions
 		private readonly IRestClient _client;
 		private readonly RestRequest _restRequest;
 		private readonly IMemoryCache _cache;
-		private TimeSpan? relativeExpiration;
-		private readonly string resource;
+		private readonly TimeSpan? _relativeExpiration;
+		private readonly string _resource;
 
 		public MagentoQueryExecutor(IRestClient client, string resource, IMemoryCache cache,
 			TimeSpan? relativeExpiration = null)
 		{
-			this._client = client;
-			if (relativeExpiration == null)
-			{
-				this.relativeExpiration = TimeSpan.FromSeconds(5);
-			}
-			else
-			{
-				this.relativeExpiration = relativeExpiration;
-			}
+			_client = client;
+			_relativeExpiration = relativeExpiration ?? (TimeSpan?)TimeSpan.FromSeconds(5);
 
-			this.resource = resource;
+			_resource = resource;
 			_restRequest = new RestRequest(resource);
-			if (cache == null)
-			{
-				this._cache = new MemoryCache(new MemoryCacheOptions());
-			}
-			else
-			{
-				this._cache = cache;
-			}
+			_cache = cache ?? new MemoryCache(new MemoryCacheOptions());
 		}
-
 
 		public T ExecuteScalar<T>(QueryModel queryModel)
 		{
 			return ExecuteCollection<T>(queryModel).Single();
 		}
-
 
 		public T ExecuteSingle<T>(QueryModel queryModel, bool returnDefaultWhenEmpty)
 		{
@@ -58,17 +42,16 @@ namespace Magento.RestClient.Expressions
 				: ExecuteCollection<T>(queryModel).Single();
 		}
 
-
 		public IEnumerable<T> ExecuteCollection<T>(QueryModel queryModel)
 		{
 			var visitor = new QueryModelVisitor();
 			visitor.VisitQueryModel(queryModel);
 			var r = visitor.GetRequest(_restRequest);
-			var uriKey = _client.BuildUri(r).ToString().CreateMD5();
+			var uriKey = _client.BuildUri(r).ToString().CreateMd5();
 			var key = $"{nameof(MagentoQueryExecutor)}.{typeof(T).Name}.{uriKey}";
 
 			return _cache.GetOrCreate(key, entry => {
-				entry.AbsoluteExpirationRelativeToNow = relativeExpiration;
+				entry.AbsoluteExpirationRelativeToNow = _relativeExpiration;
 				var result =
 					_client.Execute<SearchResponse<T>>(r);
 

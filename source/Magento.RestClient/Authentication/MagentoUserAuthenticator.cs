@@ -15,8 +15,8 @@ namespace Magento.RestClient.Authentication
 		public MagentoUserAuthenticator(string path, string username, string password, int maximumTokenAgeInHours)
 		{
 			_path = path;
-			this._username = username;
-			this._password = password;
+			_username = username;
+			_password = password;
 			_maximumTokenAgeInHours = maximumTokenAgeInHours;
 		}
 
@@ -42,14 +42,13 @@ namespace Magento.RestClient.Authentication
 		{
 			var c = new RestSharp.RestClient(clientBaseUrl);
 
-			var authenticationRequest = new RestRequest(_path);
+			var authenticationRequest = new RestRequest(_path, Method.POST);
 
-			authenticationRequest.Method = Method.POST;
 			authenticationRequest.AddJsonBody(new {username = _username, password = _password});
 			var response = c.Execute<string>(authenticationRequest);
-			this._bearerToken = response.Data;
+			_bearerToken = response.Data;
 
-			this._bearerTokenExpiration = DateTime.Now.AddHours(_maximumTokenAgeInHours);
+			_bearerTokenExpiration = DateTime.Now.AddHours(_maximumTokenAgeInHours);
 		}
 	}
 }

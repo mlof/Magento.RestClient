@@ -10,7 +10,6 @@ namespace Magento.RestClient.Data.Repositories
 {
 	public class DirectoryRepository : AbstractRepository, IDirectoryRepository
 	{
-
 		public DirectoryRepository(IContext context) : base(context)
 		{
 		}

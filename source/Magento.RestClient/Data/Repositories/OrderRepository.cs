@@ -23,25 +23,21 @@ namespace Magento.RestClient.Data.Repositories
 			_orderValidator = new OrderValidator();
 		}
 
-
 		public async Task<Order> CreateOrder(Order order)
 		{
-			await _orderValidator.ValidateAsync(order, options => options.ThrowOnFailures());
+			await _orderValidator.ValidateAsync(order, options => options.ThrowOnFailures()).ConfigureAwait(false);
 
-			var request = new RestRequest("orders");
-			request.Method = Method.POST;
+			var request = new RestRequest("orders", Method.POST);
 			request.AddJsonBody(new {entity = order});
 
-			var response = await Client.ExecuteAsync(request);
-			return order;
+			return await ExecuteAsync<Order>(request).ConfigureAwait(false);
 		}
 
-		public async Task<Order> GetByOrderId(long orderId)
+		public Task<Order> GetByOrderId(long orderId)
 		{
-			IRestRequest request = new RestRequest("orders/{id}");
+			IRestRequest request = new RestRequest("orders/{id}", Method.GET);
 			request.AddOrUpdateParameter("id", orderId, ParameterType.UrlSegment);
-			var response = await Client.ExecuteAsync<Order>(request);
-			return response.Data;
+			return ExecuteAsync<Order>(request);
 		}
 
 		public Task Cancel(long orderId)
@@ -69,19 +65,17 @@ namespace Magento.RestClient.Data.Repositories
 			throw new NotImplementedException();
 		}
 
-		public async Task CreateInvoice(long orderId)
+		public Task CreateInvoice(long orderId)
 		{
-			IRestRequest request = new RestRequest("order/{id}/invoice");
-			request.Method = Method.POST;
+			IRestRequest request = new RestRequest("order/{id}/invoice", Method.POST);
 			request.AddOrUpdateParameter("id", orderId, ParameterType.UrlSegment);
 			request.AddJsonBody(new {capture = true, notify = true});
-			var response = await Client.ExecuteAsync(request);
+			return ExecuteAsync(request);
 		}
-
 
 		public IQueryable<Order> AsQueryable()
 		{
-			return new MagentoQueryable<Order>(Client, "orders");
+			return new MagentoQueryable<Order>(this.Client, "orders");
 		}
 	}
 }

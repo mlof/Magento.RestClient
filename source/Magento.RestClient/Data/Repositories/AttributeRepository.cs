@@ -14,134 +14,117 @@ namespace Magento.RestClient.Data.Repositories
 {
 	internal class AttributeRepository : AbstractRepository, IAttributeRepository
 	{
-
 		public AttributeRepository(IContext context) : base(context)
 		{
-			RelativeExpiration = TimeSpan.FromSeconds(5);
+			this.RelativeExpiration = TimeSpan.FromSeconds(5);
 		}
-
 
 		public async Task<IEnumerable<EntityAttribute>> GetProductAttributes(long attributeSetId)
 		{
-			var request = new RestRequest("products/attribute-sets/{id}/attributes");
-			request.Method = Method.GET;
+			var request = new RestRequest("products/attribute-sets/{id}/attributes", Method.GET);
 			request.AddOrUpdateParameter("id", attributeSetId, ParameterType.UrlSegment);
 			request.SetScope("all");
 
-
-			var response = await Client.ExecuteAsync<List<EntityAttribute>>(request);
-			return HandleResponse(response);
+			return await ExecuteAsync<List<EntityAttribute>>(request).ConfigureAwait(false);
 		}
 
-
-		public async Task<ProductAttribute> Create(ProductAttribute attribute)
+		public Task<ProductAttribute> Create(ProductAttribute attribute)
 		{
-			var request = new RestRequest("products/attributes");
+			var request = new RestRequest("products/attributes", Method.POST);
 			request.SetScope("all");
 
-			request.Method = Method.POST;
 			request.AddJsonBody(new {attribute});
 
-
-			var response = await Client.ExecuteAsync<ProductAttribute>(request);
-			return HandleResponse(response);
+			return ExecuteAsync<ProductAttribute>(request);
 		}
 
-		public async Task DeleteProductAttribute(string attributeCode)
+		public Task DeleteProductAttribute(string attributeCode)
 		{
-			var request = new RestRequest("products/attributes/{attributeCode}");
-
-			request.Method = Method.DELETE;
+			var request = new RestRequest("products/attributes/{attributeCode}", Method.DELETE);
+			var key = Client.BuildUri(request);
+			Cache.Remove(key);
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.SetScope("all");
 
-			await Client.ExecuteAsync(request);
+			return this.Client.ExecuteAsync(request);
 		}
 
-		public async Task<List<Option>> GetProductAttributeOptions(string attributeCode)
+		public Task<List<Option>> GetProductAttributeOptions(string attributeCode)
 		{
-			var request = new RestRequest("products/attributes/{attributeCode}/options");
+			var request = new RestRequest("products/attributes/{attributeCode}/options", Method.GET);
 
-			request.Method = Method.GET;
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.SetScope("all");
 
-			var response = await Client.ExecuteAsync<List<Option>>(request);
-			return HandleResponse(response);
+			return ExecuteAsync<List<Option>>(request);
 		}
 
-		public async Task<int> CreateProductAttributeOption(string attributeCode, Option option)
+		public Task<int> CreateProductAttributeOption(string attributeCode, Option option)
 		{
-			var request = new RestRequest("products/attributes/{attributeCode}/options");
+			var request = new RestRequest("products/attributes/{attributeCode}/options", Method.POST);
 
-			request.Method = Method.POST;
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.SetScope("all");
 
 			request.AddJsonBody(new {option});
-			var response = await Client.ExecuteAsync<int>(request);
-
-			if (response.IsSuccessful)
-			{
-				return response.Data;
-			}
-
-			throw MagentoException.Parse(response.Content);
+			return ExecuteAsync<int>(request);
 		}
 
-		public async Task<ProductAttribute> GetByCode(string attributeCode)
+		async public Task<ProductAttribute> GetByCode(string attributeCode)
 		{
-			return await Cache.GetOrCreateAsync<ProductAttribute>($"{this.GetType().Name}_{attributeCode}",
-				async entry => {
-					entry.AbsoluteExpirationRelativeToNow = this.RelativeExpiration;
+			var request = new RestRequest("products/attributes/{attributeCode}", Method.GET);
+			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
+			request.SetScope("all");
+			var key = Client.BuildUri(request);
 
-					var request = new RestRequest("products/attributes/{attributeCode}");
-					request.Method = Method.GET;
-					request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
-					request.SetScope("all");
+			var cacheItem = Cache.Get<ProductAttribute>(key);
 
-					var response = await Client.ExecuteAsync<ProductAttribute>(request);
-					return HandleResponse(response);
-				});
+			if (cacheItem != null)
+			{
+				return cacheItem;
+			}
+			else
+			{
+				var result = await ExecuteAsync<ProductAttribute>(request).ConfigureAwait(false);
+				Cache.Set(key, result, RelativeExpiration);
+
+				return result;
+			}
 		}
 
 		public TimeSpan RelativeExpiration { get; set; }
 
-		public async Task<ProductAttribute> Update(string attributeCode, ProductAttribute attribute)
+		public Task<ProductAttribute> Update(string attributeCode, ProductAttribute attribute)
 		{
-			/*var request = new RestRequest("products/attributes/{attributeCode}");
+			var request = new RestRequest("products/attributes/{attributeCode}", Method.PUT);
+
+			var key = Client.BuildUri(request);
+			Cache.Remove(key);
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.SetScope("all");
 
 			attribute.AttributeCode = null;
-			request.Method = Method.PUT;
 			request.AddJsonBody(new {attribute});
 
-
-			var response = await Client.ExecuteAsync<ProductAttribute>(request);
-			return HandleResponse(response);*/
-			return attribute;
+			return ExecuteAsync<ProductAttribute>(request);
 		}
 
-		public async Task DeleteProductAttributeOption(string attributeCode, string optionValue)
+		public Task DeleteProductAttributeOption(string attributeCode, string optionValue)
 		{
-			var request = new RestRequest("products/attributes/{attributeCode}/options/{optionValue}");
+			var request = new RestRequest("products/attributes/{attributeCode}/options/{optionValue}", Method.DELETE);
 			request.SetScope("all");
-			request.Method = Method.DELETE;
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.AddOrUpdateParameter("optionValue", optionValue, ParameterType.UrlSegment);
-			await Client.ExecuteAsync(request);
+			return this.Client.ExecuteAsync(request);
 		}
 
-		public async Task<ProductAttribute> GetById(long id)
+		public Task<ProductAttribute> GetById(long id)
 		{
-			var request = new RestRequest("products/attributes/{id}");
-			request.Method = Method.GET;
+			var request = new RestRequest("products/attributes/{id}", Method.GET);
 			request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
 			request.SetScope("all");
 
-			var response = await Client.ExecuteAsync<ProductAttribute>(request);
-			return HandleResponse(response);
+			return ExecuteAsync<ProductAttribute>(request);
 		}
 	}
 }

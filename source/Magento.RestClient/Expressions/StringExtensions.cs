@@ -4,7 +4,7 @@ namespace Magento.RestClient.Expressions
 {
 	public static class StringExtensions
 	{
-		public static string CreateMD5(this string input)
+		public static string CreateMd5(this string input)
 		{
 			// Use input string to calculate MD5 hash
 			using var md5 = System.Security.Cryptography.MD5.Create();

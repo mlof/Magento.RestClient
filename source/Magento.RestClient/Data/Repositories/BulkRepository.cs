@@ -17,30 +17,20 @@ namespace Magento.RestClient.Data.Repositories
 {
 	public class BulkRepository : AbstractRepository, IBulkRepository
 	{
-		private readonly IRestClient client;
-
-
 		public BulkRepository(IContext context) : base(context)
 		{
-			
-			this.client = client;
 		}
 
-
-		public async Task<BulkOperation> GetStatus(Guid uuid)
+		public Task<BulkOperation> GetStatus(Guid uuid)
 		{
-			var request = new RestRequest("bulk/{uuid}/status");
-			request.Method = Method.GET;
+			var request = new RestRequest("bulk/{uuid}/status", Method.GET);
 			request.AddParameter("uuid", uuid, ParameterType.UrlSegment);
 			request.SetScope("all");
 
-
-			var response = await client.ExecuteAsync<BulkOperation>(request);
-			return response.Data;
+			return ExecuteAsync<BulkOperation>(request);
 		}
 
-
-		public async Task<BulkOperation> Await(Guid uuid, TimeSpan? delay = null)
+		public async Task<BulkOperation> AwaitBulkOperations(Guid uuid, TimeSpan? delay = null)
 		{
 			if (delay == null)
 			{
@@ -49,20 +39,19 @@ namespace Magento.RestClient.Data.Repositories
 
 			while (true)
 			{
-				var status = await GetStatus(uuid);
+				var status = await GetStatus(uuid).ConfigureAwait(false);
 				if (status.OperationsList.All(list => list.Status != OperationStatus.Open))
 				{
 					return status;
 				}
 
-				await Task.Delay(delay.Value);
+				await Task.Delay(delay.Value).ConfigureAwait(false);
 			}
 		}
 
-
 		public IQueryable<BulkOperation> AsQueryable()
 		{
-			return new MagentoQueryable<BulkOperation>(client, "bulk");
+			return new MagentoQueryable<BulkOperation>(this.Client, "bulk");
 		}
 	}
 }

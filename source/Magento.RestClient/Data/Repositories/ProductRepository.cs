@@ -18,11 +18,9 @@ namespace Magento.RestClient.Data.Repositories
 {
 	public class ProductRepository : AbstractRepository, IProductRepository
 	{
-
 		public ProductRepository(IContext context) : base(context)
 		{
 		}
-
 
 		public async Task<Product> GetProductBySku(string sku, string scope = "all")
 		{
@@ -30,20 +28,8 @@ namespace Magento.RestClient.Data.Repositories
 			request.AddOrUpdateParameter("sku", sku, ParameterType.UrlSegment);
 			request.SetScope(scope);
 
-
-			var response = await Client.ExecuteAsync<Product>(request);
-
-			if (response.IsSuccessful)
-			{
-				return response.Data;
-			}
-
-			if (response.StatusCode == HttpStatusCode.NotFound)
-			{
-				return null;
-			}
-
-			throw response.ErrorException;
+			
+				return await ExecuteAsync<Product>(request).ConfigureAwait(false);
 		}
 
 		public async Task<Product> CreateProduct(Product product, bool saveOptions = true)
@@ -52,13 +38,7 @@ namespace Magento.RestClient.Data.Repositories
 			request.SetScope("all");
 			// ReSharper disable once RedundantAnonymousTypePropertyName
 			request.AddJsonBody(new {product = product});
-			var response = await Client.ExecuteAsync<Product>(request);
-			if (response.IsSuccessful)
-			{
-				return response.Data;
-			}
-
-			throw response.ErrorException;
+			return await ExecuteAsync<Product>(request).ConfigureAwait(false);
 		}
 
 		public async Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true,
@@ -71,14 +51,7 @@ namespace Magento.RestClient.Data.Repositories
 			// ReSharper disable once RedundantAnonymousTypePropertyName
 			request.AddJsonBody(new {product = product});
 
-			var response = await Client.ExecuteAsync<Product>(request);
-
-			if (response.IsSuccessful)
-			{
-				return response.Data;
-			}
-
-			throw MagentoException.Parse(response.Content);
+			return await ExecuteAsync<Product>(request).ConfigureAwait(false);
 		}
 
 		public async Task DeleteProduct(string sku)
@@ -86,30 +59,24 @@ namespace Magento.RestClient.Data.Repositories
 			var request = new RestRequest("products/{sku}") {Method = Method.DELETE};
 			request.AddOrUpdateParameter("sku", sku, ParameterType.UrlSegment);
 
-
-			var response = await Client.ExecuteAsync<Product>(request);
+			await ExecuteAsync<Product>(request).ConfigureAwait(false);
 		}
-
 
 		public IQueryable<Product> AsQueryable()
 		{
-			return new MagentoQueryable<Product>(Client, "products");
+			return new MagentoQueryable<Product>(this.Client, "products");
 		}
 
-		public async Task<BulkActionResponse> Save(params Product[] models)
+		public Task<BulkActionResponse> Save(params Product[] models)
 		{
-			var request = new RestRequest("products");
-			request.Method = Method.POST;
+			var request = new RestRequest("products", Method.POST);
 			request.SetScope("all/async/bulk");
 
 			request.AddJsonBody(
 				models.Select(product => new {product = product}).ToList()
 			);
 
-
-			var response = await Client.ExecuteAsync<BulkActionResponse>(request);
-
-			return response.Data;
+			return ExecuteAsync<BulkActionResponse>(request);
 		}
 	}
 }

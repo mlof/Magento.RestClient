@@ -45,7 +45,6 @@ namespace Magento.RestClient.Tests.Domain
 
 			await root.SaveAsync();
 			var cat = root.Children.SingleOrDefault(category => category.Name == "TEST CATEGORY").ToModel(Context);
-			cat.AddProduct(this.SimpleProductSku);
 
 
 			await cat.SaveAsync();

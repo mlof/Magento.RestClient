@@ -6,7 +6,6 @@ namespace Magento.RestClient.Data.Repositories
 {
 	public class CustomerGroupRepository : AbstractRepository, ICustomerGroupRepository
 	{
-
 		public CustomerGroupRepository(IContext context) : base(context)
 		{
 		}

@@ -16,30 +16,31 @@ namespace Magento.RestClient
 {
 	public class MagentoClient : IMagentoClient
 	{
-		public IRestClient _client { get; }
-		private readonly string adminTokenUrl;
-		private readonly string baseUrl;
-		private readonly string customerTokenUrl;
-		public readonly MemoryCache cache;
+		public IRestClient Client { get; }
+		private readonly string _adminTokenUrl;
+		private readonly string _baseUrl;
+		private readonly string _customerTokenUrl;
+		public readonly MemoryCache Cache;
 
 		public MagentoClient(string host, string defaultScope = "default")
 		{
-			this.cache = new MemoryCache(new MemoryCacheOptions());
+			Cache = new MemoryCache(new MemoryCacheOptions());
 
-			baseUrl = "";
+			_baseUrl = "";
 			if (host.EndsWith("/"))
 			{
 				host = host.TrimEnd('/');
 			}
 
-			baseUrl = $"{host}/rest/{{scope}}/V1/";
-			adminTokenUrl = $"{host}/rest/V1/integration/admin/token";
-			customerTokenUrl = host + "/rest/V1/integration/customer/token";
-			_client = new RestSharp.RestClient(baseUrl);
+			_baseUrl = $"{host}/rest/{{scope}}/V1/";
+			_adminTokenUrl = $"{host}/rest/V1/integration/admin/token";
+			_customerTokenUrl = host + "/rest/V1/integration/customer/token";
+			this.Client = new RestSharp.RestClient(_baseUrl) {
+				CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Revalidate)
+			};
 
-			_client.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Revalidate);
-			_client.AddDefaultUrlSegment("scope", defaultScope);
-			_client.UseNewtonsoftJson(new JsonSerializerSettings {
+			this.Client.AddDefaultUrlSegment("scope", defaultScope);
+			this.Client.UseNewtonsoftJson(new JsonSerializerSettings {
 				NullValueHandling = NullValueHandling.Ignore,
 				Culture = CultureInfo.InvariantCulture,
 				Formatting = Formatting.Indented,
@@ -52,30 +53,30 @@ namespace Magento.RestClient
 			});
 		}
 
-
 		public IAdminContext AuthenticateAsIntegration(string consumerKey, string consumerSecret,
 			string accessToken,
 			string accessTokenSecret)
 		{
-			_client.Authenticator = OAuth1Authenticator.ForProtectedResource(consumerKey,
+			this.Client.Authenticator = OAuth1Authenticator.ForProtectedResource(consumerKey,
 				consumerSecret, accessToken,
 				accessTokenSecret);
 
+			this.Client.PreAuthenticate = true;
 			return new AdminContext(this);
 		}
 
 		public IAdminContext AuthenticateAsAdmin(string username, string password)
 		{
-			_client.Authenticator =
-				new MagentoUserAuthenticator(adminTokenUrl, username, password, 4);
+			this.Client.Authenticator =
+				new MagentoUserAuthenticator(_adminTokenUrl, username, password, 4);
 
 			return new AdminContext(this);
 		}
 
 		public ICustomerContext AuthenticateAsCustomer(string username, string password)
 		{
-			_client.Authenticator =
-				new MagentoUserAuthenticator(customerTokenUrl, username, password, 1);
+			this.Client.Authenticator =
+				new MagentoUserAuthenticator(_customerTokenUrl, username, password, 1);
 
 			return new CustomerContext(this);
 		}

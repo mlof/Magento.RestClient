@@ -34,7 +34,7 @@ namespace Magento.RestClient.Tests.Domain
 			this.existingCartId = cart.Id;
 
 
-			var product = Context.GetProductModel(this.CartProductSku);
+			var product = new ProductModel(Context, this.CartProductSku);
 
 			product.Price = 10;
 			product.Name = "CART_PRODUCT";

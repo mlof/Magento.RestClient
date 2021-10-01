@@ -25,6 +25,10 @@
         <PackageReference Include="JsonExts.JsonPath" Version="1.0.1" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="MimeTypes" Version="2.2.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Remotion.Linq" Version="2.2.0" />
 
         <PackageReference Include="AgileObjects.AgileMapper" Version="1.8.0" />
@@ -36,7 +40,23 @@
         </PackageReference>
         <PackageReference Include="RestSharp" Version="106.12.0" />
         <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="106.12.0" />
+        <PackageReference Include="Roslynator.Analyzers" Version="3.2.2">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="1.1.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Roslynator.Formatting.Analyzers" Version="1.2.2">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Serilog" Version="2.10.0" />
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.29.0.36737">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
     <ItemGroup>
 
@@ -46,6 +66,8 @@
         </None>
     </ItemGroup>
     <ItemGroup>
+        <Folder Include="Domain\Validators\" />
+        <Folder Include="Exceptions\ConfigurableProduct\" />
         <Folder Include="Search\Abstractions\" />
         <Folder Include="Search\Extensions\" />
     </ItemGroup>

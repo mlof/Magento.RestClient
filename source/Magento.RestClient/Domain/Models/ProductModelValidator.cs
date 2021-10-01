@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
-using Magento.RestClient.Data.Models.Products;
 
-namespace Magento.RestClient.Domain.Validators
+namespace Magento.RestClient.Domain.Models
 {
-	internal class ProductValidator : AbstractValidator<Product>
+	public class ProductModelValidator : AbstractValidator<ProductModel>
+
 	{
-		public ProductValidator()
+		public ProductModelValidator()
 		{
 			RuleFor(product => product.Sku).NotEmpty();
 			RuleFor(product => product.Price).NotEmpty();

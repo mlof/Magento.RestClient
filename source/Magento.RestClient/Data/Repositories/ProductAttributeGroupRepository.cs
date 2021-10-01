@@ -9,15 +9,13 @@ namespace Magento.RestClient.Data.Repositories
 {
 	internal class ProductAttributeGroupRepository :AbstractRepository,  IProductAttributeGroupRepository
 	{
-
 		public ProductAttributeGroupRepository(IContext context) : base(context)
 		{
 		}
 
-
 		public IQueryable<AttributeGroup> AsQueryable()
 		{
-			return new MagentoQueryable<AttributeGroup>(Client, "products/attribute-sets/groups/list");
+			return new MagentoQueryable<AttributeGroup>(this.Client, "products/attribute-sets/groups/list");
 		}
 	}
 }

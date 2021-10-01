@@ -14,7 +14,7 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 	{
 		public QueryModelVisitor()
 		{
-			this._queryPartAggregator = new QueryPartAggregator();
+			_queryPartAggregator = new QueryPartAggregator();
 		}
 
 		private readonly QueryPartAggregator _queryPartAggregator;
@@ -57,7 +57,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			return restRequest;
 		}
 
-
 		public override void VisitResultOperator(ResultOperatorBase resultOperator, QueryModel queryModel, int index)
 		{
 			if (resultOperator is TakeResultOperator takeResultOperator)
@@ -67,14 +66,12 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 				_queryPartAggregator.PageSize = (int) constant.Value;
 			}
 
-
 			base.VisitResultOperator(resultOperator, queryModel, index);
 		}
 
 		public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index)
 		{
 			ApplyParameters(whereClause.Predicate);
-
 
 			base.VisitWhereClause(whereClause, queryModel, index);
 		}

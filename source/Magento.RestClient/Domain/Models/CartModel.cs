@@ -10,7 +10,6 @@ using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Customers;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Abstractions;
-using Magento.RestClient.Domain.Validators;
 using Magento.RestClient.Exceptions;
 using Newtonsoft.Json;
 
@@ -18,33 +17,26 @@ namespace Magento.RestClient.Domain.Models
 {
 	public class CartModel : ICartModel
 	{
-		private readonly CartAddressValidator _addressValidator;
-		private readonly CommitCartValidator _commitCartValidator;
 		private readonly IAdminContext _context;
 		private Address _billingAddress;
 		private long _id;
-
 
 		private Cart _model;
 
 		private string _paymentMethod;
 		private Address _shippingAddress;
+		private readonly CartModelValidator _validator;
 
 		public CartModel(IAdminContext context)
 		{
 			_context = context;
-			_addressValidator = new CartAddressValidator();
-			_commitCartValidator = new CommitCartValidator();
+			_validator = new CartModelValidator();
 			this.Id = context.Carts.GetNewCartId().GetAwaiter().GetResult();
 		}
-
 
 		public CartModel(IAdminContext context, long id)
 		{
 			_context = context;
-
-			_addressValidator = new CartAddressValidator();
-			_commitCartValidator = new CommitCartValidator();
 
 			this.Id = id;
 		}
@@ -56,7 +48,6 @@ namespace Magento.RestClient.Domain.Models
 		public Address BillingAddress {
 			get => _billingAddress;
 			set {
-				_addressValidator.ValidateAndThrow(value);
 				_billingAddress = value;
 			}
 		}
@@ -64,11 +55,9 @@ namespace Magento.RestClient.Domain.Models
 		public Address ShippingAddress {
 			get => _shippingAddress;
 			set {
-				_addressValidator.ValidateAndThrow(value);
 				_shippingAddress = value;
 			}
 		}
-
 
 		[JsonProperty("id")]
 		public long Id {
@@ -82,18 +71,16 @@ namespace Magento.RestClient.Domain.Models
 			}
 		}
 
-
 		public long? OrderId { get; private set; }
 
 		public bool ShippingInformationSet { get; private set; }
 
 		private async Task<CartModel> UpdateMagentoValues()
 		{
-			_model = await _context.Carts.GetExistingCart(_id);
+			_model = await _context.Carts.GetExistingCart(_id).ConfigureAwait(false);
 
 			return this;
 		}
-
 
 		/// <summary>
 		///     SetShippingMethod
@@ -107,12 +94,12 @@ namespace Magento.RestClient.Domain.Models
 			if (this.ShippingAddress != null)
 			{
 				var estimatedShippingMethods =
-					await _context.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress);
+					await _context.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress).ConfigureAwait(false);
 				if (estimatedShippingMethods.Any(shippingMethod =>
 					shippingMethod.MethodCode == method && shippingMethod.CarrierCode == carrier))
 				{
 					await _context.Carts.SetShippingInformation(this.Id, _shippingAddress, this.BillingAddress, carrier,
-						method);
+						method).ConfigureAwait(false);
 					this.ShippingInformationSet = true;
 				}
 				else
@@ -129,7 +116,6 @@ namespace Magento.RestClient.Domain.Models
 			return this;
 		}
 
-
 		/// <summary>
 		///     Sets the payment method for this cart.
 		/// </summary>
@@ -138,16 +124,15 @@ namespace Magento.RestClient.Domain.Models
 		/// <exception cref="InvalidOperationException"></exception>
 		public async Task<CartModel> SetPaymentMethod(string paymentMethod)
 		{
-			var paymentMethods = await _context.Carts.GetPaymentMethodsForCart(this.Id);
+			var paymentMethods = await _context.Carts.GetPaymentMethodsForCart(this.Id).ConfigureAwait(false);
 			if (paymentMethods.Any(method => method.Code == paymentMethod))
 			{
 				_paymentMethod = paymentMethod;
-				return await UpdateMagentoValues();
+				return await UpdateMagentoValues().ConfigureAwait(false);
 			}
 
 			throw new InvalidOperationException("Payment method is not valid for this cart.");
 		}
-
 
 		public async Task<CartModel> AddSimpleProduct(string sku, int quantity = 1)
 		{
@@ -155,8 +140,8 @@ namespace Magento.RestClient.Domain.Models
 			if (quantity > 0)
 			{
 				await _context.Carts.AddItemToCart(this.Id,
-					new CartItem {Sku = sku, Qty = quantity, QuoteId = this.Id});
-				return await UpdateMagentoValues();
+					new CartItem {Sku = sku, Qty = quantity, QuoteId = this.Id}).ConfigureAwait(false);
+				return await UpdateMagentoValues().ConfigureAwait(false);
 			}
 
 			throw new InvalidOperationException();
@@ -174,13 +159,12 @@ namespace Magento.RestClient.Domain.Models
 				throw new ArgumentNullException("Can not estimate shipping methods without items.");
 			}
 
-			return await _context.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress);
+			return await _context.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress).ConfigureAwait(false);
 		}
-
 
 		public async Task<List<PaymentMethod>> GetPaymentMethods()
 		{
-			return await _context.Carts.GetPaymentMethodsForCart(this.Id);
+			return await _context.Carts.GetPaymentMethodsForCart(this.Id).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -191,7 +175,7 @@ namespace Magento.RestClient.Domain.Models
 		/// <exception cref="InvalidOperationException"></exception>
 		public async Task<long> Commit()
 		{
-			_commitCartValidator.Validate(this, strategy => strategy.ThrowOnFailures());
+			await _validator.ValidateAndThrowAsync(this);
 
 			if (this.OrderId == null)
 			{
@@ -200,32 +184,31 @@ namespace Magento.RestClient.Domain.Models
 					throw new InvalidOperationException("Set shipping information first.");
 				}
 
-				this.OrderId = await _context.Carts.PlaceOrder(this.Id, _paymentMethod, this.BillingAddress);
+				this.OrderId = await _context.Carts.PlaceOrder(this.Id, _paymentMethod, this.BillingAddress)
+					.ConfigureAwait(false);
 				return this.OrderId.Value;
 			}
 
 			throw new CartCommittedException(this.Id);
 		}
 
-
 		public async Task<CartModel> AssignCustomer(int customerId)
 		{
-			await _context.Carts.AssignCustomer(this.Id, _model.StoreId, customerId);
+			await _context.Carts.AssignCustomer(this.Id, _model.StoreId, customerId).ConfigureAwait(false);
 
-			return await UpdateMagentoValues();
+			return await UpdateMagentoValues().ConfigureAwait(false);
 		}
 
 		public async Task AddConfigurableProduct(string parentSku, string childSku, int quantity = 1)
 		{
-			var options = await _context.ConfigurableProducts.GetOptions(parentSku);
-			var children = await _context.ConfigurableProducts.GetConfigurableChildren(parentSku);
+			var options = await _context.ConfigurableProducts.GetOptions(parentSku).ConfigureAwait(false);
+			var children = await _context.ConfigurableProducts.GetConfigurableChildren(parentSku).ConfigureAwait(false);
 			var child = children.SingleOrDefault(product => product.Sku == childSku);
 
 			var cartItem = new ConfigurableCartItem();
 			cartItem.Sku = parentSku;
 			cartItem.Qty = quantity;
 			cartItem.QuoteId = this.Id;
-
 
 			foreach (var option in options)
 			{
@@ -235,7 +218,7 @@ namespace Magento.RestClient.Domain.Models
 				});
 			}
 
-			await _context.Carts.AddItemToCart(this.Id, cartItem);
+			await _context.Carts.AddItemToCart(this.Id, cartItem).ConfigureAwait(false);
 		}
 	}
 }

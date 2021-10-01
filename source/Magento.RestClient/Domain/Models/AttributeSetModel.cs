@@ -20,10 +20,12 @@ namespace Magento.RestClient.Domain.Models
 		private List<AttributeGroup> _attributeGroups;
 		private List<EntityAttribute> _attributes;
 		private long? _skeletonId;
+		private readonly AttributeSetModelValidator _validator;
 
 		public AttributeSetModel(IAdminContext adminContext, string name, EntityType entityType,
 			long? skeletonId = null)
 		{
+			this._validator = new AttributeSetModelValidator();
 			_context = adminContext;
 
 			if (entityType != EntityType.CatalogProduct)
@@ -53,7 +55,6 @@ namespace Magento.RestClient.Domain.Models
 
 		public bool IsPersisted { get; private set; }
 
-
 		public async Task Refresh()
 		{
 			var searchResponse = _context.AttributeSets.AsQueryable().Where(set =>
@@ -64,17 +65,17 @@ namespace Magento.RestClient.Domain.Models
 				var r = searchResponse.Single();
 				this.Id = r.AttributeSetId.Value;
 
-				var _model = await _context.AttributeSets.Get(this.Id);
+				var model = await _context.AttributeSets.Get(this.Id).ConfigureAwait(false);
 
-				this.Name = _model.AttributeSetName;
+				this.Name = model.AttributeSetName;
 
-				var attributesResponse = await _context.Attributes.GetProductAttributes(this.Id);
+				var attributesResponse = await _context.Attributes.GetProductAttributes(this.Id).ConfigureAwait(false);
 
 				_attributes =
 					attributesResponse
 						.ToList();
 				var attributeGroups =
-					_context.ProductAttributeGroups.AsQueryable().Where(group => group.AttributeSetId == Id).ToList();
+					_context.ProductAttributeGroups.AsQueryable().Where(group => group.AttributeSetId == this.Id).ToList();
 				_attributeGroups = attributeGroups.ToList();
 			}
 			else
@@ -96,20 +97,20 @@ namespace Magento.RestClient.Domain.Models
 
 		public async Task SaveAsync()
 		{
+
 			var attributeSet = new AttributeSet();
-			attributeSet.AttributeSetName = Name;
-			attributeSet.EntityTypeId = EntityType;
+			attributeSet.AttributeSetName = this.Name;
+			attributeSet.EntityTypeId = this.EntityType;
 
 			if (this.Id == 0)
 			{
 				Debug.Assert(_skeletonId != null, nameof(_skeletonId) + " != null");
-				var set = await _context.AttributeSets.Create(this.EntityType, _skeletonId.Value, attributeSet);
+				var set = await _context.AttributeSets.Create(this.EntityType, _skeletonId.Value, attributeSet).ConfigureAwait(false);
 				this.Id = set.AttributeSetId.Value;
 			}
 
 			var currentAttributeGroups =
-				_context.ProductAttributeGroups.AsQueryable().Where(group => group.AttributeSetId == Id).ToList();
-
+				_context.ProductAttributeGroups.AsQueryable().Where(group => group.AttributeSetId == this.Id).ToList();
 
 			foreach (var attributeGroup in _attributeGroups)
 			{
@@ -117,7 +118,7 @@ namespace Magento.RestClient.Domain.Models
 					.Contains(attributeGroup.AttributeGroupName))
 				{
 					attributeGroup.AttributeGroupId = await _context.AttributeSets.CreateProductAttributeGroup(this.Id,
-						attributeGroup.AttributeGroupName);
+						attributeGroup.AttributeGroupName).ConfigureAwait(false);
 				}
 				else
 				{
@@ -131,13 +132,12 @@ namespace Magento.RestClient.Domain.Models
 			{
 				var groupId = _attributeGroups.Single(group => group.AttributeGroupName == assignment.GroupName);
 				await _context.AttributeSets.AssignProductAttribute(this.Id, groupId.AttributeGroupId,
-					assignment.AttributeCode);
+					assignment.AttributeCode).ConfigureAwait(false);
 			}
 
 			_attributeAssignments.Clear();
-			await Refresh();
+			await Refresh().ConfigureAwait(false);
 		}
-
 
 		public void AddGroup(string groupName)
 		{
@@ -145,10 +145,7 @@ namespace Magento.RestClient.Domain.Models
 			{
 				_attributeGroups.Add(new AttributeGroup {AttributeGroupName = groupName});
 			}
-			else
-			{
-				throw new InvalidOperationException("Attribute Set already contains group by this name.");
-			}
+			
 		}
 
 		public void AssignAttribute(string attributeGroup, string attributeCode)
@@ -170,7 +167,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public async Task Delete()
 		{
-			await _context.AttributeSets.Delete(Id);
+			await _context.AttributeSets.Delete(this.Id).ConfigureAwait(false);
 		}
 	}
 }

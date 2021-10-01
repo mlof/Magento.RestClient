@@ -13,10 +13,9 @@ namespace Magento.RestClient
 	{
 		public AdminContext(MagentoClient client)
 		{
-			this.Client = client._client;
-			this.Cache = client.cache;
+			this.Client = client.Client;
+			this.Cache = client.Cache;
 		}
-
 
 		public IBulkRepository Bulk => new BulkRepository(this);
 		public ISpecialPriceRepository SpecialPrices => new SpecialPriceRepository(this);
@@ -41,8 +40,7 @@ namespace Magento.RestClient
 		{
 			var request = new RestRequest("modules");
 
-
-			var response = await this.Client.ExecuteAsync<List<string>>(request);
+			var response = await this.Client.ExecuteAsync<List<string>>(request).ConfigureAwait(false);
 			if (response.IsSuccessful)
 			{
 				return response.Data;

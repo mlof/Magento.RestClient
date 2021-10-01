@@ -28,7 +28,7 @@ namespace Magento.RestClient.Data.Repositories
 
 		public Customer GetByEmailAddress(string emailAddress)
 		{
-			var customer = this.AsQueryable().SingleOrDefault(customer => customer.Email == emailAddress);
+			var customer = AsQueryable().SingleOrDefault(customer => customer.Email == emailAddress);
 
 			if (customer == null)
 			{
@@ -39,15 +39,12 @@ namespace Magento.RestClient.Data.Repositories
 			return customer;
 		}
 
-		public async Task<Customer> GetById(long customerId)
+		public Task<Customer> GetById(long customerId)
 		{
-			var request = new RestRequest("customers/{id}");
-
-			request.Method = Method.GET;
+			var request = new RestRequest("customers/{id}", Method.GET);
 
 			request.AddOrUpdateParameter("id", customerId, ParameterType.UrlSegment);
-			var response = await Client.ExecuteAsync<Customer>(request);
-			return HandleResponse(response);
+			return ExecuteAsync<Customer>(request);
 		}
 
 		public Task<ValidationResult> Validate(Customer customer)
@@ -67,23 +64,18 @@ namespace Magento.RestClient.Data.Repositories
 
 		public async Task<Customer> Create(Customer customer, string password = null)
 		{
-			await _customerValidator.ValidateAndThrowAsync(customer);
-			var request = new RestRequest("customers");
-			request.Method = Method.POST;
+			await _customerValidator.ValidateAndThrowAsync(customer).ConfigureAwait(false);
+			var request = new RestRequest("customers", Method.POST);
 			request.AddJsonBody(new {customer, password});
-			var response = await Client.ExecuteAsync<Customer>(request);
-
-			return HandleResponse(response);
+			return await ExecuteAsync<Customer>(request).ConfigureAwait(false);
 		}
 
-		public async Task DeleteById(long id)
+		public Task DeleteById(long id)
 		{
-			var request = new RestRequest("customers/{id}");
-
-			request.Method = Method.DELETE;
+			var request = new RestRequest("customers/{id}", Method.DELETE);
 
 			request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
-			await Client.ExecuteAsync(request);
+			return this.Client.ExecuteAsync(request);
 		}
 
 		public Customer GetOwnCustomer()
@@ -100,22 +92,18 @@ namespace Magento.RestClient.Data.Repositories
 
 		public async Task<Customer> Update(long id, Customer customer)
 		{
-			_customerValidator.ValidateAndThrow(customer);
-			var request = new RestRequest("customers/{id}");
+			await _customerValidator.ValidateAndThrowAsync(customer).ConfigureAwait(false);
+			var request = new RestRequest("customers/{id}", Method.PUT);
 
-			request.Method = Method.PUT;
 			request.AddJsonBody(new {customer});
 			request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
 
-			var response = await Client.ExecuteAsync<Customer>(request);
-
-			return HandleResponse(response);
+			return await ExecuteAsync<Customer>(request).ConfigureAwait(false);
 		}
-
 
 		public IQueryable<Customer> AsQueryable()
 		{
-			return new MagentoQueryable<Customer>(Client, "customers/search");
+			return new MagentoQueryable<Customer>(this.Client, "customers/search");
 		}
 	}
 }

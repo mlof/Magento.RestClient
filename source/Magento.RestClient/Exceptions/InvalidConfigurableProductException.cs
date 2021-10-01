@@ -7,5 +7,13 @@ namespace Magento.RestClient.Exceptions
 		public InvalidConfigurableProductException(string message) : base(message)
 		{
 		}
+
+		public InvalidConfigurableProductException() : base()
+		{
+		}
+
+		public InvalidConfigurableProductException(string message, Exception innerException) : base(message, innerException)
+		{
+		}
 	}
 }

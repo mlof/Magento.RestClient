@@ -11,8 +11,5 @@ namespace Magento.RestClient.Data.Models.Search
 		[JsonProperty("page_size")] public int PageSize { get; set; }
 		[JsonProperty("current_page")] public int CurrentPage { get; set; }
 
-		public void Apply(RestRequest request)
-		{
-		}
 	}
 }

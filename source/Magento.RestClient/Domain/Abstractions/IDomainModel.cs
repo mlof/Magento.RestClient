@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FluentValidation;
 
 namespace Magento.RestClient.Domain.Abstractions
 {

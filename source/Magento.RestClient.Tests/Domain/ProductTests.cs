@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Magento.RestClient.Data.Models.Attributes;
+using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Tests.Domain.Abstractions;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Domain
@@ -14,7 +17,7 @@ namespace Magento.RestClient.Tests.Domain
 		[SetUp]
 		async public Task ProductSetup()
 		{
-			var sizeAttribute = Context.GetAttributeModel("monitor_sizes");
+			var sizeAttribute = new AttributeModel(Context, "monitor_sizes");
 			sizeAttribute.DefaultFrontendLabel = "Monitor Size";
 			sizeAttribute.FrontendInput = AttributeFrontendInput.Select;
 			sizeAttribute.AddOption("13 inch");
@@ -26,7 +29,7 @@ namespace Magento.RestClient.Tests.Domain
 			await sizeAttribute.SaveAsync();
 
 
-			var attributeSet = Context.GetAttributeSetModel("Laptops");
+			var attributeSet = new AttributeSetModel(Context, "Laptops", EntityType.CatalogProduct);
 			attributeSet.AddGroup("Monitor");
 			attributeSet.AssignAttribute("Monitor", "monitor_sizes");
 			await attributeSet.SaveAsync();
@@ -45,8 +48,10 @@ namespace Magento.RestClient.Tests.Domain
 			DeleteIfExists("HP-ZBOOK-FURY-17");
 
 
-			await Context.GetAttributeSetModel("Laptops").Delete();
-			await Context.GetAttributeModel("monitor_sizes").Delete();
+			var attributeSet = new AttributeSetModel(Context, "Laptops", EntityType.CatalogProduct);
+			await attributeSet.Delete();
+			var attribute = new AttributeModel(Context, "monitor_sizes");
+			await attribute.Delete();
 		}
 
 		private void DeleteIfExists(string sku)
@@ -87,6 +92,7 @@ namespace Magento.RestClient.Tests.Domain
 				Price = 50,
 				Type = ProductType.Configurable
 			};
+			await product.AddConfigurableOptions("monitor_sizes");
 
 			var smallProduct = new ProductModel(this.Context, "HP-ZBOOK-FURY-13") {
 				Price = 2339,
@@ -108,17 +114,18 @@ namespace Magento.RestClient.Tests.Domain
 
 
 
-			await product.AddConfigurableOptions("monitor_sizes");
-
 			await product.SaveAsync();
+
+
+			var children = await Context.ConfigurableProducts.GetConfigurableChildren(product.Sku);
+			Assert.That(children.Select(p=> p.Sku).Contains(smallProduct.Sku));
+			Assert.That(children.Select(p=> p.Sku).Contains(largeProduct.Sku));
 		}
+
 
 		[Test]
 		public void GetExistingProduct()
 		{
-			var product = Context.GetProductModel(SimpleProductSku);
-
-			product.Name.Should().NotBeNullOrWhiteSpace();
 		}
 	}
 }

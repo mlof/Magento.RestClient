@@ -48,19 +48,19 @@ namespace Magento.RestClient.Domain.Models
 			};
 			if (this.IsPersisted)
 			{
-				await _context.Customers.Update(this.Id, customer);
+				await _context.Customers.Update(this.Id, customer).ConfigureAwait(false);
 			}
 			else
 			{
-				await _context.Customers.Create(customer);
+				await _context.Customers.Create(customer).ConfigureAwait(false);
 			}
 
-			await Refresh();
+			await Refresh().ConfigureAwait(false);
 		}
 
 		public async Task Delete()
 		{
-			await _context.Customers.DeleteById(this.Id);
+			await _context.Customers.DeleteById(this.Id).ConfigureAwait(false);
 		}
 	}
 }

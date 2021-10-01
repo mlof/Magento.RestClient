@@ -24,50 +24,55 @@ namespace Magento.RestClient.Domain.Models
 		private List<ConfigurableProductOption> _options = new();
 		private readonly IList<string> _removedChildren = new List<string>();
 
-
 		public IReadOnlyList<ProductModel> Children => _children.AsReadOnly();
 		public IReadOnlyList<ConfigurableProductOption> Options => _options.AsReadOnly();
 
-
 		public override sealed async Task Refresh()
 		{
-			await base.Refresh();
-			await RefreshOptions();
-			var children = await _context.ConfigurableProducts.GetConfigurableChildren(this.Sku);
-			_children = children.Select(product => new ProductModel(_context, product.Sku)).ToList();
+			await base.Refresh().ConfigureAwait(false);
+			await RefreshOptions().ConfigureAwait(false);
+			List<Product> children;
+
+			children = await Context.ConfigurableProducts.GetConfigurableChildren(this.Sku).ConfigureAwait(false);
+			if (children == null)
+			{
+				children = new List<Product>();
+			}
+
+			_children = children.Select(product => new ProductModel(Context, product.Sku)).ToList();
 		}
 
 		public override async Task SaveAsync()
 		{
-			await base.SaveAsync();
+			await base.SaveAsync().ConfigureAwait(false);
 
-			if (Options.Any() && Children.Any())
+			if (this.Options.Any() && this.Children.Any())
 			{
 				foreach (var option in _options)
 				{
-					var attribute = await _context.Attributes.GetById(option.AttributeId);
-					option.Values = Children.SelectMany(model => model.CustomAttributes)
+					var attribute = await Context.Attributes.GetById(option.AttributeId).ConfigureAwait(false);
+					option.Values = this.Children.SelectMany(model => model.CustomAttributes)
 						.Where(productAttribute => productAttribute.AttributeCode == attribute.AttributeCode)
 						.Select(customAttribute => customAttribute.Value).Distinct()
 						.Select(value => new Value() {ValueIndex = Convert.ToInt64(value)}).ToList();
 
 					if (option.Id == 0)
 					{
-						await _context.ConfigurableProducts.CreateOption(this.Sku, option);
+						await Context.ConfigurableProducts.CreateOption(this.Sku, option).ConfigureAwait(false);
 					}
 					else
 					{
-						await _context.ConfigurableProducts.UpdateOption(this.Sku, option.Id, option);
+						await Context.ConfigurableProducts.UpdateOption(this.Sku, option.Id, option)
+							.ConfigureAwait(false);
 					}
 				}
 
-
-				foreach (var child in Children)
+				foreach (var child in this.Children)
 				{
-					await child.SaveAsync();
+					await child.SaveAsync().ConfigureAwait(false);
 					try
 					{
-						await _context.ConfigurableProducts.CreateChild(this.Sku, child.Sku);
+						await Context.ConfigurableProducts.CreateChild(this.Sku, child.Sku).ConfigureAwait(false);
 					}
 					catch
 					{
@@ -76,19 +81,26 @@ namespace Magento.RestClient.Domain.Models
 
 				foreach (var child in _removedChildren)
 				{
-					await _context.ConfigurableProducts.DeleteChild(this.Sku, child);
+					await Context.ConfigurableProducts.DeleteChild(this.Sku, child).ConfigureAwait(false);
 				}
 
 				_removedChildren.Clear();
 			}
 
-			await Refresh();
+			await Refresh().ConfigureAwait(false);
 		}
-
 
 		private async Task RefreshOptions()
 		{
-			var options = await _context.ConfigurableProducts.GetOptions(this.Sku);
+			List<ConfigurableProductOption> options;
+
+
+			options = await Context.ConfigurableProducts.GetOptions(this.Sku).ConfigureAwait(false);
+			if (options == null)
+			{
+				options = new List<ConfigurableProductOption>();
+			}
+
 			if (options != null)
 			{
 				_options = options;
@@ -97,19 +109,18 @@ namespace Magento.RestClient.Domain.Models
 			var attributes = new List<ProductAttribute>();
 			foreach (var option in _options)
 			{
-				var attribute = await _context.Attributes.GetById(option.AttributeId);
+				var attribute = await Context.Attributes.GetById(option.AttributeId).ConfigureAwait(false);
 				attributes.Add(attribute);
 			}
 
 			_optionAttributes = attributes;
 		}
 
-
 		public async Task AddConfigurableOptions(params string[] attributeCodes)
 		{
 			foreach (var attributeCode in attributeCodes)
 			{
-				var attribute = await _context.Attributes.GetByCode(attributeCode);
+				var attribute = await Context.Attributes.GetByCode(attributeCode).ConfigureAwait(false);
 
 				if (!_options.Any(option => option.AttributeId == attribute.AttributeId))
 				{

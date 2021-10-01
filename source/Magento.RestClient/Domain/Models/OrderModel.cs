@@ -33,8 +33,8 @@ namespace Magento.RestClient.Domain.Models
 
 		public async Task Refresh()
 		{
-			_model = await _context.Orders.GetByOrderId(this.OrderId);
-			_invoices = await _context.Invoices.GetByOrderId(this.OrderId);
+			_model = await _context.Orders.GetByOrderId(this.OrderId).ConfigureAwait(false);
+			_invoices = await _context.Invoices.GetByOrderId(this.OrderId).ConfigureAwait(false);
 			_shipments = _context.Shipments.GetByOrderId(this.OrderId);
 		}
 
@@ -47,7 +47,6 @@ namespace Magento.RestClient.Domain.Models
 			// don't get me started
 			throw new NotSupportedException();
 		}
-
 
 		public OrderModel CreateInvoice()
 		{
@@ -66,8 +65,8 @@ namespace Magento.RestClient.Domain.Models
 
 		public async Task<OrderModel> CreateShipment()
 		{
-			await _context.Shipments.CreateShipment(this.OrderId);
-			await Refresh();
+			await _context.Shipments.CreateShipment(this.OrderId).ConfigureAwait(false);
+			await Refresh().ConfigureAwait(false);
 			return this;
 		}
 	}

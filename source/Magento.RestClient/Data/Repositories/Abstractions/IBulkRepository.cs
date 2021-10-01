@@ -9,6 +9,6 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 	{
 		Task<BulkOperation> GetStatus(Guid uuid);
 
-		Task<BulkOperation> Await(Guid uuid, TimeSpan? delay = null);
+		Task<BulkOperation> AwaitBulkOperations(Guid uuid, TimeSpan? delay = null);
 	}
 }

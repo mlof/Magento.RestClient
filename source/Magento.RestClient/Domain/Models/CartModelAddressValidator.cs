@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using Magento.RestClient.Data.Models.Common;
 
-namespace Magento.RestClient.Domain.Validators
+namespace Magento.RestClient.Domain.Models
 {
-	public class CartAddressValidator : AbstractValidator<Address>
+	public class CartModelAddressValidator : AbstractValidator<Address>
 	{
-		public CartAddressValidator()
+		public CartModelAddressValidator()
 		{
 			RuleFor(address => address.City).NotEmpty();
 			RuleFor(address => address.CountryId).NotEmpty();

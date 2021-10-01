@@ -86,6 +86,30 @@ Alright, this one's a doozy. There's no real way to get an option ID for an attr
 
 ### Creating a attribute set
 
+```csharp
+var hasDvi = new AttributeModel(Context, "monitor_has_dvi") {
+		DefaultFrontendLabel = "Has DVI",
+		FrontendInput = AttributeFrontendInput.Select
+};
+hasDvi.AddOptions("Yes", "No");
+await hasDvi.SaveAsync();
+
+var resolution = new AttributeModel(Context, "monitor_resolution")
+{
+	DefaultFrontendLabel = "Resolution",
+	FrontendInput = AttributeFrontendInput.Select
+};
+resolution.AddOptions("1366x768", "1920x1080", "2560x1080", "2560x1440");
+await resolution.SaveAsync();			
+var attributeSet =  new AttributeSetModel(Context, "Monitors", EntityType.CatalogProduct);
+attributeSet.AddGroup("Panel");
+attributeSet.AssignAttribute("Panel", resolution.AttributeCode);
+attributeSet.AddGroup("Connections");
+attributeSet.AssignAttribute("Connections", hasDvi.AttributeCode);
+
+await attributeSet.SaveAsync();
+```
+
 
 
 ### Creating a category

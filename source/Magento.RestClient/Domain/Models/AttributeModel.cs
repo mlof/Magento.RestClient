@@ -20,11 +20,13 @@ namespace Magento.RestClient.Domain.Models
 		private bool _frontendInputChanged;
 		private List<Option> _options;
 
-		public AttributeModel(IAdminContext context, string attributeCode)
+		public AttributeModel(IAdminContext context, string attributeCode, string label = "")
 		{
 			this.Validator = new AttributeModelValidator();
+
 			_context = context;
 			this.AttributeCode = attributeCode;
+			this.DefaultFrontendLabel = label;
 			Refresh().GetAwaiter().GetResult();
 		}
 
@@ -74,7 +76,6 @@ namespace Magento.RestClient.Domain.Models
 			}
 		}
 
-	
 
 		public async Task SaveAsync()
 		{
@@ -123,6 +124,14 @@ namespace Magento.RestClient.Domain.Models
 		public Task Delete()
 		{
 			return _context.Attributes.DeleteProductAttribute(this.AttributeCode);
+		}
+
+		public void AddOptions(params string[] options)
+		{
+			foreach (var option in options)
+			{
+				AddOption(option);
+			}
 		}
 
 		public void AddOption(string option)

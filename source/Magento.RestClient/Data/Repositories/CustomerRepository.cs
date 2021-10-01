@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FluentValidation;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Customers;
 using Magento.RestClient.Data.Repositories.Abstractions;
@@ -18,12 +19,10 @@ namespace Magento.RestClient.Data.Repositories
 {
 	internal class CustomerRepository : AbstractRepository, ICustomerRepository
 	{
-		private readonly IRestClient _client;
 		private readonly CustomerValidator _customerValidator;
 
-		public CustomerRepository(IRestClient client)
+		public CustomerRepository(IContext context) : base(context)
 		{
-			_client = client;
 			_customerValidator = new CustomerValidator();
 		}
 
@@ -40,14 +39,14 @@ namespace Magento.RestClient.Data.Repositories
 			return customer;
 		}
 
-		async public Task<Customer> GetById(long customerId)
+		public async Task<Customer> GetById(long customerId)
 		{
 			var request = new RestRequest("customers/{id}");
 
 			request.Method = Method.GET;
 
 			request.AddOrUpdateParameter("id", customerId, ParameterType.UrlSegment);
-			var response = await _client.ExecuteAsync<Customer>(request);
+			var response = await Client.ExecuteAsync<Customer>(request);
 			return HandleResponse(response);
 		}
 
@@ -66,25 +65,25 @@ namespace Magento.RestClient.Data.Repositories
 			throw new NotImplementedException();
 		}
 
-		async public Task<Customer> Create(Customer customer, string password = null)
+		public async Task<Customer> Create(Customer customer, string password = null)
 		{
 			await _customerValidator.ValidateAndThrowAsync(customer);
 			var request = new RestRequest("customers");
 			request.Method = Method.POST;
 			request.AddJsonBody(new {customer, password});
-			var response = await _client.ExecuteAsync<Customer>(request);
+			var response = await Client.ExecuteAsync<Customer>(request);
 
 			return HandleResponse(response);
 		}
 
-		async public Task DeleteById(long id)
+		public async Task DeleteById(long id)
 		{
 			var request = new RestRequest("customers/{id}");
 
 			request.Method = Method.DELETE;
 
 			request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
-			await _client.ExecuteAsync(request);
+			await Client.ExecuteAsync(request);
 		}
 
 		public Customer GetOwnCustomer()
@@ -99,7 +98,7 @@ namespace Magento.RestClient.Data.Repositories
 			throw new NotImplementedException();
 		}
 
-		async public Task<Customer> Update(long id, Customer customer)
+		public async Task<Customer> Update(long id, Customer customer)
 		{
 			_customerValidator.ValidateAndThrow(customer);
 			var request = new RestRequest("customers/{id}");
@@ -108,7 +107,7 @@ namespace Magento.RestClient.Data.Repositories
 			request.AddJsonBody(new {customer});
 			request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
 
-			var response = await _client.ExecuteAsync<Customer>(request);
+			var response = await Client.ExecuteAsync<Customer>(request);
 
 			return HandleResponse(response);
 		}
@@ -116,7 +115,7 @@ namespace Magento.RestClient.Data.Repositories
 
 		public IQueryable<Customer> AsQueryable()
 		{
-			return new MagentoQueryable<Customer>(_client, "customers/search");
+			return new MagentoQueryable<Customer>(Client, "customers/search");
 		}
 	}
 }

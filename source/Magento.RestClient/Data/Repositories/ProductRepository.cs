@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
@@ -15,24 +16,22 @@ using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
 {
-	public class ProductRepository : IProductRepository
+	public class ProductRepository : AbstractRepository, IProductRepository
 	{
-		private readonly IRestClient _client;
 
-		public ProductRepository(IRestClient client)
+		public ProductRepository(IContext context) : base(context)
 		{
-			_client = client;
 		}
 
 
-		async public Task<Product> GetProductBySku(string sku, string scope = "all")
+		public async Task<Product> GetProductBySku(string sku, string scope = "all")
 		{
 			var request = new RestRequest("products/{sku}");
 			request.AddOrUpdateParameter("sku", sku, ParameterType.UrlSegment);
 			request.SetScope(scope);
 
 
-			var response = await _client.ExecuteAsync<Product>(request);
+			var response = await Client.ExecuteAsync<Product>(request);
 
 			if (response.IsSuccessful)
 			{
@@ -47,13 +46,13 @@ namespace Magento.RestClient.Data.Repositories
 			throw response.ErrorException;
 		}
 
-		async public Task<Product> CreateProduct(Product product, bool saveOptions = true)
+		public async Task<Product> CreateProduct(Product product, bool saveOptions = true)
 		{
 			var request = new RestRequest("products") {Method = Method.POST};
 			request.SetScope("all");
 			// ReSharper disable once RedundantAnonymousTypePropertyName
 			request.AddJsonBody(new {product = product});
-			var response = await _client.ExecuteAsync<Product>(request);
+			var response = await Client.ExecuteAsync<Product>(request);
 			if (response.IsSuccessful)
 			{
 				return response.Data;
@@ -62,7 +61,7 @@ namespace Magento.RestClient.Data.Repositories
 			throw response.ErrorException;
 		}
 
-		async public Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true,
+		public async Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true,
 			string scope = "all")
 		{
 			var request = new RestRequest("products/{sku}");
@@ -72,7 +71,7 @@ namespace Magento.RestClient.Data.Repositories
 			// ReSharper disable once RedundantAnonymousTypePropertyName
 			request.AddJsonBody(new {product = product});
 
-			var response = await _client.ExecuteAsync<Product>(request);
+			var response = await Client.ExecuteAsync<Product>(request);
 
 			if (response.IsSuccessful)
 			{
@@ -88,16 +87,16 @@ namespace Magento.RestClient.Data.Repositories
 			request.AddOrUpdateParameter("sku", sku, ParameterType.UrlSegment);
 
 
-			var response = await _client.ExecuteAsync<Product>(request);
+			var response = await Client.ExecuteAsync<Product>(request);
 		}
 
 
 		public IQueryable<Product> AsQueryable()
 		{
-			return new MagentoQueryable<Product>(_client, "products");
+			return new MagentoQueryable<Product>(Client, "products");
 		}
 
-		async public Task<BulkActionResponse> Save(params Product[] models)
+		public async Task<BulkActionResponse> Save(params Product[] models)
 		{
 			var request = new RestRequest("products");
 			request.Method = Method.POST;
@@ -108,7 +107,7 @@ namespace Magento.RestClient.Data.Repositories
 			);
 
 
-			var response = await _client.ExecuteAsync<BulkActionResponse>(request);
+			var response = await Client.ExecuteAsync<BulkActionResponse>(request);
 
 			return response.Data;
 		}

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Expressions;
@@ -12,14 +13,12 @@ using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
 {
-	public class InvoiceRepository : IInvoiceRepository
+	public class InvoiceRepository : AbstractRepository, IInvoiceRepository
 	{
-		private readonly IRestClient _client;
 
 
-		public InvoiceRepository(IRestClient client)
+		public InvoiceRepository(IContext context) : base(context)
 		{
-			_client = client;
 		}
 
 
@@ -31,7 +30,7 @@ namespace Magento.RestClient.Data.Repositories
 
 		public IQueryable<Invoice> AsQueryable()
 		{
-			return new MagentoQueryable<Invoice>(_client, "invoices");
+			return new MagentoQueryable<Invoice>(Client, "invoices");
 		}
 	}
 }

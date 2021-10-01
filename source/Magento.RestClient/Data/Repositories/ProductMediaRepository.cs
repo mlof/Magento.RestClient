@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
 {
-	internal class ProductMediaRepository : IProductMediaRepository
+	internal class ProductMediaRepository : AbstractRepository, IProductMediaRepository
 	{
 		private readonly IRestClient _client;
 
-		public ProductMediaRepository(IRestClient client)
+		public ProductMediaRepository(IContext context) : base(context)
 		{
-			_client = client;
 		}
 
 		public Task Create(string sku, ProductMedia entry)

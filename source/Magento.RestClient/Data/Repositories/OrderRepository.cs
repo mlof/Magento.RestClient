@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FluentValidation;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Orders;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Expressions;
@@ -13,19 +14,17 @@ using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
 {
-	public class OrderRepository : IOrderRepository
+	public class OrderRepository : AbstractRepository, IOrderRepository
 	{
-		private readonly IRestClient _client;
 		private readonly OrderValidator _orderValidator;
 
-		public OrderRepository(IRestClient client)
+		public OrderRepository(IContext context) : base(context)
 		{
-			_client = client;
 			_orderValidator = new OrderValidator();
 		}
 
 
-		async public Task<Order> CreateOrder(Order order)
+		public async Task<Order> CreateOrder(Order order)
 		{
 			await _orderValidator.ValidateAsync(order, options => options.ThrowOnFailures());
 
@@ -33,15 +32,15 @@ namespace Magento.RestClient.Data.Repositories
 			request.Method = Method.POST;
 			request.AddJsonBody(new {entity = order});
 
-			var response = await _client.ExecuteAsync(request);
+			var response = await Client.ExecuteAsync(request);
 			return order;
 		}
 
-		async public Task<Order> GetByOrderId(long orderId)
+		public async Task<Order> GetByOrderId(long orderId)
 		{
 			IRestRequest request = new RestRequest("orders/{id}");
 			request.AddOrUpdateParameter("id", orderId, ParameterType.UrlSegment);
-			var response = await _client.ExecuteAsync<Order>(request);
+			var response = await Client.ExecuteAsync<Order>(request);
 			return response.Data;
 		}
 
@@ -70,19 +69,19 @@ namespace Magento.RestClient.Data.Repositories
 			throw new NotImplementedException();
 		}
 
-		async public Task CreateInvoice(long orderId)
+		public async Task CreateInvoice(long orderId)
 		{
 			IRestRequest request = new RestRequest("order/{id}/invoice");
 			request.Method = Method.POST;
 			request.AddOrUpdateParameter("id", orderId, ParameterType.UrlSegment);
 			request.AddJsonBody(new {capture = true, notify = true});
-			var response = await _client.ExecuteAsync(request);
+			var response = await Client.ExecuteAsync(request);
 		}
 
 
 		public IQueryable<Order> AsQueryable()
 		{
-			return new MagentoQueryable<Order>(_client, "orders");
+			return new MagentoQueryable<Order>(Client, "orders");
 		}
 	}
 }

@@ -64,7 +64,7 @@ namespace Magento.RestClient.Domain.Models
 			return new(context, orderId);
 		}
 
-		async public Task<OrderModel> CreateShipment()
+		public async Task<OrderModel> CreateShipment()
 		{
 			await _context.Shipments.CreateShipment(this.OrderId);
 			await Refresh();

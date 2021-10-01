@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
@@ -19,8 +20,9 @@ namespace Magento.RestClient.Data.Repositories
 		private readonly IRestClient client;
 
 
-		public BulkRepository(IRestClient client)
+		public BulkRepository(IContext context) : base(context)
 		{
+			
 			this.client = client;
 		}
 

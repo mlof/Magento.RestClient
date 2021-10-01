@@ -1,8 +1,10 @@
 ﻿using Magento.RestClient.Data.Repositories.Abstractions;
+using Microsoft.Extensions.Caching.Memory;
+using RestSharp;
 
 namespace Magento.RestClient.Abstractions
 {
-	public interface IAdminContext : ICanGetModules
+	public interface IAdminContext : ICanGetModules, IContext
 	{
 		IProductAttributeGroupRepository ProductAttributeGroups { get; }
 		IStoreRepository Stores { get; }
@@ -21,5 +23,11 @@ namespace Magento.RestClient.Abstractions
 		IShipmentRepository Shipments { get; }
 		IBulkRepository Bulk { get; }
 		ISpecialPriceRepository SpecialPrices { get; }
+	}
+
+	public interface IContext 
+	{
+		IRestClient Client { get;  }
+		IMemoryCache Cache { get;  }
 	}
 }

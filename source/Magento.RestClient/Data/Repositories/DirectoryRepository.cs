@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
 {
-	public class DirectoryRepository : IDirectoryRepository
+	public class DirectoryRepository : AbstractRepository, IDirectoryRepository
 	{
-		private readonly IRestClient _client;
 
-		public DirectoryRepository(IRestClient client)
+		public DirectoryRepository(IContext context) : base(context)
 		{
-			_client = client;
 		}
 
 		public Task<List<Country>> GetCountries()

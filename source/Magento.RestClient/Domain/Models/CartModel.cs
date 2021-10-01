@@ -87,7 +87,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public bool ShippingInformationSet { get; private set; }
 
-		async private Task<CartModel> UpdateMagentoValues()
+		private async Task<CartModel> UpdateMagentoValues()
 		{
 			_model = await _context.Carts.GetExistingCart(_id);
 
@@ -102,7 +102,7 @@ namespace Magento.RestClient.Domain.Models
 		/// <param name="method"></param>
 		/// <returns></returns>
 		/// <exception cref="InvalidOperationException"></exception>
-		async public Task<CartModel> SetShippingMethod(string carrier, string method)
+		public async Task<CartModel> SetShippingMethod(string carrier, string method)
 		{
 			if (this.ShippingAddress != null)
 			{
@@ -136,7 +136,7 @@ namespace Magento.RestClient.Domain.Models
 		/// <param name="paymentMethod"></param>
 		/// <returns></returns>
 		/// <exception cref="InvalidOperationException"></exception>
-		async public Task<CartModel> SetPaymentMethod(string paymentMethod)
+		public async Task<CartModel> SetPaymentMethod(string paymentMethod)
 		{
 			var paymentMethods = await _context.Carts.GetPaymentMethodsForCart(this.Id);
 			if (paymentMethods.Any(method => method.Code == paymentMethod))
@@ -149,7 +149,7 @@ namespace Magento.RestClient.Domain.Models
 		}
 
 
-		async public Task<CartModel> AddSimpleProduct(string sku, int quantity = 1)
+		public async Task<CartModel> AddSimpleProduct(string sku, int quantity = 1)
 		{
 			//todo: Add configurable product functionality
 			if (quantity > 0)
@@ -162,7 +162,7 @@ namespace Magento.RestClient.Domain.Models
 			throw new InvalidOperationException();
 		}
 
-		async public Task<List<ShippingMethod>> EstimateShippingMethods()
+		public async Task<List<ShippingMethod>> EstimateShippingMethods()
 		{
 			if (_shippingAddress == null)
 			{
@@ -178,7 +178,7 @@ namespace Magento.RestClient.Domain.Models
 		}
 
 
-		async public Task<List<PaymentMethod>> GetPaymentMethods()
+		public async Task<List<PaymentMethod>> GetPaymentMethods()
 		{
 			return await _context.Carts.GetPaymentMethodsForCart(this.Id);
 		}
@@ -189,7 +189,7 @@ namespace Magento.RestClient.Domain.Models
 		/// <exception cref="CartCommittedException"></exception>
 		/// <returns>Order ID</returns>
 		/// <exception cref="InvalidOperationException"></exception>
-		async public Task<long> Commit()
+		public async Task<long> Commit()
 		{
 			_commitCartValidator.Validate(this, strategy => strategy.ThrowOnFailures());
 
@@ -208,14 +208,14 @@ namespace Magento.RestClient.Domain.Models
 		}
 
 
-		async public Task<CartModel> AssignCustomer(int customerId)
+		public async Task<CartModel> AssignCustomer(int customerId)
 		{
 			await _context.Carts.AssignCustomer(this.Id, _model.StoreId, customerId);
 
 			return await UpdateMagentoValues();
 		}
 
-		async public Task AddConfigurableProduct(string parentSku, string childSku, int quantity = 1)
+		public async Task AddConfigurableProduct(string parentSku, string childSku, int quantity = 1)
 		{
 			var options = await _context.ConfigurableProducts.GetOptions(parentSku);
 			var children = await _context.ConfigurableProducts.GetConfigurableChildren(parentSku);

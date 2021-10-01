@@ -1,5 +1,7 @@
 ﻿using System.Net;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Exceptions;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -7,6 +9,14 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 {
 	public abstract class AbstractRepository
 	{
+		private readonly IContext context;
+		protected IRestClient Client => context.Client;
+		protected IMemoryCache Cache => context.Cache;
+		protected AbstractRepository(IContext context)
+		{
+			this.context = context;
+		}
+
 		/// <summary>
 		///     Handles a magento response and returns the value.
 		/// </summary>

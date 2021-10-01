@@ -78,7 +78,7 @@ namespace Magento.RestClient.Domain.Models
 			set => SetAttribute("url_key", value).GetAwaiter().GetResult();
 		}
 
-		async virtual public Task Refresh()
+		public async virtual Task Refresh()
 		{
 			var existingProduct = await _context.Products.GetProductBySku(this.Sku, this.Scope);
 
@@ -175,7 +175,7 @@ namespace Magento.RestClient.Domain.Models
 			return this.CustomAttributes.SingleOrDefault(attribute => attribute.AttributeCode == attributeCode)?.Value;
 		}
 
-		async private Task<ProductModel> SetAttribute(string attributeCode, dynamic inputValue)
+		private async Task<ProductModel> SetAttribute(string attributeCode, dynamic inputValue)
 		{
 			// validateValue 
 			var attribute = await _context.Attributes.GetByCode(attributeCode);
@@ -207,7 +207,7 @@ namespace Magento.RestClient.Domain.Models
 			return this;
 		}
 
-		async public static Task<BulkActionResponse> SaveBulk(IAdminContext context, List<ProductModel> models)
+		public static async Task<BulkActionResponse> SaveBulk(IAdminContext context, List<ProductModel> models)
 		{
 			return await context.Products.Save(models.Select(model => model.GetProduct()).ToArray());
 		}

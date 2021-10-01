@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Shipping;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Expressions;
@@ -11,13 +12,11 @@ using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
 {
-	internal class ShipmentRepository : IShipmentRepository
+	internal class ShipmentRepository : AbstractRepository, IShipmentRepository
 	{
-		private readonly IRestClient _client;
 
-		public ShipmentRepository(IRestClient client)
+		public ShipmentRepository(IContext context) : base(context)
 		{
-			_client = client;
 		}
 
 
@@ -27,20 +26,20 @@ namespace Magento.RestClient.Data.Repositories
 			return response;
 		}
 
-		async public Task<long> CreateShipment(long orderId)
+		public async Task<long> CreateShipment(long orderId)
 		{
 			var request = new RestRequest("order/{orderId}/ship");
 			request.Method = Method.POST;
 			request.AddOrUpdateParameter("orderId", orderId, ParameterType.UrlSegment);
 
-			var response = await _client.ExecuteAsync<long>(request);
+			var response = await Client.ExecuteAsync<long>(request);
 
 			return response.Data;
 		}
 
 		public IQueryable<Shipment> AsQueryable()
 		{
-			return new MagentoQueryable<Shipment>(_client, "shipments");
+			return new MagentoQueryable<Shipment>(Client, "shipments");
 		}
 	}
 }

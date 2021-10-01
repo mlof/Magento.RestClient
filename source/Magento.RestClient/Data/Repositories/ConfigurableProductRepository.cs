@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
@@ -13,12 +14,12 @@ namespace Magento.RestClient.Data.Repositories
 	{
 		private readonly IRestClient client;
 
-		public ConfigurableProductRepository(IRestClient client)
+		public ConfigurableProductRepository(IContext context) : base(context)
 		{
 			this.client = client;
 		}
 
-		async public Task CreateChild(string parentSku, string childSku)
+		public async Task CreateChild(string parentSku, string childSku)
 		{
 			var request = new RestRequest("configurable-products/{sku}/child");
 			request.Method = Method.POST;
@@ -29,7 +30,7 @@ namespace Magento.RestClient.Data.Repositories
 			HandleResponse(response);
 		}
 
-		async public Task DeleteChild(string parentSku, string childSku)
+		public async Task DeleteChild(string parentSku, string childSku)
 		{
 			var request = new RestRequest("configurable-products/{sku}/child/{childSku}");
 			request.Method = Method.DELETE;
@@ -43,7 +44,7 @@ namespace Magento.RestClient.Data.Repositories
 			}
 		}
 
-		async public Task<List<Product>> GetConfigurableChildren(string parentSku)
+		public async Task<List<Product>> GetConfigurableChildren(string parentSku)
 		{
 			var request = new RestRequest("configurable-products/{sku}/children");
 			request.Method = Method.GET;
@@ -55,7 +56,7 @@ namespace Magento.RestClient.Data.Repositories
 		}
 
 
-		async public Task CreateOption(string parentSku, ConfigurableProductOption option)
+		public async Task CreateOption(string parentSku, ConfigurableProductOption option)
 		{
 			var request = new RestRequest("configurable-products/{sku}/options");
 			request.Method = Method.POST;
@@ -64,7 +65,7 @@ namespace Magento.RestClient.Data.Repositories
 			await client.ExecuteAsync(request);
 		}
 
-		async public Task<List<ConfigurableProductOption>> GetOptions(string parentSku)
+		public async Task<List<ConfigurableProductOption>> GetOptions(string parentSku)
 		{
 			var request = new RestRequest("configurable-products/{sku}/options/all");
 			request.Method = Method.GET;

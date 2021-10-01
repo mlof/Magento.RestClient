@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Models;
@@ -9,11 +10,9 @@ namespace Magento.RestClient.Data.Repositories
 {
 	internal class SpecialPriceRepository : AbstractRepository, ISpecialPriceRepository
 	{
-		private readonly IRestClient _client;
 
-		public SpecialPriceRepository(IRestClient client)
+		public SpecialPriceRepository(IContext context) : base(context)
 		{
-			this._client = client;
 		}
 
 		public async Task<List<SpecialPriceResponse>> AddOrUpdateSpecialPrices(params SpecialPrice[] specialPrices)
@@ -22,7 +21,7 @@ namespace Magento.RestClient.Data.Repositories
 
 			request.Method = Method.POST;
 			request.AddJsonBody(new {prices = specialPrices});
-			var response = await _client.ExecuteAsync<List<SpecialPriceResponse>>(request);
+			var response = await Client.ExecuteAsync<List<SpecialPriceResponse>>(request);
 
 
 			return HandleResponse(response);
@@ -42,7 +41,7 @@ namespace Magento.RestClient.Data.Repositories
 			request.Method = Method.POST;
 			request.AddJsonBody(new {skus});
 
-			var response = await _client.ExecuteAsync<List<SpecialPrice>>(request);
+			var response = await Client.ExecuteAsync<List<SpecialPrice>>(request);
 			return HandleResponse(response);
 		}
 	}

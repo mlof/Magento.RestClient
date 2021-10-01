@@ -29,7 +29,7 @@ namespace Magento.RestClient.Domain.Models
 		public IReadOnlyList<ConfigurableProductOption> Options => _options.AsReadOnly();
 
 
-		sealed public async override Task Refresh()
+		public override sealed async Task Refresh()
 		{
 			await base.Refresh();
 			await RefreshOptions();
@@ -105,7 +105,7 @@ namespace Magento.RestClient.Domain.Models
 		}
 
 
-		async public Task AddConfigurableOptions(params string[] attributeCodes)
+		public async Task AddConfigurableOptions(params string[] attributeCodes)
 		{
 			foreach (var attributeCode in attributeCodes)
 			{

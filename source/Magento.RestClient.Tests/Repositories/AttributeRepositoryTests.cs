@@ -12,16 +12,6 @@ using Magento.RestClient.Extensions;
 
 namespace Magento.RestClient.Tests.Repositories
 {
-
-	public class QueryableTests : AbstractIntegrationTest
-	{
-
-		[Test]
-		public void CanGetDefaultAttributeSet()
-		{
-			Context.AttributeSets.GetDefaultAttributeSet(EntityType.CatalogProduct);
-		}
-	}
 	[TestFixture]
 	public class AttributeRepositoryTests : AbstractIntegrationTest
 	{

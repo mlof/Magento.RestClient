@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,8 +18,7 @@ namespace Magento.RestClient.Domain.Models
 	{
 		private readonly List<AttributeAssignment> _attributeAssignments = new();
 		private readonly IAdminContext _context;
-		private List<AttributeGroup> _attributeGroups;
-		private List<EntityAttribute> _attributes;
+		private List<AttributeGroupModel> _attributeGroups;
 		private long? _skeletonId;
 		private readonly AttributeSetModelValidator _validator;
 
@@ -40,11 +40,26 @@ namespace Magento.RestClient.Domain.Models
 			Refresh().GetAwaiter().GetResult();
 		}
 
+		public AttributeSetModel(IAdminContext adminContext, long id)
+		{
+			this._validator = new AttributeSetModelValidator();
+			_context = adminContext;
+
+
+			this.Id = id;
+
+
+			Refresh().GetAwaiter().GetResult();
+		}
+
 		private EntityType EntityType { get; }
 
-		public IReadOnlyList<EntityAttribute> Attributes => _attributes;
+		public IReadOnlyList<AttributeModel> Attributes {
+			get;
+			private set;
+		}
 
-		public IReadOnlyList<AttributeGroup> AttributeGroups => _attributeGroups;
+		public IReadOnlyList<AttributeGroupModel> AttributeGroups => _attributeGroups.AsReadOnly();
 
 		public long Id { get; set; }
 
@@ -71,19 +86,21 @@ namespace Magento.RestClient.Domain.Models
 
 				var attributesResponse = await _context.Attributes.GetProductAttributes(this.Id).ConfigureAwait(false);
 
-				_attributes =
-					attributesResponse
-						.ToList();
+				Attributes =
+					attributesResponse.Select(attribute => new AttributeModel(_context, attribute.AttributeCode))
+						.ToList().AsReadOnly();
 				var attributeGroups =
-					_context.ProductAttributeGroups.AsQueryable().Where(group => group.AttributeSetId == this.Id).ToList();
-				_attributeGroups = attributeGroups.ToList();
+					_context.ProductAttributeGroups.AsQueryable().Where(group => group.AttributeSetId == this.Id)
+						.ToList();
+				_attributeGroups = attributeGroups.Select(group => new AttributeGroupModel(this._context,
+					group.AttributeSetId, group.AttributeGroupId, group.AttributeGroupName)).ToList();
 			}
 			else
 			{
 				this.IsPersisted = false;
 
-				_attributes = new List<EntityAttribute>();
-				_attributeGroups = new List<AttributeGroup>();
+				Attributes = new List<AttributeModel>().AsReadOnly();
+				_attributeGroups = new List<AttributeGroupModel>();
 				if (_skeletonId == null)
 				{
 					var attributeSetId = _context.AttributeSets.GetDefaultAttributeSet(this.EntityType).AttributeSetId;
@@ -91,13 +108,18 @@ namespace Magento.RestClient.Domain.Models
 					{
 						_skeletonId = attributeSetId.Value;
 					}
+
+					var attributeGroups =
+						_context.ProductAttributeGroups.AsQueryable()
+							.Where(group => group.AttributeSetId == attributeSetId).ToList();
+					_attributeGroups = attributeGroups.Select(group => new AttributeGroupModel(this._context,
+						group.AttributeSetId, group.AttributeGroupId, group.AttributeGroupName)).ToList();
 				}
 			}
 		}
 
 		public async Task SaveAsync()
 		{
-
 			var attributeSet = new AttributeSet();
 			attributeSet.AttributeSetName = this.Name;
 			attributeSet.EntityTypeId = this.EntityType;
@@ -105,69 +127,48 @@ namespace Magento.RestClient.Domain.Models
 			if (this.Id == 0)
 			{
 				Debug.Assert(_skeletonId != null, nameof(_skeletonId) + " != null");
-				var set = await _context.AttributeSets.Create(this.EntityType, _skeletonId.Value, attributeSet).ConfigureAwait(false);
+				var set = await _context.AttributeSets.Create(this.EntityType, _skeletonId.Value, attributeSet)
+					.ConfigureAwait(false);
 				this.Id = set.AttributeSetId.Value;
 			}
 
-			var currentAttributeGroups =
-				_context.ProductAttributeGroups.AsQueryable().Where(group => group.AttributeSetId == this.Id).ToList();
 
 			foreach (var attributeGroup in _attributeGroups)
 			{
-				if (!currentAttributeGroups.Select(group => group.AttributeGroupName)
-					.Contains(attributeGroup.AttributeGroupName))
+
+				if (attributeGroup.AttributeSetId == 0)
 				{
-					attributeGroup.AttributeGroupId = await _context.AttributeSets.CreateProductAttributeGroup(this.Id,
-						attributeGroup.AttributeGroupName).ConfigureAwait(false);
+					attributeGroup.AttributeSetId = Id;
 				}
-				else
-				{
-					attributeGroup.AttributeGroupId = currentAttributeGroups
-						.Where(group => group.AttributeGroupName == attributeGroup.AttributeGroupName)
-						.Select(group => group.AttributeGroupId).SingleOrDefault();
-				}
+
+				await attributeGroup.SaveAsync();
 			}
 
-			foreach (var assignment in _attributeAssignments)
-			{
-				var groupId = _attributeGroups.Single(group => group.AttributeGroupName == assignment.GroupName);
-				await _context.AttributeSets.AssignProductAttribute(this.Id, groupId.AttributeGroupId,
-					assignment.AttributeCode).ConfigureAwait(false);
-			}
 
 			_attributeAssignments.Clear();
 			await Refresh().ConfigureAwait(false);
 		}
 
-		public void AddGroup(string groupName)
-		{
-			if (!_attributeGroups.Any(group => group.AttributeGroupName == groupName))
-			{
-				_attributeGroups.Add(new AttributeGroup {AttributeGroupName = groupName});
-			}
-			
-		}
-
-		public void AssignAttribute(string attributeGroup, string attributeCode)
-		{
-			if (_attributes.Any(attribute => attribute.AttributeCode == attributeCode))
-			{
-				throw new InvalidOperationException("Attribute already exists");
-			}
-
-			if (!_attributeGroups.Any(group => group.AttributeGroupName == attributeGroup))
-			{
-				throw new InvalidOperationException("Attribute group does not exist.");
-			}
-
-			_attributeAssignments.Add(new AttributeAssignment {
-				AttributeCode = attributeCode, GroupName = attributeGroup
-			});
-		}
 
 		public async Task Delete()
 		{
 			await _context.AttributeSets.Delete(this.Id).ConfigureAwait(false);
+		}
+
+		public AttributeGroupModel this[string groupName] {
+			get {
+				if (this.AttributeGroups.All(group => @group.Name != groupName))
+				{
+					_attributeGroups.Add(new AttributeGroupModel(this._context, Id, groupName));
+				}
+
+
+				return _attributeGroups.SingleOrDefault(model => model.Name == groupName);
+			}
+			set {
+				var index = this._attributeGroups.FindIndex(model => model.Name == groupName);
+				_attributeGroups[index] = value;
+			}
 		}
 	}
 }

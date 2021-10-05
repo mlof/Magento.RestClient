@@ -56,7 +56,7 @@ namespace Magento.RestClient.Data.Repositories
 			var request = new RestRequest("eav/attribute-sets/{id}", Method.GET);
 			request.AddOrUpdateParameter("id", id, ParameterType.UrlSegment);
 
-				return ExecuteAsync<AttributeSet>(request);
+			return ExecuteAsync<AttributeSet>(request);
 		}
 
 		public Task AssignProductAttribute(long attributeSetId, long attributeGroupId, string attributeCode,

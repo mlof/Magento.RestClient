@@ -13,12 +13,18 @@ using Serilog;
 
 namespace Magento.RestClient.Domain.Models
 {
+	[DebuggerDisplay("{AttributeCode}", Name = "{DefaultFrontendLabel}")]
 	public class AttributeModel : IDomainModel
 	{
 		private readonly IAdminContext _context;
 		private AttributeFrontendInput _frontendInput;
 		private bool _frontendInputChanged;
 		private List<Option> _options;
+
+		public List<string> Options {
+			get => _options.Select(option => option.Label).ToList();
+			set => _options = value.Select(s => new Option() {Label = s}).ToList();
+		}
 
 		public AttributeModel(IAdminContext context, string attributeCode, string label = "")
 		{
@@ -103,8 +109,9 @@ namespace Magento.RestClient.Domain.Models
 				var existingOptions = await _context.Attributes.GetProductAttributeOptions(this.AttributeCode)
 					.ConfigureAwait(false);
 
+
 				foreach (var option in _options.Where(option =>
-					!existingOptions.Select(option1 => option1.Label).Contains(option.Label)))
+					!existingOptions.Select(existingOption => existingOption.Label).Contains(option.Label)))
 				{
 					await _context.Attributes.CreateProductAttributeOption(this.AttributeCode, option)
 						.ConfigureAwait(false);

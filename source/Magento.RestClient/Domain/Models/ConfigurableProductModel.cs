@@ -31,9 +31,8 @@ namespace Magento.RestClient.Domain.Models
 		{
 			await base.Refresh().ConfigureAwait(false);
 			await RefreshOptions().ConfigureAwait(false);
-			List<Product> children;
 
-			children = await Context.ConfigurableProducts.GetConfigurableChildren(this.Sku).ConfigureAwait(false);
+			var children = await Context.ConfigurableProducts.GetConfigurableChildren(this.Sku).ConfigureAwait(false);
 			if (children == null)
 			{
 				children = new List<Product>();

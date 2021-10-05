@@ -73,7 +73,7 @@ namespace Magento.RestClient.Tests.Integration.Integration
 					{
 						foreach (var attribute in attributeGroup.Attributes)
 						{
-							attributeSet.AssignAttribute(attributeGroup.AttributeGroupName, attribute);
+							attributeSet.AssignAttributes(attributeGroup.AttributeGroupName, attribute);
 
 						}
 

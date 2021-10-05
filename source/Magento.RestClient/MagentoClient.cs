@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Cache;
+using System.Net.Http.Headers;
 using JsonExts.JsonPath;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Authentication;
@@ -21,8 +22,10 @@ namespace Magento.RestClient
 		private readonly string _baseUrl;
 		private readonly string _customerTokenUrl;
 		public readonly MemoryCache Cache;
+		private readonly JsonSerializerSettings jsonSerializerSettings;
 
-		public MagentoClient(string host, string defaultScope = "default")
+		public MagentoClient(string host, string defaultScope = "default",
+			bool disableRemoteCertificateValidation = false)
 		{
 			Cache = new MemoryCache(new MemoryCacheOptions());
 
@@ -36,11 +39,10 @@ namespace Magento.RestClient
 			_adminTokenUrl = $"{host}/rest/V1/integration/admin/token";
 			_customerTokenUrl = host + "/rest/V1/integration/customer/token";
 			this.Client = new RestSharp.RestClient(_baseUrl) {
-				CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Revalidate)
+				CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Revalidate),
 			};
 
-			this.Client.AddDefaultUrlSegment("scope", defaultScope);
-			this.Client.UseNewtonsoftJson(new JsonSerializerSettings {
+			this.jsonSerializerSettings = new JsonSerializerSettings {
 				NullValueHandling = NullValueHandling.Ignore,
 				Culture = CultureInfo.InvariantCulture,
 				Formatting = Formatting.Indented,
@@ -49,8 +51,12 @@ namespace Magento.RestClient
 				Converters = new List<JsonConverter> {
 					//new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal},
 					new JsonPathObjectConverter()
-				}
-			});
+				},
+				
+			};
+
+			this.Client.AddDefaultUrlSegment("scope", defaultScope);
+			this.Client.UseNewtonsoftJson(jsonSerializerSettings);
 		}
 
 		public IAdminContext AuthenticateAsIntegration(string consumerKey, string consumerSecret,

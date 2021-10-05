@@ -96,6 +96,7 @@ namespace Magento.RestClient.Data.Repositories
 
 		public Task<ProductAttribute> Update(string attributeCode, ProductAttribute attribute)
 		{
+			return Task.FromResult(attribute);
 			var request = new RestRequest("products/attributes/{attributeCode}", Method.PUT);
 
 			var key = Client.BuildUri(request);

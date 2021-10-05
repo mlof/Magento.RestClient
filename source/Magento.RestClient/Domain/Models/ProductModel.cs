@@ -14,6 +14,7 @@ using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Abstractions;
 using Magento.RestClient.Extensions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Magento.RestClient.Domain.Models
 {
@@ -44,6 +45,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public string Sku { get; }
 
+		[JsonIgnore]
 		public string Scope { get; }
 
 		public string Name {
@@ -53,6 +55,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public long AttributeSetId { get; set; }
 
+		[JsonConverter(typeof(StringEnumConverter))]
 		public ProductVisibility Visibility { get; set; }
 
 		public List<CustomAttribute> CustomAttributes { get; set; }

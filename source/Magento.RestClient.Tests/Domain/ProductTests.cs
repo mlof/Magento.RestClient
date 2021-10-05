@@ -30,8 +30,7 @@ namespace Magento.RestClient.Tests.Domain
 
 
 			var attributeSet = new AttributeSetModel(Context, "Laptops", EntityType.CatalogProduct);
-			attributeSet.AddGroup("Monitor");
-			attributeSet.AssignAttribute("Monitor", "monitor_sizes");
+			attributeSet["Monitor"].AssignAttributes(sizeAttribute);
 			await attributeSet.SaveAsync();
 			this.LaptopAttributeSet = attributeSet.Id;
 		}
@@ -113,13 +112,12 @@ namespace Magento.RestClient.Tests.Domain
 			product.AddChild(largeProduct);
 
 
-
 			await product.SaveAsync();
 
 
 			var children = await Context.ConfigurableProducts.GetConfigurableChildren(product.Sku);
-			Assert.That(children.Select(p=> p.Sku).Contains(smallProduct.Sku));
-			Assert.That(children.Select(p=> p.Sku).Contains(largeProduct.Sku));
+			Assert.That(children.Select(p => p.Sku).Contains(smallProduct.Sku));
+			Assert.That(children.Select(p => p.Sku).Contains(largeProduct.Sku));
 		}
 
 

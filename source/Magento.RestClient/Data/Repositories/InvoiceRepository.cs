@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
+using Magento.RestClient.Data.Models.Invoices;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Expressions;
 using Magento.RestClient.Search;

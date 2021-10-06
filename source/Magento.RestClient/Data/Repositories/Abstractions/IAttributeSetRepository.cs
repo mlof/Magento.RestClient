@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
-using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Models.Common;
+using Magento.RestClient.Data.Models.EAV.Attributes;
 
 namespace Magento.RestClient.Data.Repositories.Abstractions
 {

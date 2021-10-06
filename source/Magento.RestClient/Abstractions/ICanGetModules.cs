@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Magento.RestClient.Exceptions;
+using Magento.RestClient.Exceptions.Generic;
 
 namespace Magento.RestClient.Abstractions
 {

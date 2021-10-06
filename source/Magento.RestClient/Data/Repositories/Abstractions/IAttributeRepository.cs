@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Magento.RestClient.Data.Models.Attributes;
-using Magento.RestClient.Data.Models.Products;
+using Magento.RestClient.Data.Models.Catalog.Products;
+using Magento.RestClient.Data.Models.EAV.Attributes;
 
 namespace Magento.RestClient.Data.Repositories.Abstractions
 {

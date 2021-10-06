@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
+using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Extensions;
 using RestSharp;

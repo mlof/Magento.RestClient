@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models;
+using Magento.RestClient.Domain.Models.Catalog;
 using Magento.RestClient.Tests.Domain.Abstractions;
 using NUnit.Framework;
 

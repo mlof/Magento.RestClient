@@ -1,11 +1,13 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Magento.RestClient.Data.Models.Attributes;
+using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Models.Common;
-using Magento.RestClient.Data.Models.Products;
+using Magento.RestClient.Data.Models.EAV.Attributes;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models;
+using Magento.RestClient.Domain.Models.Catalog;
+using Magento.RestClient.Domain.Models.EAV;
 using Magento.RestClient.Tests.Domain.Abstractions;
 using Newtonsoft.Json;
 using NUnit.Framework;

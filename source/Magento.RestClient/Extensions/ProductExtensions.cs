@@ -1,6 +1,5 @@
-﻿using Magento.RestClient.Data.Models.Products;
+﻿using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Models.Stock;
-using Newtonsoft.Json;
 
 namespace Magento.RestClient.Extensions
 {
@@ -17,3 +16,4 @@ namespace Magento.RestClient.Extensions
 		}
 	}
 }
+

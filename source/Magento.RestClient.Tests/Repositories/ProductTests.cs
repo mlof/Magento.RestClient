@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using FluentAssertions;
-using Magento.RestClient.Data.Models.Products;
+using Magento.RestClient.Data.Models.Catalog.Products;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories

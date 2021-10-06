@@ -1,8 +1,9 @@
 ﻿using System;
 using Magento.RestClient.Abstractions;
-using Magento.RestClient.Data.Models.Category;
+using Magento.RestClient.Data.Models.Catalog.Category;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Models;
+using Magento.RestClient.Domain.Models.Catalog;
 
 namespace Magento.RestClient.Domain.Extensions
 {

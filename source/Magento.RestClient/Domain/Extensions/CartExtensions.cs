@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Magento.RestClient.Data.Models.Carts;
 using Magento.RestClient.Domain.Models;
+using Magento.RestClient.Domain.Models.Cart;
 
 namespace Magento.RestClient.Domain.Extensions
 {

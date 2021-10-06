@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Magento.RestClient.Data.Models.Category;
+using Magento.RestClient.Data.Models.Catalog.Category;
 
 namespace Magento.RestClient.Data.Repositories
 {

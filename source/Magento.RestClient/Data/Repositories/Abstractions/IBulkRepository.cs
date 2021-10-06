@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
+using Magento.RestClient.Data.Models.Bulk;
 
 namespace Magento.RestClient.Data.Repositories.Abstractions
 {

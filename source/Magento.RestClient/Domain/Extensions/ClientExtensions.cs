@@ -2,6 +2,7 @@
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Models;
+using Magento.RestClient.Domain.Models.Cart;
 
 namespace Magento.RestClient.Domain.Extensions
 {

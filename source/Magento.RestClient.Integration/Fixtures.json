@@ -1,0 +1,67 @@
+﻿{
+  "Attributes": [
+    {
+      "Options": [
+        "HP",
+        "Toshiba",
+        "Sony",
+        "Acer",
+        "Canon",
+        "Epson",
+        "Philips",
+        "Samsung",
+        "Seagate",
+        "D-Link",
+        "Intel",
+        "Logitech",
+        "Microsoft",
+        "Netgear",
+        "V7",
+        "ASUS",
+        "Conceptronic",
+        "Jabra",
+        "MSI",
+        "Neomounts by Newstar",
+        "DELL",
+        "LG",
+        "Zyxel",
+        "Lenovo",
+        "Gigabyte",
+        "AOC",
+        "Integral",
+        "ARCTIC",
+        "Huawei",
+        "Eminent",
+        "be quiet!",
+        "TP-LINK",
+        "Manhattan",
+        "ACT",
+        "Fractal Design",
+        "Hannspree",
+        "Ewent"
+      ],
+      "AttributeCode": "brand",
+      "Required": false,
+      "Visible": false,
+      "Searchable": false,
+      "UseInLayeredNavigation": false,
+      "Comparable": false,
+      "FrontendInput": "select",
+      "DefaultFrontendLabel": "Brand",
+      "IsPersisted": false
+    }
+  ],
+  "AttributeSets": [
+    {
+      "Name": "Default",
+      "AttributeGroups": [
+        {
+          "Name": "Default",
+          "Attributes": [
+            "Brand"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 ﻿using Magento.RestClient.Domain.Models;
+using Magento.RestClient.Domain.Models.Orders;
 using Magento.RestClient.Tests.Domain.Abstractions;
 using NUnit.Framework;
 

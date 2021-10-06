@@ -18,12 +18,14 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <PackageIcon>icons8_magento_96px.png</PackageIcon>
         <PackageIconUrl />
+        <UserSecretsId>b3c914ae-6d4c-42f3-b692-933c14ec69cc</UserSecretsId>
 
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="JsonExts.JsonPath" Version="1.0.1" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
         <PackageReference Include="MimeTypes" Version="2.2.1">
           <PrivateAssets>all</PrivateAssets>
@@ -66,8 +68,7 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="Domain\Validators\" />
-        <Folder Include="Exceptions\ConfigurableProduct\" />
+        <Folder Include="Domain\Exceptions\" />
         <Folder Include="Search\Abstractions\" />
         <Folder Include="Search\Extensions\" />
     </ItemGroup>

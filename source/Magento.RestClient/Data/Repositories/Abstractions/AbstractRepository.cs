@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Exceptions;
+using Magento.RestClient.Exceptions.Generic;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RestSharp;
@@ -24,29 +25,26 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 		/// </summary>
 		/// <param name="request"></param>
 		/// <exception cref="MagentoException"></exception>
-		/// <exception cref="Magento.RestClient.Data.Repositories.Abstractions.NotFoundException"></exception>
-		protected async Task<T> ExecuteAsync<T>(IRestRequest request) 
+		protected async Task<T> ExecuteAsync<T>(IRestRequest request)
 		{
 			var response = await this.Client.ExecuteAsync<T>(request).ConfigureAwait(false);
 			if (!response.IsSuccessful)
 			{
-				if (response.ErrorException != null && response.ErrorException is not JsonSerializationException)
+				if (response.ErrorException is { } and not JsonSerializationException)
 				{
 					throw response.ErrorException;
 				}
 				else if (response.StatusCode == HttpStatusCode.NotFound)
 				{
-
-					return default; 
+					return default;
 				}
 
 				else
 				{
-					
 					throw MagentoException.Parse(response.Content);
 				}
 			}
-			
+
 			else
 			{
 				return response.Data;

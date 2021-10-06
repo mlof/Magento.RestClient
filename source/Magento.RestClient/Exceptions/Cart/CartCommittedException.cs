@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Magento.RestClient.Exceptions
+namespace Magento.RestClient.Exceptions.Cart
 {
 	public class CartCommittedException : Exception
 	{

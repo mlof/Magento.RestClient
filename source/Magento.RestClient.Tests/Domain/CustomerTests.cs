@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Magento.RestClient.Domain.Models;
+using Magento.RestClient.Domain.Models.Customers;
 using Magento.RestClient.Tests.Domain.Abstractions;
 using NUnit.Framework;
 
@@ -18,6 +19,7 @@ namespace Magento.RestClient.Tests.Domain
 			customer.IsPersisted.Should().BeFalse();
 
 			await customer.SaveAsync();
+
 			customer.IsPersisted.Should().BeTrue();
 
 			customer.FirstName.Should().BeEquivalentTo("First Name");

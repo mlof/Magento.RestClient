@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
-using Magento.RestClient.Data.Models.Attributes;
-using Magento.RestClient.Data.Models.Products;
+using Magento.RestClient.Data.Models.Catalog.Products;
+using Magento.RestClient.Data.Models.EAV.Attributes;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Extensions;
@@ -86,7 +86,11 @@ namespace Magento.RestClient.Data.Repositories
 			else
 			{
 				var result = await ExecuteAsync<ProductAttribute>(request).ConfigureAwait(false);
-				Cache.Set(key, result, RelativeExpiration);
+
+				if (result != null)
+				{
+					Cache.Set(key, result, RelativeExpiration);
+				}
 
 				return result;
 			}

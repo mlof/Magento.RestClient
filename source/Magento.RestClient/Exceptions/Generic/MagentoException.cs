@@ -5,7 +5,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Magento.RestClient.Exceptions
+namespace Magento.RestClient.Exceptions.Generic
 {
 	public class MagentoException : Exception
 	{

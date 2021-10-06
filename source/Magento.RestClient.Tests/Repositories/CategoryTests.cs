@@ -1,6 +1,6 @@
 using System.Linq;
 using FluentAssertions;
-using Magento.RestClient.Data.Models.Category;
+using Magento.RestClient.Data.Models.Catalog.Category;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories

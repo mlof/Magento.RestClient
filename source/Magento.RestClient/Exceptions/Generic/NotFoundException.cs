@@ -1,3 +1,3 @@
-﻿namespace Magento.RestClient.Exceptions
+﻿namespace Magento.RestClient.Exceptions.Generic
 {
 }

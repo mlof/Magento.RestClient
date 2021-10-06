@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using Magento.RestClient.Data.Models.Attributes;
 using Magento.RestClient.Data.Models.Common;
+using Magento.RestClient.Data.Models.EAV.Attributes;
 using Magento.RestClient.Data.Repositories.Abstractions;
 
 namespace Magento.RestClient.Extensions

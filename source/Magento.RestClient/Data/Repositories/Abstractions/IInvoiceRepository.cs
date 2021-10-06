@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
+using Magento.RestClient.Data.Models.Invoices;
 
 namespace Magento.RestClient.Data.Repositories.Abstractions
 {

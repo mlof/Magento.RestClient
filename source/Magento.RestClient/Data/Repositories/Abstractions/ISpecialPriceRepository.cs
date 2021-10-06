@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Magento.RestClient.Data.Models;
+using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Domain.Models;
 
 namespace Magento.RestClient.Data.Repositories.Abstractions

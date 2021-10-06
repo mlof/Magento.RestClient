@@ -1,0 +1,27 @@
+<Project>
+    <PropertyGroup>
+        <Deterministic>true</Deterministic>
+
+        <Authors>mlof</Authors>
+        <Company />
+        <Description>Client for the Magento 2.x REST api.</Description>
+        <Copyright>Copyright 2021 Marcel Lof</Copyright>
+        <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/mlof/Magento.RestClient</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+
+        <PackageReference Include="GitVersion.MsBuild" Version="5.6.11">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+</Project>

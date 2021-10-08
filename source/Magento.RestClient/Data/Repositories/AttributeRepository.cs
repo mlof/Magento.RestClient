@@ -16,7 +16,7 @@ namespace Magento.RestClient.Data.Repositories
 	{
 		public AttributeRepository(IContext context) : base(context)
 		{
-			this.RelativeExpiration = TimeSpan.FromSeconds(5);
+			this.RelativeExpiration = TimeSpan.FromMinutes(1);
 		}
 
 		public async Task<IEnumerable<EntityAttribute>> GetProductAttributes(long attributeSetId)
@@ -41,10 +41,12 @@ namespace Magento.RestClient.Data.Repositories
 		public Task DeleteProductAttribute(string attributeCode)
 		{
 			var request = new RestRequest("products/attributes/{attributeCode}", Method.DELETE);
-			var key = Client.BuildUri(request);
-			Cache.Remove(key);
+			
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.SetScope("all");
+			var key = Client.BuildUri(request);
+
+			Cache.Remove(key);
 
 			return this.Client.ExecuteAsync(request);
 		}
@@ -52,11 +54,18 @@ namespace Magento.RestClient.Data.Repositories
 		public Task<List<Option>> GetProductAttributeOptions(string attributeCode)
 		{
 			var request = new RestRequest("products/attributes/{attributeCode}/options", Method.GET);
-
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.SetScope("all");
+			var key = Client.BuildUri(request);
 
-			return ExecuteAsync<List<Option>>(request);
+			return Cache.GetOrCreateAsync<List<Option>>(key, entry => {
+
+				entry.AbsoluteExpirationRelativeToNow = RelativeExpiration;
+	
+
+				return ExecuteAsync<List<Option>>(request);
+
+			});
 		}
 
 		public Task<int> CreateProductAttributeOption(string attributeCode, Option option)
@@ -67,6 +76,10 @@ namespace Magento.RestClient.Data.Repositories
 			request.SetScope("all");
 
 			request.AddJsonBody(new {option});
+
+			var key = Client.BuildUri(request);
+
+			Cache.Remove(key);
 			return ExecuteAsync<int>(request);
 		}
 
@@ -120,6 +133,9 @@ namespace Magento.RestClient.Data.Repositories
 			request.SetScope("all");
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.AddOrUpdateParameter("optionValue", optionValue, ParameterType.UrlSegment);
+			var key = Client.BuildUri(request);
+
+			Cache.Remove(key);
 			return this.Client.ExecuteAsync(request);
 		}
 

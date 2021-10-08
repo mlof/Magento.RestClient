@@ -12,7 +12,6 @@ namespace Magento.RestClient.Domain.Models.Catalog
 	{
 		public ConfigurableProductModel(IAdminContext context, string sku) : base(context, sku)
 		{
-			this.Type = ProductType.Configurable;
 		}
 
 		private List<ProductModel> _children = new();
@@ -28,6 +27,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			await base.Refresh().ConfigureAwait(false);
 			await RefreshOptions().ConfigureAwait(false);
 
+
 			var children = await Context.ConfigurableProducts.GetConfigurableChildren(this.Sku).ConfigureAwait(false);
 			if (children == null)
 			{
@@ -39,6 +39,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public override async Task SaveAsync()
 		{
+			base.Type = ProductType.Configurable;
 			await base.SaveAsync().ConfigureAwait(false);
 
 			if (this.Options.Any() && this.Children.Any())
@@ -49,7 +50,8 @@ namespace Magento.RestClient.Domain.Models.Catalog
 					option.Values = this.Children.SelectMany(model => model.CustomAttributes)
 						.Where(productAttribute => productAttribute.AttributeCode == attribute.AttributeCode)
 						.Select(customAttribute => customAttribute.Value).Distinct()
-						.Select(value => new ConfigurableProductValue() {ValueIndex = Convert.ToInt64(value)}).ToList();
+						.Select(value => new ConfigurableProductValue() { ValueIndex = Convert.ToInt64(value) })
+						.ToList();
 
 					if (option.Id == 0)
 					{
@@ -87,10 +89,14 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		private async Task RefreshOptions()
 		{
-			List<ConfigurableProductOption> options;
+			List<ConfigurableProductOption> options = null;
 
 
-			options = await Context.ConfigurableProducts.GetOptions(this.Sku).ConfigureAwait(false);
+			if (base.Type == ProductType.Configurable)
+			{
+				options = await Context.ConfigurableProducts.GetOptions(this.Sku).ConfigureAwait(false);
+			}
+
 			if (options == null)
 			{
 				options = new List<ConfigurableProductOption>();
@@ -157,7 +163,9 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 			if (missingAttributes.Any())
 			{
-				throw new ConfigurableChildInvalidException("Missing attributes") {MissingAttributes = missingAttributes};
+				throw new ConfigurableChildInvalidException("Missing attributes") {
+					MissingAttributes = missingAttributes
+				};
 			}
 
 			product.Visibility = ProductVisibility.NotVisibleIndividually;

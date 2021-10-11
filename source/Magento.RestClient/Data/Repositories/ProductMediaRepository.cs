@@ -59,7 +59,7 @@ namespace Magento.RestClient.Data.Repositories
 			return ExecuteAsync<ProductMedia>(request);
 		}
 
-		async public Task<ProductMedia> Update(string sku, long entryId, ProductMedia entry)
+		public async Task<ProductMedia> Update(string sku, long entryId, ProductMedia entry)
 		{
 			var request = new RestRequest("products/{sku}/media/{entryId}", Method.PUT);
 			request.SetScope("all");

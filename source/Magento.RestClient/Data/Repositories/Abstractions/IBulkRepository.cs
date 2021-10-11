@@ -20,7 +20,11 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 			params ConfigurableProductOptionRequest[] requests);
 
 		Task<BulkActionResponse> CreateOrUpdateAttributes(params ProductAttribute[] attributes);
-		Task<BulkActionResponse> CreateOrUpdateConfigurations(params 
+
+		Task<BulkActionResponse> CreateOrUpdateConfigurations(params
 			CreateOrUpdateConfigurationRequest[] configurations);
+
+
+		public Task<BulkActionResponse> CreateOrUpdateMedia(params CreateOrUpdateMediaRequest[] media);
 	}
 }

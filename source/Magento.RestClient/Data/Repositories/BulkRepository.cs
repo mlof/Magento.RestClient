@@ -62,7 +62,7 @@ namespace Magento.RestClient.Data.Repositories
 			request.SetScope("all/async/bulk");
 
 			request.AddJsonBody(
-				models.Select(product => new {product = product}).ToList()
+				models.Select(product => new { product = product }).ToList()
 			);
 
 			return ExecuteAsync<BulkActionResponse>(request);
@@ -80,11 +80,7 @@ namespace Magento.RestClient.Data.Repositories
 			return ExecuteAsync<BulkActionResponse>(request);
 		}
 
-		public class CreateOrUpdateAttributeRequest
-		{
-			public string AttributeCode { get; set; }
-			public ProductAttribute attribute { get; set; }
-		}
+
 
 		public Task<BulkActionResponse> CreateOrUpdateAttributes(params ProductAttribute[] attributes)
 		{
@@ -101,7 +97,7 @@ namespace Magento.RestClient.Data.Repositories
 				{
 					requests.Add(
 						new CreateOrUpdateAttributeRequest {
-							AttributeCode = attribute.AttributeCode, attribute = attribute
+							AttributeCode = attribute.AttributeCode, Attribute = attribute
 						});
 				}
 				else
@@ -110,7 +106,8 @@ namespace Magento.RestClient.Data.Repositories
 					{
 						requests.Add(
 							new CreateOrUpdateAttributeRequest {
-								AttributeCode = attribute.AttributeCode, attribute = attribute with {Options = options.ToList()}
+								AttributeCode = attribute.AttributeCode,
+								Attribute = attribute with { Options = options.ToList() }
 							});
 					}
 				}
@@ -121,14 +118,25 @@ namespace Magento.RestClient.Data.Repositories
 			return ExecuteAsync<BulkActionResponse>(request);
 		}
 
-		public Task<BulkActionResponse> CreateOrUpdateConfigurations(params CreateOrUpdateConfigurationRequest[] configurations)
+		public Task<BulkActionResponse> CreateOrUpdateConfigurations(
+			params CreateOrUpdateConfigurationRequest[] configurations)
 		{
-
 			var request = new RestRequest("configurable-products/bySku/child", Method.POST);
 			request.SetScope("all/async/bulk");
 
 
 			request.AddJsonBody(configurations.ToList());
+
+			return ExecuteAsync<BulkActionResponse>(request);
+		}
+		public Task<BulkActionResponse> CreateOrUpdateMedia(
+			params CreateOrUpdateMediaRequest[] media)
+		{
+			var request = new RestRequest("products/bySku/media", Method.POST);
+			request.SetScope("all/async/bulk");
+
+
+			request.AddJsonBody(media.ToList());
 
 			return ExecuteAsync<BulkActionResponse>(request);
 		}

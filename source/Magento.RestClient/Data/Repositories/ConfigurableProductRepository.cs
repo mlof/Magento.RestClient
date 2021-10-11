@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Catalog.Products;
+using Magento.RestClient.Data.Models.EAV.Attributes;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
@@ -83,5 +84,7 @@ namespace Magento.RestClient.Data.Repositories
 
 			return this.Client.ExecuteAsync(request);
 		}
+
+
 	}
 }

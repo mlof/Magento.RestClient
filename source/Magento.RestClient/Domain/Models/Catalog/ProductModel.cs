@@ -10,6 +10,7 @@ using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Stock;
 using Magento.RestClient.Domain.Abstractions;
+using Magento.RestClient.Domain.Models.EAV;
 using Magento.RestClient.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -206,10 +207,6 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			return this;
 		}
 
-		public static Task<BulkActionResponse> SaveBulk(IAdminContext context, List<ProductModel> models)
-		{
-			return context.Products.Save(models.Select(model => model.GetProduct()).ToArray());
-		}
 
 		public void SetSpecialPrice(DateTime start, DateTime end, decimal price, long storeId = 0)
 		{
@@ -223,5 +220,11 @@ namespace Magento.RestClient.Domain.Models.Catalog
 		}
 
 		public IReadOnlyCollection<SpecialPrice> SpecialPrices => _specialPrices.AsReadOnly();
+
+		public CustomAttribute? GetAttributeById(long optionAttributeId)
+		{
+			var code =Context.Attributes.GetById(optionAttributeId);
+			return CustomAttributes.SingleOrDefault(attribute => attribute.AttributeCode == attribute.AttributeCode);
+		}
 	}
 }

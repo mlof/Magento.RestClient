@@ -67,6 +67,7 @@ namespace Magento.RestClient.Context
 
 		public IBulkRepository Bulk => new BulkRepository(this);
 		public ISpecialPriceRepository SpecialPrices => new SpecialPriceRepository(this);
+		public IModuleRepository Modules => new ModuleRepository(this);
 		public IProductAttributeGroupRepository ProductAttributeGroups => new ProductAttributeGroupRepository(this);
 		public IStoreRepository Stores => new StoreRepository(this);
 		public IProductRepository Products => new ProductRepository(this);
@@ -79,24 +80,14 @@ namespace Magento.RestClient.Context
 		public IAttributeSetRepository AttributeSets => new AttributeSetRepository(this);
 		public IInvoiceRepository Invoices => new InvoiceRepository(this);
 		public ICategoryRepository Categories => new CategoryRepository(this);
+		public IInventoryStockRepository InventoryStocks => new InventoryStockRepository(this);
+		public IInventorySourceItemRepository InventorySourceItems => new InventorySourceItemRepository(this);
+		public InventorySourceRepository InventorySources => new InventorySourceRepository(this);
 		public ICartRepository Carts => new CartRepository(this);
 		public IAttributeRepository Attributes => new AttributeRepository(this);
 		public IShipmentRepository Shipments => new ShipmentRepository(this);
 
-		/// <inheritdoc cref="ICanGetModules" />
-		public async Task<List<string>> GetModules()
-		{
-			var request = new RestRequest("modules");
-
-			var response = await this.Client.ExecuteAsync<List<string>>(request).ConfigureAwait(false);
-			if (response.IsSuccessful)
-			{
-				return response.Data;
-			}
-
-			throw MagentoException.Parse(response.Content);
-		}
-
+	
 		public override IRestClient Client { get; }
 	};
 }

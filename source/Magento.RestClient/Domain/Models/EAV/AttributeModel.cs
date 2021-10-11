@@ -97,13 +97,7 @@ namespace Magento.RestClient.Domain.Models.EAV
 			var existing = await _context.Attributes.GetByCode(this.AttributeCode).ConfigureAwait(false);
 
 
-			var attribute =
-				new ProductAttribute(this.AttributeCode) {
-					IsRequired = this.Required,
-					IsVisible = this.Visible,
-					DefaultFrontendLabel = this.DefaultFrontendLabel,
-					FrontendInput = this.FrontendInput
-				};
+			var attribute = GetAttribute();
 			if (existing != null && _frontendInputChanged)
 			{
 				await _context.Attributes.DeleteProductAttribute(this.AttributeCode).ConfigureAwait(false);
@@ -165,6 +159,19 @@ namespace Magento.RestClient.Domain.Models.EAV
 					_options.Add(new Option {Label = option});
 				}
 			}
+		}
+
+		public ProductAttribute GetAttribute()
+		{
+			return new ProductAttribute(this.AttributeCode)
+			{
+				IsRequired = this.Required,
+				IsVisible = this.Visible,
+				DefaultFrontendLabel = this.DefaultFrontendLabel,
+				FrontendInput = this.FrontendInput,
+				Options =  this.Options.Select(s => new Option(){Label = s}).ToList()
+			};
+
 		}
 	}
 }

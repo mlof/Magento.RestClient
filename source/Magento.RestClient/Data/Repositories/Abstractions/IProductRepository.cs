@@ -14,6 +14,5 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 		Task<Product> CreateProduct(Product product, bool saveOptions = true);
 		Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true, string scope = "all");
 		Task DeleteProduct(string sku);
-		Task<BulkActionResponse> Save(params Product[] models);
 	}
 }

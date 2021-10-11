@@ -68,16 +68,6 @@ namespace Magento.RestClient.Data.Repositories
 			return new MagentoQueryable<Product>(this.Client, "products");
 		}
 
-		public Task<BulkActionResponse> Save(params Product[] models)
-		{
-			var request = new RestRequest("products", Method.POST);
-			request.SetScope("all/async/bulk");
-
-			request.AddJsonBody(
-				models.Select(product => new {product = product}).ToList()
-			);
-
-			return ExecuteAsync<BulkActionResponse>(request);
-		}
+	
 	}
 }

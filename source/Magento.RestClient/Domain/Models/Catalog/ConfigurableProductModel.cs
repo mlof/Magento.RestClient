@@ -41,50 +41,68 @@ namespace Magento.RestClient.Domain.Models.Catalog
 		{
 			base.Type = ProductType.Configurable;
 			await base.SaveAsync().ConfigureAwait(false);
-
 			if (this.Options.Any() && this.Children.Any())
 			{
-				foreach (var option in _options)
-				{
-					var attribute = await Context.Attributes.GetById(option.AttributeId).ConfigureAwait(false);
-					option.Values = this.Children.SelectMany(model => model.CustomAttributes)
-						.Where(productAttribute => productAttribute.AttributeCode == attribute.AttributeCode)
-						.Select(customAttribute => customAttribute.Value).Distinct()
-						.Select(value => new ConfigurableProductValue() { ValueIndex = Convert.ToInt64(value) })
-						.ToList();
+				await SaveOptions();
 
-					if (option.Id == 0)
-					{
-						await Context.ConfigurableProducts.CreateOption(this.Sku, option).ConfigureAwait(false);
-					}
-					else
-					{
-						await Context.ConfigurableProducts.UpdateOption(this.Sku, option.Id, option)
-							.ConfigureAwait(false);
-					}
-				}
 
-				foreach (var child in this.Children)
-				{
-					await child.SaveAsync().ConfigureAwait(false);
-					try
-					{
-						await Context.ConfigurableProducts.CreateChild(this.Sku, child.Sku).ConfigureAwait(false);
-					}
-					catch
-					{
-					}
-				}
+				await SaveChildren();
 
-				foreach (var child in _removedChildren)
-				{
-					await Context.ConfigurableProducts.DeleteChild(this.Sku, child).ConfigureAwait(false);
-				}
-
-				_removedChildren.Clear();
 			}
 
 			await Refresh().ConfigureAwait(false);
+		}
+
+		async public Task SaveChildren()
+		{
+			foreach (var child in this.Children)
+			{
+				await child.SaveAsync().ConfigureAwait(false);
+				try
+				{
+					await Context.ConfigurableProducts.CreateChild(Sku, child.Sku).ConfigureAwait(false);
+				}
+				catch
+				{
+				}
+			}
+
+
+			foreach (var child in _removedChildren)
+			{
+				await Context.ConfigurableProducts.DeleteChild(this.Sku, child).ConfigureAwait(false);
+			}
+
+			_removedChildren.Clear();
+		}
+
+		async public Task SaveOptions()
+		{
+			foreach (var option in _options)
+			{
+				var attribute = await Context.Attributes.GetById(option.AttributeId).ConfigureAwait(false);
+				option.Values = GetOptionValues(attribute.AttributeCode);
+
+
+				if (option.Id == 0)
+				{
+					await Context.ConfigurableProducts.CreateOption(this.Sku, option).ConfigureAwait(false);
+				}
+				else
+				{
+					await Context.ConfigurableProducts.UpdateOption(this.Sku, option.Id, option)
+						.ConfigureAwait(false);
+				}
+			}
+		}
+
+		public List<ConfigurableProductValue> GetOptionValues(string attributecode)
+		{
+			return this.Children.SelectMany(model => model.CustomAttributes)
+				.Where(productAttribute => productAttribute.AttributeCode == attributecode)
+				.Select(customAttribute => customAttribute.Value).Distinct()
+				.Select(value => new ConfigurableProductValue() {ValueIndex = Convert.ToInt64(value)})
+				.ToList();
 		}
 
 		private async Task RefreshOptions()

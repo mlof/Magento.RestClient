@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Xml;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Bulk;
+using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Expressions;
@@ -52,6 +54,83 @@ namespace Magento.RestClient.Data.Repositories
 		public IQueryable<BulkOperation> AsQueryable()
 		{
 			return new MagentoQueryable<BulkOperation>(this.Client, "bulk");
+		}
+
+		public Task<BulkActionResponse> CreateOrUpdateProducts(params Product[] models)
+		{
+			var request = new RestRequest("products", Method.POST);
+			request.SetScope("all/async/bulk");
+
+			request.AddJsonBody(
+				models.Select(product => new {product = product}).ToList()
+			);
+
+			return ExecuteAsync<BulkActionResponse>(request);
+		}
+
+		public Task<BulkActionResponse> CreateOrUpdateConfigurableOptions(
+			params ConfigurableProductOptionRequest[] requests)
+		{
+			var request = new RestRequest("configurable-products/bySku/options", Method.POST);
+			request.SetScope("all/async/bulk");
+
+
+			request.AddJsonBody(requests.ToList());
+
+			return ExecuteAsync<BulkActionResponse>(request);
+		}
+
+		public class CreateOrUpdateAttributeRequest
+		{
+			public string AttributeCode { get; set; }
+			public ProductAttribute attribute { get; set; }
+		}
+
+		public Task<BulkActionResponse> CreateOrUpdateAttributes(params ProductAttribute[] attributes)
+		{
+			var maxOptionsPerRequest = 15;
+
+			var request = new RestRequest("products/attributes/byAttributeCode", Method.PUT);
+			request.SetScope("all/async/bulk");
+
+			var requests = new List<CreateOrUpdateAttributeRequest>();
+
+			foreach (var attribute in attributes)
+			{
+				if (attribute.Options == null || attribute.Options.Count <= maxOptionsPerRequest)
+				{
+					requests.Add(
+						new CreateOrUpdateAttributeRequest {
+							AttributeCode = attribute.AttributeCode, attribute = attribute
+						});
+				}
+				else
+				{
+					foreach (var options in attribute.Options.Chunk(maxOptionsPerRequest))
+					{
+						requests.Add(
+							new CreateOrUpdateAttributeRequest {
+								AttributeCode = attribute.AttributeCode, attribute = attribute with {Options = options.ToList()}
+							});
+					}
+				}
+			}
+
+			request.AddJsonBody(requests);
+
+			return ExecuteAsync<BulkActionResponse>(request);
+		}
+
+		public Task<BulkActionResponse> CreateOrUpdateConfigurations(params CreateOrUpdateConfigurationRequest[] configurations)
+		{
+
+			var request = new RestRequest("configurable-products/bySku/child", Method.POST);
+			request.SetScope("all/async/bulk");
+
+
+			request.AddJsonBody(configurations.ToList());
+
+			return ExecuteAsync<BulkActionResponse>(request);
 		}
 	}
 }

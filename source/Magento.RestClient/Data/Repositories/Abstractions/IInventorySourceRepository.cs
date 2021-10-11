@@ -1,6 +1,7 @@
 ﻿using Magento.RestClient.Abstractions;
+using Magento.RestClient.Data.Models.Inventory;
 
-namespace Magento.RestClient.Context
+namespace Magento.RestClient.Data.Repositories.Abstractions
 {
 	public interface IInventorySourceRepository : IHasQueryable<InventorySource>
 	{

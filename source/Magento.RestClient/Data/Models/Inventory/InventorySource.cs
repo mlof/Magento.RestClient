@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using Magento.RestClient.Context;
 using Newtonsoft.Json;
 
-namespace Magento.RestClient.Context
+namespace Magento.RestClient.Data.Models.Inventory
 {
 	public record InventorySource
 	{

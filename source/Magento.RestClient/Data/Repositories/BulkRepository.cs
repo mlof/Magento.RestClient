@@ -10,6 +10,7 @@ using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Bulk;
 using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
+using Magento.RestClient.Data.Repositories.Requests;
 using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Expressions;
 using Magento.RestClient.Extensions;

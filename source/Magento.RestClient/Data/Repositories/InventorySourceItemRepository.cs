@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using Magento.RestClient.Abstractions;
+using Magento.RestClient.Data.Models.Inventory;
 using Magento.RestClient.Data.Repositories.Abstractions;
 
-namespace Magento.RestClient.Context
+namespace Magento.RestClient.Data.Repositories
 {
 	public class InventorySourceItemRepository : AbstractRepository, IInventorySourceItemRepository
 	{

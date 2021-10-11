@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Magento.RestClient.Extensions
+namespace Magento.RestClient.Data.Repositories.Requests
 {
 	public record CreateOrUpdateConfigurationRequest
 	{

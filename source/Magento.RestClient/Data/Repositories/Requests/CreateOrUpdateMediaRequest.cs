@@ -1,7 +1,7 @@
 ﻿using Magento.RestClient.Data.Models.Catalog.Products;
 using Newtonsoft.Json;
 
-namespace Magento.RestClient.Data.Repositories
+namespace Magento.RestClient.Data.Repositories.Requests
 {
 	public record CreateOrUpdateMediaRequest
 	{

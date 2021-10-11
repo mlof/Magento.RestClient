@@ -1,4 +1,5 @@
 ﻿using Magento.RestClient.Context;
+using Magento.RestClient.Data.Repositories;
 using Magento.RestClient.Data.Repositories.Abstractions;
 
 namespace Magento.RestClient.Abstractions

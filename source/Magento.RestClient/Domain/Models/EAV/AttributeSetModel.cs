@@ -130,7 +130,6 @@ namespace Magento.RestClient.Domain.Models.EAV
 
 			foreach (var attributeGroup in _attributeGroups)
 			{
-
 				if (attributeGroup.AttributeSetId == 0)
 				{
 					attributeGroup.AttributeSetId = this.Id;

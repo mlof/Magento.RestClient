@@ -132,5 +132,10 @@ namespace Magento.RestClient.Data.Repositories
 
 			return ExecuteAsync<BulkActionResponse>(request);
 		}
+
+		public Task<BulkActionResponse> AssignProductsByCategoryId(long categoryId, params string[] skus)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

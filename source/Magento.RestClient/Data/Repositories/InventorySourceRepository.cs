@@ -10,7 +10,7 @@ namespace Magento.RestClient.Context
 		{
 		}
 
-		IQueryable<InventorySource> IHasQueryable<InventorySource>.AsQueryable()
+		public IQueryable<InventorySource> AsQueryable()
 		{
 			throw new System.NotImplementedException();
 		}

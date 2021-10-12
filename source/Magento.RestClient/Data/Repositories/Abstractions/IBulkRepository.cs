@@ -22,5 +22,7 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 		Task<BulkActionResponse> CreateOrUpdateAttributes(params ProductAttribute[] attributes);
 		Task<BulkActionResponse> CreateOrUpdateConfigurations(params 
 			CreateOrUpdateConfigurationRequest[] configurations);
+
+		Task<BulkActionResponse> AssignProductsByCategoryId(long categoryId, params string[] skus);
 	}
 }

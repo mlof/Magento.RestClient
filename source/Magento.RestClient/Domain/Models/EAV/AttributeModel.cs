@@ -82,7 +82,10 @@ namespace Magento.RestClient.Domain.Models.EAV
 				this.IsPersisted = true;
 
 				this.DefaultFrontendLabel = existing.DefaultFrontendLabel;
-				_frontendInput = existing.FrontendInput.Value;
+				if (existing.FrontendInput != null)
+				{
+					_frontendInput = existing.FrontendInput.Value;
+				}
 
 				_options = await _context.Attributes.GetProductAttributeOptions(this.AttributeCode)
 					.ConfigureAwait(false);

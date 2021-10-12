@@ -5,6 +5,7 @@ using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Bulk;
 using Magento.RestClient.Data.Models.Catalog.Products;
+using Magento.RestClient.Data.Repositories.Requests;
 using Magento.RestClient.Extensions;
 
 namespace Magento.RestClient.Data.Repositories.Abstractions
@@ -20,9 +21,12 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 			params ConfigurableProductOptionRequest[] requests);
 
 		Task<BulkActionResponse> CreateOrUpdateAttributes(params ProductAttribute[] attributes);
-		Task<BulkActionResponse> CreateOrUpdateConfigurations(params 
+
+		Task<BulkActionResponse> CreateOrUpdateConfigurations(params
 			CreateOrUpdateConfigurationRequest[] configurations);
 
 		Task<BulkActionResponse> AssignProductsByCategoryId(long categoryId, params string[] skus);
+
+		 Task<BulkActionResponse> CreateOrUpdateMedia(params CreateOrUpdateMediaRequest[] media);
 	}
 }

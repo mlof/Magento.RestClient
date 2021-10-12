@@ -47,7 +47,6 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 
 				await SaveChildren();
-
 			}
 
 			await Refresh().ConfigureAwait(false);
@@ -57,6 +56,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 		{
 			foreach (var child in this.Children)
 			{
+				child.AttributeSetId = this.AttributeSetId;
 				await child.SaveAsync().ConfigureAwait(false);
 				try
 				{
@@ -101,7 +101,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			return this.Children.SelectMany(model => model.CustomAttributes)
 				.Where(productAttribute => productAttribute.AttributeCode == attributecode)
 				.Select(customAttribute => customAttribute.Value).Distinct()
-				.Select(value => new ConfigurableProductValue() {ValueIndex = Convert.ToInt64(value)})
+				.Select(value => new ConfigurableProductValue() { ValueIndex = Convert.ToInt64(value) })
 				.ToList();
 		}
 
@@ -167,27 +167,30 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 			if (this.Children.Any(child => child.Sku == product.Sku))
 			{
-				throw new ConfigurableChildAlreadyAttached();
+				//throw new ConfigurableChildAlreadyAttached();
 			}
-
-			var missingAttributes = new List<string>();
-			foreach (var optionAttribute in _optionAttributes)
+			else
 			{
-				if (product.CustomAttributes.All(attribute => attribute.AttributeCode != optionAttribute.AttributeCode))
+				var missingAttributes = new List<string>();
+				foreach (var optionAttribute in _optionAttributes)
 				{
-					missingAttributes.Add(optionAttribute.AttributeCode);
+					if (product.CustomAttributes.All(attribute =>
+						attribute.AttributeCode != optionAttribute.AttributeCode))
+					{
+						missingAttributes.Add(optionAttribute.AttributeCode);
+					}
 				}
-			}
 
-			if (missingAttributes.Any())
-			{
-				throw new ConfigurableChildInvalidException("Missing attributes") {
-					MissingAttributes = missingAttributes
-				};
-			}
+				if (missingAttributes.Any())
+				{
+					throw new ConfigurableChildInvalidException("Missing attributes") {
+						MissingAttributes = missingAttributes
+					};
+				}
 
-			product.Visibility = ProductVisibility.NotVisibleIndividually;
-			_children.Add(product);
+				product.Visibility = ProductVisibility.NotVisibleIndividually;
+				_children.Add(product);
+			}
 		}
 
 		public void RemoveChild(string sku)

@@ -1,6 +1,8 @@
 ﻿using Magento.RestClient.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
 using RestSharp;
+using Serilog;
+using Serilog.Core;
 
 namespace Magento.RestClient.Context
 {
@@ -25,5 +27,6 @@ namespace Magento.RestClient.Context
 
 		public abstract IRestClient Client { get; }
 		public IMemoryCache Cache { get; }
+		public ILogger Logger => Serilog.Log.Logger.ForContext("BaseUrl", Client.BaseUrl);
 	}
 }

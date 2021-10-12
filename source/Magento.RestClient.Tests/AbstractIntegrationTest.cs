@@ -8,18 +8,18 @@ using Serilog;
 namespace Magento.RestClient.Tests
 {
 	public abstract class AbstractIntegrationTest
-    {
-        protected IAdminContext Context;
+	{
+		protected IAdminContext Context;
 
-        [SetUp]
-        public void Setup()
-        {
-	        Log.Logger = new LoggerConfiguration().WriteTo.Debug().CreateLogger();
+		[SetUp]
+		public void Setup()
+		{
+			Log.Logger = new LoggerConfiguration().WriteTo.Debug().CreateLogger();
 
 			var conf = TestConfiguration.GetInstance();
 
 			
 			this.Context = new MagentoAdminContext(conf);
 		}
-    }
+	}
 }

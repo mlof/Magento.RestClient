@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using RestSharp;
+using Serilog;
 
 namespace Magento.RestClient.Abstractions
 {
@@ -7,5 +8,6 @@ namespace Magento.RestClient.Abstractions
 	{
 		IRestClient Client { get;  }
 		IMemoryCache Cache { get;  }
+		ILogger Logger { get; }
 	}
 }

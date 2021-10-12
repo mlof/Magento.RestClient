@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Exceptions;
@@ -6,6 +8,8 @@ using Magento.RestClient.Exceptions.Generic;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RestSharp;
+using Serilog;
+using Serilog.Events;
 
 namespace Magento.RestClient.Data.Repositories.Abstractions
 {
@@ -15,10 +19,13 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 		protected IRestClient Client => _context.Client;
 		protected IMemoryCache Cache => _context.Cache;
 
+		protected ILogger Logger => _context.Logger;
+
 		protected AbstractRepository(IContext context)
 		{
 			_context = context;
 		}
+
 
 		/// <summary>
 		/// Executes the request and parses the results.
@@ -27,7 +34,14 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 		/// <exception cref="MagentoException"></exception>
 		protected async Task<T> ExecuteAsync<T>(IRestRequest request)
 		{
+			var sw = Stopwatch.StartNew();
 			var response = await this.Client.ExecuteAsync<T>(request).ConfigureAwait(false);
+
+			sw.Stop();
+
+			this.LogRequest(LogEventLevel.Information, response, sw);
+
+
 			if (!response.IsSuccessful)
 			{
 				if (response.ErrorException is { } and not JsonSerializationException)
@@ -51,10 +65,27 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 			}
 		}
 
+		private void LogRequest(LogEventLevel level, IRestResponse response, Stopwatch sw)
+		{
+			Logger.Write(level, "{StatusCode}\t{Method}\t{Scope}\t{Elapsed} ms\t{Uri}",
+				response.StatusCode,
+				response.Request.Method,
+				response.Request.Parameters.SingleOrDefault(parameter => parameter.Name == "scope")?.Value,
+				sw.Elapsed.Milliseconds,
+				response.Request.Resource
+			);
+		}
+
 		protected async Task ExecuteAsync(IRestRequest request)
 		{
+			var sw = Stopwatch.StartNew();
 			var response = await this.Client.ExecuteAsync
 				(request).ConfigureAwait(false);
+
+			sw.Stop();
+
+			this.LogRequest(LogEventLevel.Information, response, sw);
+
 			if (!response.IsSuccessful)
 			{
 				if (response.ErrorException != null && response.ErrorException is not JsonSerializationException)

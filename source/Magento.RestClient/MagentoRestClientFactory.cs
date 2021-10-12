@@ -63,7 +63,6 @@ namespace Magento.RestClient
 
 			client.Authenticator =
 				new MagentoUserAuthenticator(adminTokenUrl, username, password, 4);
-
 			return client;
 		}
 

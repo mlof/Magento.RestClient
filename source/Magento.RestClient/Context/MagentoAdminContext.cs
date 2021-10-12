@@ -35,6 +35,8 @@ namespace Magento.RestClient.Context
 			{
 				this.Client = MagentoRestClientFactory.CreateAdminClient(options.Host, options.Username,
 					options.Password, options.DefaultScope);
+
+				
 			}
 			else
 			{

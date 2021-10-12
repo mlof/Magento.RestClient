@@ -21,6 +21,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 	{
 		protected readonly IAdminContext Context;
 		private List<SpecialPrice> _specialPrices;
+		private ProductGalleryModel _galleryModel;
 
 		/// <summary>
 		/// ctor
@@ -130,6 +131,11 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			{
 				await Context.SpecialPrices.AddOrUpdateSpecialPrices(specialPrice).ConfigureAwait(false);
 			}
+
+			if (_galleryModel != null)
+			{
+				await _galleryModel.SaveAsync();
+			}
 		}
 
 		public Product GetProduct()
@@ -168,7 +174,14 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public ProductGalleryModel GetGalleryModel()
 		{
-			return new(Context, this.Sku);
+			if (_galleryModel == null)
+			{
+				this._galleryModel = new ProductGalleryModel(Context, this.Sku);
+
+			}
+
+			return _galleryModel;
+
 		}
 
 		private dynamic GetAttribute(string attributeCode)

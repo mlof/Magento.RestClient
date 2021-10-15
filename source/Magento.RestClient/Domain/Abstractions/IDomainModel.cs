@@ -7,7 +7,6 @@ namespace Magento.RestClient.Domain.Abstractions
 	{
 		public bool IsPersisted { get; }
 
-
 		public Task Refresh();
 		public Task SaveAsync();
 		public Task Delete();

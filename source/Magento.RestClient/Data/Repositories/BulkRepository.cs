@@ -15,6 +15,7 @@ using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Expressions;
 using Magento.RestClient.Extensions;
 using RestSharp;
+using Serilog;
 
 namespace Magento.RestClient.Data.Repositories
 {
@@ -35,17 +36,32 @@ namespace Magento.RestClient.Data.Repositories
 
 		public async Task<BulkOperation> AwaitBulkOperations(Guid uuid, TimeSpan? delay = null)
 		{
+			var logger = Logger.ForContext("BulkUuid", uuid);
+
 			if (delay == null)
 			{
 				delay = TimeSpan.FromSeconds(5);
 			}
 
+			var initialResponse = await GetStatus(uuid).ConfigureAwait(false);
+			logger.Information("{BulkUuid}\n" +
+			                   "Description:\t{Description}\n" +
+			                   "OperationCount:\t{OperationCount}\n" +
+			                   "Start Time:\t{StartTime}",
+				uuid, initialResponse.Description, initialResponse.OperationCount, initialResponse.StartTime);
+
 			while (true)
 			{
-				var status = await GetStatus(uuid).ConfigureAwait(false);
-				if (status.OperationsList.All(list => list.Status != OperationStatus.Open))
+				var statusResponse = await GetStatus(uuid).ConfigureAwait(false);
+
+
+				Log.Information("{Uuid}:\t({Completed}/{Total})", uuid,
+					statusResponse.OperationsList.Count(item => item.Status == OperationStatus.Complete),
+					initialResponse.OperationCount);
+
+				if (statusResponse.OperationsList.All(list => list.Status != OperationStatus.Open))
 				{
-					return status;
+					return statusResponse;
 				}
 
 				await Task.Delay(delay.Value).ConfigureAwait(false);
@@ -63,7 +79,7 @@ namespace Magento.RestClient.Data.Repositories
 			request.SetScope("all/async/bulk");
 
 			request.AddJsonBody(
-				models.Select(product => new { product = product }).ToList()
+				models.Select(product => new {product = product}).ToList()
 			);
 
 			return ExecuteAsync<BulkActionResponse>(request);
@@ -80,7 +96,6 @@ namespace Magento.RestClient.Data.Repositories
 
 			return ExecuteAsync<BulkActionResponse>(request);
 		}
-
 
 
 		public Task<BulkActionResponse> CreateOrUpdateAttributes(params ProductAttribute[] attributes)
@@ -108,7 +123,7 @@ namespace Magento.RestClient.Data.Repositories
 						requests.Add(
 							new CreateOrUpdateAttributeRequest {
 								AttributeCode = attribute.AttributeCode,
-								Attribute = attribute with { Options = options.ToList() }
+								Attribute = attribute with {Options = options.ToList()}
 							});
 					}
 				}
@@ -134,8 +149,8 @@ namespace Magento.RestClient.Data.Repositories
 		public Task<BulkActionResponse> AssignProductsByCategoryId(long categoryId, params string[] skus)
 		{
 			throw new NotImplementedException();
+		}
 
-				}
 		public Task<BulkActionResponse> CreateOrUpdateMedia(
 			params CreateOrUpdateMediaRequest[] media)
 		{

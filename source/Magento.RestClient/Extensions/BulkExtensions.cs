@@ -26,18 +26,18 @@ namespace Magento.RestClient.Extensions
 
 
 			var products = productModels.Select(model => model.GetProduct()).ToArray();
-			var createProductsResponse = await context.Bulk.CreateOrUpdateProducts(products);
-			Log.Information("Created bulk action {Guid}", createProductsResponse.BulkUuid);
-			await context.Bulk.AwaitBulkOperations(createProductsResponse);
+			var createProductsResponse = await context.Bulk.CreateOrUpdateProducts(products).ConfigureAwait(false);
+			await context.Bulk.AwaitBulkOperations(createProductsResponse).ConfigureAwait(false);
 
 			sw.Stop();
 			Log.Information("Upserted {Count} products in {Elapsed}", productModels.Count(), sw.Elapsed);
 
 
-			var mediaRequests = productModels.SelectMany(model => model.MediaEntries,
-				(model, entry) => new CreateOrUpdateMediaRequest() { Sku = model.Sku, Entry = entry }).ToArray();
-			var createOrUpdateMediaResponse  = await context.Bulk.CreateOrUpdateMedia(mediaRequests);
-			await context.Bulk.AwaitBulkOperations(createOrUpdateMediaResponse);
+			var mediaRequests = productModels.SelectMany(model => model.MediaEntries.Where(entry => entry.Id == null),
+				(model, entry) => new CreateOrUpdateMediaRequest() {Sku = model.Sku, Entry = entry}).ToArray();
+			var createOrUpdateMediaResponse =
+				await context.Bulk.CreateOrUpdateMedia(mediaRequests).ConfigureAwait(false);
+			await context.Bulk.AwaitBulkOperations(createOrUpdateMediaResponse).ConfigureAwait(false);
 
 			return createProductsResponse;
 		}

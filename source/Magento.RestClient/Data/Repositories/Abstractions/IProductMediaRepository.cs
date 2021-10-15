@@ -7,10 +7,10 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 {
 	public interface IProductMediaRepository
 	{
-		Task<ProductMedia> Create(string sku, ProductMedia entry);
-		Task<List<ProductMedia>> GetForSku(string sku);
+		Task<MediaEntry> Create(string sku, MediaEntry entry);
+		Task<List<MediaEntry>> GetForSku(string sku);
 		Task<bool> Delete(string sku, long entryId);
-		Task<ProductMedia> Get(string sku, int entryId);
-		Task<ProductMedia> Update(string sku, long entryId, ProductMedia entry);
+		Task<MediaEntry> Get(string sku, int entryId);
+		Task<MediaEntry> Update(string sku, long entryId, MediaEntry entry);
 	}
 }

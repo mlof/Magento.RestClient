@@ -27,6 +27,15 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 
 		Task<BulkActionResponse> AssignProductsByCategoryId(long categoryId, params string[] skus);
 
-		 Task<BulkActionResponse> CreateOrUpdateMedia(params CreateOrUpdateMediaRequest[] media);
+		Task<BulkActionResponse> CreateOrUpdateMedia(params CreateOrUpdateMediaRequest[] media);
+	}
+
+	public static class BulkRepositoryExtensions
+	{
+		public static Task<BulkOperation> AwaitBulkOperations(this IBulkRepository repository,
+			BulkActionResponse response)
+		{
+			return repository.AwaitBulkOperations(response.BulkUuid);
+		}
 	}
 }

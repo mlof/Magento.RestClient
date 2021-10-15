@@ -8,6 +8,6 @@ namespace Magento.RestClient.Data.Repositories.Requests
 		[JsonProperty("sku")]
 		public string Sku { get; set; }
 		[JsonProperty("entry")]
-		public ProductMedia Entry { get; set; }
+		public MediaEntry Entry { get; set; }
 	}
 }

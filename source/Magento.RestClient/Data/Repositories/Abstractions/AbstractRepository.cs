@@ -39,11 +39,12 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 
 			sw.Stop();
 
-			this.LogRequest(LogEventLevel.Information, response, sw);
 
 
 			if (!response.IsSuccessful)
 			{
+				this.LogRequest(LogEventLevel.Error, response, sw);
+
 				if (response.ErrorException is { } and not JsonSerializationException)
 				{
 					throw response.ErrorException;
@@ -61,6 +62,8 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 
 			else
 			{
+				this.LogRequest(LogEventLevel.Verbose, response, sw);
+
 				return response.Data;
 			}
 		}
@@ -84,10 +87,15 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 
 			sw.Stop();
 
-			this.LogRequest(LogEventLevel.Information, response, sw);
-
-			if (!response.IsSuccessful)
+			if (response.IsSuccessful)
 			{
+				this.LogRequest(LogEventLevel.Verbose, response, sw);
+			}
+
+			else
+			{
+				this.LogRequest(LogEventLevel.Error, response, sw);
+
 				if (response.ErrorException != null && response.ErrorException is not JsonSerializationException)
 				{
 					throw response.ErrorException;

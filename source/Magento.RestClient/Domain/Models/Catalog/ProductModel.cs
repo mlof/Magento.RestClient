@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -14,6 +16,7 @@ using Magento.RestClient.Domain.Models.EAV;
 using Magento.RestClient.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Serilog;
 
 namespace Magento.RestClient.Domain.Models.Catalog
 {
@@ -21,7 +24,6 @@ namespace Magento.RestClient.Domain.Models.Catalog
 	{
 		protected readonly IAdminContext Context;
 		private List<SpecialPrice> _specialPrices;
-		private ProductGalleryModel _galleryModel;
 
 		/// <summary>
 		/// ctor
@@ -40,13 +42,14 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			Context = context;
 			this.Sku = sku;
 			this.Scope = "all";
+			Log.Information("Initializing {Sku}", sku);
+
 			Refresh().GetAwaiter().GetResult();
 		}
 
 		public string Sku { get; }
 
-		[JsonIgnore]
-		public string Scope { get; }
+		[JsonIgnore] public string Scope { get; }
 
 		public string Name {
 			get;
@@ -71,20 +74,30 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			set => SetAttribute(attributeCode, value).GetAwaiter().GetResult();
 		}
 
-		[JsonIgnore]
-		public IValidator Validator { get; }
-		[JsonIgnore]
-
-		public bool IsPersisted { get; set; }
+		[JsonIgnore] public IValidator Validator { get; }
+		[JsonIgnore] public bool IsPersisted { get; set; }
 
 		public string UrlKey {
 			get => this["url_key"];
 			set => SetAttribute("url_key", value).GetAwaiter().GetResult();
 		}
 
+		public string Description {
+			get => this["description"];
+			set => SetAttribute("description", value).GetAwaiter().GetResult();
+		}
+
+		public string ShortDescription {
+			get => this["short_description"];
+			set => SetAttribute("short_description", value).GetAwaiter().GetResult();
+		}
+
+
 		public async virtual Task Refresh()
 		{
+			var sw = Stopwatch.StartNew();
 			var existingProduct = await Context.Products.GetProductBySku(this.Sku, this.Scope).ConfigureAwait(false);
+
 
 			if (existingProduct == null)
 			{
@@ -107,23 +120,51 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				_specialPrices =
 					await Context.SpecialPrices.GetSpecialPrices(this.Sku).ConfigureAwait(false) ??
 					new List<SpecialPrice>();
+
+				if (existingProduct.MediaGalleryEntries != null)
+				{
+					this.MediaEntries = existingProduct.MediaGalleryEntries;
+				}
+			}
+
+			sw.Stop();
+			Log.Debug("Refreshed {Sku} in {Elapsed}", this.Sku, sw.Elapsed);
+		}
+
+		public List<MediaEntry> MediaEntries { get; set; } = new();
+
+		public void AddMediaEntryByFilename(string fileName, FileInfo fileInfo)
+		{
+			if (this.MediaEntries.All(media => media.Label != fileName))
+			{
+				MediaEntries.Add(new MediaEntry() {
+					Label = fileName,
+					Disabled = false,
+					MediaType = ProductMediaType.Image,
+					Content = new ProductMediaContent(fileInfo)
+				});
 			}
 		}
 
 		public async virtual Task SaveAsync()
 		{
+			var sw = Stopwatch.StartNew();
 			var existingProduct = Context.Products.GetProductBySku(this.Sku);
 
 			var product = GetProduct();
 
 			if (existingProduct == null)
 			{
+				Log.Information("Creating {Sku}", this.Sku);
+
 				await Context.Products.CreateProduct(product).ConfigureAwait(false);
 
 				this.IsPersisted = true;
 			}
 			else
 			{
+				Log.Information("Updating {Sku}", this.Sku);
+
 				await Context.Products.UpdateProduct(this.Sku, product, scope: this.Scope).ConfigureAwait(false);
 			}
 
@@ -132,11 +173,19 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				await Context.SpecialPrices.AddOrUpdateSpecialPrices(specialPrice).ConfigureAwait(false);
 			}
 
-			if (_galleryModel != null)
+			foreach (var item in MediaEntries)
 			{
-				await _galleryModel.SaveAsync();
+				if (item.Id == null)
+				{
+					await Context.ProductMedia.Create(Sku, item);
+				}
 			}
+
+
+			sw.Stop();
+			Log.Debug("Saved {Sku} in {Elapsed}", this.Sku, sw.Elapsed);
 		}
+
 
 		public Product GetProduct()
 		{
@@ -145,7 +194,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				Name = this.Name,
 				Price = this.Price,
 				AttributeSetId = this.AttributeSetId,
-				Visibility = (long) this.Visibility,
+				Visibility = (long)this.Visibility,
 				CustomAttributes = this.CustomAttributes,
 				TypeId = this.Type,
 			};
@@ -164,7 +213,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public void SetStock(long quantity)
 		{
-			this.StockItem = new StockItem {IsInStock = quantity > 0, Qty = quantity};
+			this.StockItem = new StockItem { IsInStock = quantity > 0, Qty = quantity };
 		}
 
 		public ConfigurableProductModel GetConfigurableProductModel()
@@ -172,17 +221,6 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			return new(Context, this.Sku);
 		}
 
-		public ProductGalleryModel GetGalleryModel()
-		{
-			if (_galleryModel == null)
-			{
-				this._galleryModel = new ProductGalleryModel(Context, this.Sku);
-
-			}
-
-			return _galleryModel;
-
-		}
 
 		private dynamic GetAttribute(string attributeCode)
 		{
@@ -194,13 +232,20 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			// validateValue 
 			var attribute = await Context.Attributes.GetByCode(attributeCode).ConfigureAwait(false);
 
-			dynamic value;
+			dynamic value = null;
 			if (attribute.Options.Count > 0 && !string.IsNullOrWhiteSpace(inputValue as string))
 			{
 				var option = attribute.Options.SingleOrDefault(option =>
 					option.Label.Equals(inputValue as string, StringComparison.InvariantCultureIgnoreCase));
 
-				value = option != null ? option.Value : inputValue;
+				if (option == null)
+				{
+					throw new InvalidCustomAttributeException(attributeCode, attribute.Options, inputValue);
+				}
+				else
+				{
+					value = option.Value;
+				}
 			}
 			else
 			{
@@ -236,7 +281,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public CustomAttribute? GetAttributeById(long optionAttributeId)
 		{
-			var code =Context.Attributes.GetById(optionAttributeId);
+			var code = Context.Attributes.GetById(optionAttributeId);
 			return CustomAttributes.SingleOrDefault(attribute => attribute.AttributeCode == attribute.AttributeCode);
 		}
 	}

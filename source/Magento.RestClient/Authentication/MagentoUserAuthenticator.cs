@@ -2,6 +2,7 @@
 using System.Linq;
 using RestSharp;
 using RestSharp.Authenticators;
+using Serilog;
 
 namespace Magento.RestClient.Authentication
 {
@@ -44,11 +45,20 @@ namespace Magento.RestClient.Authentication
 
 			var authenticationRequest = new RestRequest(_path, Method.POST);
 
-			authenticationRequest.AddJsonBody(new {username = _username, password = _password});
+			authenticationRequest.AddJsonBody(new { username = _username, password = _password });
 			var response = c.Execute<string>(authenticationRequest);
 			_bearerToken = response.Data;
 
 			_bearerTokenExpiration = DateTime.Now.AddHours(_maximumTokenAgeInHours);
+
+			Log.ForContext<MagentoUserAuthenticator>()
+				.ForContext(nameof(_username), _username)
+				.Information(
+					"Authenticated to {Uri}:\n" +
+					"Bearer {BearerToken}\n" +
+					"Expiration {Expiration}",
+					c.BuildUri(authenticationRequest), _bearerToken,
+					_bearerTokenExpiration);
 		}
 	}
 }

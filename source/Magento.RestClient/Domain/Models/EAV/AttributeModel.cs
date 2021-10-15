@@ -9,6 +9,7 @@ using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Models.EAV.Attributes;
 using Magento.RestClient.Domain.Abstractions;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace Magento.RestClient.Domain.Models.EAV
 {
@@ -22,7 +23,7 @@ namespace Magento.RestClient.Domain.Models.EAV
 
 		public List<string> Options {
 			get => _options.Select(option => option.Label).ToList();
-			set => _options = value.Select(s => new Option() {Label = s}).ToList();
+			set => _options = value.Select(s => new Option() { Label = s }).ToList();
 		}
 
 		public AttributeModel(IAdminContext context, string attributeCode, string label = "")
@@ -116,18 +117,23 @@ namespace Magento.RestClient.Domain.Models.EAV
 					.ConfigureAwait(false);
 
 
-				foreach (var option in _options.Where(option =>
-					!existingOptions.Select(existingOption => existingOption.Label).Contains(option.Label)))
+				foreach (var option in _options)
 				{
-					await _context.Attributes.CreateProductAttributeOption(this.AttributeCode, option)
-						.ConfigureAwait(false);
-				}
+					if (!existingOptions.Select(existingOption => existingOption.Label).Any(s => s.Equals(option.Label, StringComparison.InvariantCultureIgnoreCase)))
+					{
+						Log.Information("Creating option {AttributeCode}:{Label}", this.AttributeCode, option.Label);
+						await _context.Attributes.CreateProductAttributeOption(this.AttributeCode, option)
+							.ConfigureAwait(false);
+					}
+					else if (!_options.Select(o => o.Label).Contains(option.Label) &&
+					         !string.IsNullOrEmpty(option.Value))
+					{
+						Log.Information("Deleting option {AttributeCode}:{Label}", this.AttributeCode, option.Label);
 
-				foreach (var option in existingOptions.Where(option =>
-					!_options.Select(o => o.Label).Contains(option.Label) && !string.IsNullOrEmpty(option.Value)))
-				{
-					await _context.Attributes.DeleteProductAttributeOption(this.AttributeCode, option.Value)
-						.ConfigureAwait(false);
+
+						await _context.Attributes.DeleteProductAttributeOption(this.AttributeCode, option.Value)
+							.ConfigureAwait(false);
+					}
 				}
 			}
 
@@ -153,28 +159,26 @@ namespace Magento.RestClient.Domain.Models.EAV
 			{
 				if (option.Trim().Equals("0"))
 				{
-					_options.Add(new Option {Label = "0 (Zero)"});
+					_options.Add(new Option { Label = "0 (Zero)" });
 
 					//throw new Exception("Magento does not allow 0 as an attribute option value.");
 				}
 				else if (_options.All(o => o.Label != option))
 				{
-					_options.Add(new Option {Label = option});
+					_options.Add(new Option { Label = option });
 				}
 			}
 		}
 
 		public ProductAttribute GetAttribute()
 		{
-			return new ProductAttribute(this.AttributeCode)
-			{
+			return new ProductAttribute(this.AttributeCode) {
 				IsRequired = this.Required,
 				IsVisible = this.Visible,
 				DefaultFrontendLabel = this.DefaultFrontendLabel,
 				FrontendInput = this.FrontendInput,
-				Options =  this.Options.Select(s => new Option(){Label = s}).ToList()
+				Options = this.Options.Select(s => new Option() { Label = s }).ToList()
 			};
-
 		}
 	}
 }

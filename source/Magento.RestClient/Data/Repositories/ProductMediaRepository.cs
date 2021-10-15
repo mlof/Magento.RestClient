@@ -16,7 +16,7 @@ namespace Magento.RestClient.Data.Repositories
 		{
 		}
 
-		async public Task<ProductMedia> Create(string sku, ProductMedia entry)
+		async public Task<MediaEntry> Create(string sku, MediaEntry entry)
 		{
 			var request = new RestRequest("products/{sku}/media", Method.POST);
 			request.SetScope("all");
@@ -30,13 +30,13 @@ namespace Magento.RestClient.Data.Repositories
 			return entry;
 		}
 
-		public Task<List<ProductMedia>> GetForSku(string sku)
+		public Task<List<MediaEntry>> GetForSku(string sku)
 		{
 			var request = new RestRequest("products/{sku}/media", Method.GET);
 			request.AddUrlSegment("sku", sku);
 			request.SetScope("all");
 
-			return ExecuteAsync<List<ProductMedia>>(request);
+			return ExecuteAsync<List<MediaEntry>>(request);
 		}
 
 		public Task<bool> Delete(string sku, long entryId)
@@ -49,17 +49,17 @@ namespace Magento.RestClient.Data.Repositories
 			return ExecuteAsync<bool>(request);
 		}
 
-		public Task<ProductMedia> Get(string sku, int entryId)
+		public Task<MediaEntry> Get(string sku, int entryId)
 		{
 			var request = new RestRequest("products/{sku}/media/{entryId}", Method.GET);
 			request.SetScope("all");
 			request.AddUrlSegment("sku", sku);
 			request.AddUrlSegment("entryId", entryId);
 
-			return ExecuteAsync<ProductMedia>(request);
+			return ExecuteAsync<MediaEntry>(request);
 		}
 
-		public async Task<ProductMedia> Update(string sku, long entryId, ProductMedia entry)
+		public async Task<MediaEntry> Update(string sku, long entryId, MediaEntry entry)
 		{
 			var request = new RestRequest("products/{sku}/media/{entryId}", Method.PUT);
 			request.SetScope("all");

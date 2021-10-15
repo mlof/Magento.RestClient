@@ -41,14 +41,15 @@ namespace Magento.RestClient.Data.Models.Catalog.Products
 
 		[JsonProperty("updated_at")] public DateTime? UpdatedAt { get; set; }
 
-		[JsonProperty("extension_attributes")] public dynamic ExtensionAttributes { get; set; } = new ExpandoObject();
+		[JsonProperty("extension_attributes")]
+		public Dictionary<string, dynamic> ExtensionAttributes { get; set; } = new Dictionary<string, dynamic>();
 
 		[JsonProperty("product_links")] public List<dynamic> ProductLinks { get; set; }
 
 		[JsonProperty("options")] public List<dynamic> Options { get; set; }
 
 		[JsonProperty("media_gallery_entries")]
-		public List<dynamic> MediaGalleryEntries { get; set; }
+		public List<MediaEntry> MediaGalleryEntries { get; set; }
 
 		[JsonProperty("tier_prices")] public List<TierPrice> TierPrices { get; set; }
 

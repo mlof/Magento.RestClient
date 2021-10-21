@@ -107,9 +107,22 @@ namespace Magento.RestClient.Domain.Models.EAV
 				await _context.Attributes.DeleteProductAttribute(this.AttributeCode).ConfigureAwait(false);
 			}
 
-			attribute = existing != null
-				? await _context.Attributes.Update(this.AttributeCode, attribute).ConfigureAwait(false)
-				: await _context.Attributes.Create(attribute).ConfigureAwait(false);
+			if (existing == null)
+			{
+
+				await _context.Attributes.Create(attribute).ConfigureAwait(false);
+			}
+			else
+			{
+
+				Log.Warning("Can't update attributes. Blame magento.");
+
+
+#pragma warning disable S125 // Sections of code should not be commented out
+				// await _context.Attributes.Update(this.AttributeCode, attribute).ConfigureAwait(false);
+
+			}
+#pragma warning restore S125 // Sections of code should not be commented out
 
 			if (_options.Any())
 			{
@@ -119,14 +132,15 @@ namespace Magento.RestClient.Domain.Models.EAV
 
 				foreach (var option in _options)
 				{
-					if (!existingOptions.Select(existingOption => existingOption.Label).Any(s => s.Equals(option.Label, StringComparison.InvariantCultureIgnoreCase)))
+					if (!existingOptions.Select(existingOption => existingOption.Label).Any(s =>
+						s.Equals(option.Label, StringComparison.InvariantCultureIgnoreCase)))
 					{
 						Log.Information("Creating option {AttributeCode}:{Label}", this.AttributeCode, option.Label);
 						await _context.Attributes.CreateProductAttributeOption(this.AttributeCode, option)
 							.ConfigureAwait(false);
 					}
 					else if (!_options.Select(o => o.Label).Contains(option.Label) &&
-					         !string.IsNullOrEmpty(option.Value))
+							 !string.IsNullOrEmpty(option.Value))
 					{
 						Log.Information("Deleting option {AttributeCode}:{Label}", this.AttributeCode, option.Label);
 
@@ -161,7 +175,7 @@ namespace Magento.RestClient.Domain.Models.EAV
 				{
 					_options.Add(new Option { Label = "0 (Zero)" });
 
-					//throw new Exception("Magento does not allow 0 as an attribute option value.");
+					Log.Warning("Magento does not allow 0 as an attribute option value.");
 				}
 				else if (_options.All(o => o.Label != option))
 				{
@@ -172,12 +186,12 @@ namespace Magento.RestClient.Domain.Models.EAV
 
 		public ProductAttribute GetAttribute()
 		{
-			return new ProductAttribute(this.AttributeCode) {
+			return new ProductAttribute(this.AttributeCode)
+			{
 				IsRequired = this.Required,
 				IsVisible = this.Visible,
 				DefaultFrontendLabel = this.DefaultFrontendLabel,
 				FrontendInput = this.FrontendInput,
-				Options = this.Options.Select(s => new Option() { Label = s }).ToList()
 			};
 		}
 	}

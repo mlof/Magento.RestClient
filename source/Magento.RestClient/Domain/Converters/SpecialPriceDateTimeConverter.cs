@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Magento.RestClient.Domain.Models
+namespace Magento.RestClient.Domain.Converters
 {
 	public class SpecialPriceDateTimeConverter : DateTimeConverterBase
 	{
@@ -14,7 +14,7 @@ namespace Magento.RestClient.Domain.Models
 
 		public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
 		{
-			writer.WriteValue(((DateTime) value).ToString("yyyy-MM-dd hh:mm:ss"));
+			writer.WriteValue(((DateTime)value).ToString("yyyy-MM-dd hh:mm:ss"));
 		}
 	}
 }

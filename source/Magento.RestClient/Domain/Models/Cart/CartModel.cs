@@ -9,6 +9,7 @@ using Magento.RestClient.Data.Models.Carts.ConfigurableCartItems;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Customers;
 using Magento.RestClient.Domain.Abstractions;
+using Magento.RestClient.Domain.Models.Cart.Exceptions;
 using Magento.RestClient.Exceptions.Cart;
 using Newtonsoft.Json;
 
@@ -17,13 +18,11 @@ namespace Magento.RestClient.Domain.Models.Cart
 	public class CartModel : ICartModel
 	{
 		private readonly IAdminContext _context;
-		private Address _billingAddress;
 		private long _id;
 
 		private Data.Models.Carts.Cart _model;
 
 		private string _paymentMethod;
-		private Address _shippingAddress;
 		private readonly CartModelValidator _validator;
 
 		public CartModel(IAdminContext context)
@@ -44,19 +43,9 @@ namespace Magento.RestClient.Domain.Models.Cart
 
 		public List<CartItem> Items => _model.Items;
 
-		public Address BillingAddress {
-			get => _billingAddress;
-			set {
-				_billingAddress = value;
-			}
-		}
+		public Address BillingAddress { get; set; }
 
-		public Address ShippingAddress {
-			get => _shippingAddress;
-			set {
-				_shippingAddress = value;
-			}
-		}
+		public Address ShippingAddress { get; set; }
 
 		[JsonProperty("id")]
 		public long Id {
@@ -97,7 +86,8 @@ namespace Magento.RestClient.Domain.Models.Cart
 				if (estimatedShippingMethods.Any(shippingMethod =>
 					shippingMethod.MethodCode == method && shippingMethod.CarrierCode == carrier))
 				{
-					await _context.Carts.SetShippingInformation(this.Id, _shippingAddress, this.BillingAddress, carrier,
+					await _context.Carts.SetShippingInformation(this.Id, this.ShippingAddress, this.BillingAddress,
+						carrier,
 						method).ConfigureAwait(false);
 					this.ShippingInformationSet = true;
 				}
@@ -108,7 +98,7 @@ namespace Magento.RestClient.Domain.Models.Cart
 			}
 			else
 			{
-				throw new ArgumentNullException(nameof(this.ShippingAddress),
+				throw new CartValidationException(nameof(this.ShippingAddress),
 					"Can not set shipping method without a shipping address.");
 			}
 
@@ -135,11 +125,10 @@ namespace Magento.RestClient.Domain.Models.Cart
 
 		public async Task<CartModel> AddSimpleProduct(string sku, int quantity = 1)
 		{
-			//todo: Add configurable product functionality
 			if (quantity > 0)
 			{
 				await _context.Carts.AddItemToCart(this.Id,
-					new CartItem {Sku = sku, Qty = quantity, QuoteId = this.Id}).ConfigureAwait(false);
+					new CartItem { Sku = sku, Qty = quantity, QuoteId = this.Id }).ConfigureAwait(false);
 				return await UpdateMagentoValues().ConfigureAwait(false);
 			}
 
@@ -148,17 +137,22 @@ namespace Magento.RestClient.Domain.Models.Cart
 
 		public async Task<List<ShippingMethod>> EstimateShippingMethods()
 		{
-			if (_shippingAddress == null)
+			ValidateEstimateShippingMethods();
+
+			return await _context.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress).ConfigureAwait(false);
+		}
+
+		private void ValidateEstimateShippingMethods()
+		{
+			if (this.ShippingAddress == null)
 			{
-				throw new ArgumentNullException(nameof(this.ShippingAddress), "Set the shipping address first.");
+				throw new CartValidationException(nameof(this.ShippingAddress), "Set the shipping address first.");
 			}
 
 			if (!this.Items.Any())
 			{
-				throw new ArgumentNullException("Can not estimate shipping methods without items.");
+				throw new CartValidationException("Can not estimate shipping methods without items.");
 			}
-
-			return await _context.Carts.EstimateShippingMethods(this.Id, this.ShippingAddress).ConfigureAwait(false);
 		}
 
 		public async Task<List<PaymentMethod>> GetPaymentMethods()
@@ -204,16 +198,15 @@ namespace Magento.RestClient.Domain.Models.Cart
 			var children = await _context.ConfigurableProducts.GetConfigurableChildren(parentSku).ConfigureAwait(false);
 			var child = children.SingleOrDefault(product => product.Sku == childSku);
 
-			var cartItem = new ConfigurableCartItem();
-			cartItem.Sku = parentSku;
-			cartItem.Qty = quantity;
-			cartItem.QuoteId = this.Id;
+			var cartItem = new ConfigurableCartItem { Sku = parentSku, Qty = quantity, QuoteId = this.Id };
 
 			foreach (var option in options)
 			{
 				var s = child.CustomAttributes.SingleOrDefault(attribute => attribute.AttributeCode == option.Label);
-				cartItem.ConfigurableItemOptions.Add(new ConfigurableItemOption {
-					OptionId = option.AttributeId.ToString(), OptionValue = Convert.ToInt64(s.Value)
+				cartItem.ConfigurableItemOptions.Add(new ConfigurableItemOption
+				{
+					OptionId = option.AttributeId.ToString(),
+					OptionValue = Convert.ToInt64(s.Value)
 				});
 			}
 

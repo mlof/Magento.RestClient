@@ -17,7 +17,7 @@ namespace Magento.RestClient.Data.Models.Catalog.Products
 
 		[JsonProperty("types")] public List<string> Types { get; set; }
 
-		[JsonProperty("file")] public string? File { get; set; }
+		[JsonProperty("file")] public string File { get; set; }
 
 		[JsonProperty("content")] public ProductMediaContent Content { get; set; }
 	}

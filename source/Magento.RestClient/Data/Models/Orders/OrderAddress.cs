@@ -5,6 +5,10 @@ namespace Magento.RestClient.Data.Models.Orders
 {
 	public record OrderAddress : Address
 	{
+		public OrderAddress()
+		{
+		}
+
 		[JsonProperty("address_type")] public string AddressType { get; set; }
 
 

@@ -9,7 +9,6 @@ namespace Magento.RestClient.Data.Models.Common
 
 		[JsonProperty("customer_id")] public long CustomerId { get; set; }
 
-		[JsonProperty("region")] public Region Region { get; set; }
 
 		[JsonProperty("region_id")] public long RegionId { get; set; }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using Magento.RestClient.Data.Models.Common;
+﻿using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.EAV.Attributes;
 
 namespace Magento.RestClient.Data.Models.Catalog.Products
@@ -15,7 +14,7 @@ namespace Magento.RestClient.Data.Models.Catalog.Products
 		{
 			this.AttributeCode = code;
 			this.FrontendInput = frontendInput;
-			this.IsRequired = false;
+			this.IsRequired = isRequired;
 			this.EntityTypeId = EntityType.CatalogProduct;
 		}
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using Magento.RestClient.Domain.Models;
+using Magento.RestClient.Domain.Converters;
 using Newtonsoft.Json;
 
 namespace Magento.RestClient.Data.Models.Catalog.Products

@@ -7,5 +7,17 @@ namespace Magento.RestClient.Exceptions.Generic
 		public EntityNotFoundException(Type type, string id) : base($"{type.Name} with Id {id} not found.")
 		{
 		}
+
+		public EntityNotFoundException() : base()
+		{
+		}
+
+		public EntityNotFoundException(string message) : base(message)
+		{
+		}
+
+		public EntityNotFoundException(string message, Exception innerException) : base(message, innerException)
+		{
+		}
 	}
 }

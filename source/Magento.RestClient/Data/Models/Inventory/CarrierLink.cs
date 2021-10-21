@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Magento.RestClient.Context
+namespace Magento.RestClient.Data.Models.Inventory
 {
 	public record CarrierLink
 	{

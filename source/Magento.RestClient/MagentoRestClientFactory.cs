@@ -1,15 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Cache;
-using System.Net.Http.Headers;
 using JsonExts.JsonPath;
-using Magento.RestClient.Abstractions;
 using Magento.RestClient.Authentication;
-using Magento.RestClient.Context;
-using Magento.RestClient.Data.Repositories.Abstractions;
-using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.NewtonsoftJson;
@@ -25,12 +19,14 @@ namespace Magento.RestClient
 				host = host.TrimEnd('/');
 			}
 
-			var _baseUrl = $"{host}/rest/{{scope}}/V1/";
-			var Client = new RestSharp.RestClient(_baseUrl) {
+			var baseUrl = $"{host}/rest/{{scope}}/V1/";
+			var client = new RestSharp.RestClient(baseUrl)
+			{
 				CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Revalidate),
 			};
 
-			var jsonSerializerSettings = new JsonSerializerSettings {
+			var jsonSerializerSettings = new JsonSerializerSettings
+			{
 				NullValueHandling = NullValueHandling.Ignore,
 				Culture = CultureInfo.InvariantCulture,
 				Formatting = Formatting.Indented,
@@ -44,15 +40,15 @@ namespace Magento.RestClient
 
 			if (string.IsNullOrWhiteSpace(defaultScope))
 			{
-				Client.AddDefaultUrlSegment("scope", "default");
+				client.AddDefaultUrlSegment("scope", "default");
 			}
 			else
 			{
-				Client.AddDefaultUrlSegment("scope", defaultScope);
+				client.AddDefaultUrlSegment("scope", defaultScope);
 			}
 
-			Client.UseNewtonsoftJson(jsonSerializerSettings);
-			return Client;
+			client.UseNewtonsoftJson(jsonSerializerSettings);
+			return client;
 		}
 
 		public static IRestClient CreateAdminClient(string host, string username, string password,
@@ -88,11 +84,11 @@ namespace Magento.RestClient
 			string password,
 			string defaultScope = "default")
 		{
-			var _customerTokenUrl = host + "/rest/V1/integration/customer/token";
+			var customerTokenUrl = host + "/rest/V1/integration/customer/token";
 
 			var client = CreateClient(host, defaultScope);
 			client.Authenticator =
-				new MagentoUserAuthenticator(_customerTokenUrl, username, password, 1);
+				new MagentoUserAuthenticator(customerTokenUrl, username, password, 1);
 
 
 			client.PreAuthenticate = true;

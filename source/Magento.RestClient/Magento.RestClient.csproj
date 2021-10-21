@@ -7,7 +7,17 @@
         <PackageIcon>icons8_magento_96px.png</PackageIcon>
         <PackageIconUrl />
         <UserSecretsId>b3c914ae-6d4c-42f3-b692-933c14ec69cc</UserSecretsId>
+        <DebugType>embedded</DebugType>
+        <Nullable>disable</Nullable>
 
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>

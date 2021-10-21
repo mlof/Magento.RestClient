@@ -5,7 +5,6 @@ using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Models.EAV.Attributes;
 using Magento.RestClient.Data.Repositories.Abstractions;
-using Magento.RestClient.Exceptions;
 using Magento.RestClient.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using RestSharp;
@@ -33,7 +32,7 @@ namespace Magento.RestClient.Data.Repositories
 			var request = new RestRequest("products/attributes", Method.POST);
 			request.SetScope("all");
 
-			request.AddJsonBody(new {attribute});
+			request.AddJsonBody(new { attribute });
 
 			return ExecuteAsync<ProductAttribute>(request);
 		}
@@ -41,7 +40,7 @@ namespace Magento.RestClient.Data.Repositories
 		public Task DeleteProductAttribute(string attributeCode)
 		{
 			var request = new RestRequest("products/attributes/{attributeCode}", Method.DELETE);
-			
+
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.SetScope("all");
 			var key = Client.BuildUri(request);
@@ -61,7 +60,7 @@ namespace Magento.RestClient.Data.Repositories
 			return Cache.GetOrCreateAsync<List<Option>>(key, entry => {
 
 				entry.AbsoluteExpirationRelativeToNow = RelativeExpiration;
-	
+
 
 				return ExecuteAsync<List<Option>>(request);
 
@@ -75,7 +74,7 @@ namespace Magento.RestClient.Data.Repositories
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.SetScope("all");
 
-			request.AddJsonBody(new {option});
+			request.AddJsonBody(new { option });
 
 			var key = Client.BuildUri(request);
 
@@ -113,7 +112,6 @@ namespace Magento.RestClient.Data.Repositories
 
 		public Task<ProductAttribute> Update(string attributeCode, ProductAttribute attribute)
 		{
-			return Task.FromResult(attribute);
 			var request = new RestRequest("products/attributes/{attributeCode}", Method.PUT);
 
 			var key = Client.BuildUri(request);
@@ -122,7 +120,7 @@ namespace Magento.RestClient.Data.Repositories
 			request.SetScope("all");
 
 			attribute.AttributeCode = null;
-			request.AddJsonBody(new {attribute});
+			request.AddJsonBody(new { attribute });
 
 			return ExecuteAsync<ProductAttribute>(request);
 		}

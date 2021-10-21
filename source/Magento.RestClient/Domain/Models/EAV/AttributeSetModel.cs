@@ -114,9 +114,7 @@ namespace Magento.RestClient.Domain.Models.EAV
 
 		public async Task SaveAsync()
 		{
-			var attributeSet = new AttributeSet();
-			attributeSet.AttributeSetName = this.Name;
-			attributeSet.EntityTypeId = this.EntityType;
+			var attributeSet = new AttributeSet { AttributeSetName = this.Name, EntityTypeId = this.EntityType };
 
 			if (this.Id == 0)
 			{

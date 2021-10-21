@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions.Generic;
 using RestSharp;
 
-namespace Magento.RestClient.Abstractions
+namespace Magento.RestClient.Data.Repositories
 {
 	public class ModuleRepository : AbstractRepository, IModuleRepository
 	{
@@ -12,7 +13,6 @@ namespace Magento.RestClient.Abstractions
 		{
 		}
 
-		/// <inheritdoc cref="ICanGetModules" />
 		public async Task<List<string>> GetModules()
 		{
 			var request = new RestRequest("modules");

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
-using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Bulk;
 using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Repositories.Requests;
-using Magento.RestClient.Extensions;
 
 namespace Magento.RestClient.Data.Repositories.Abstractions
 {
@@ -28,14 +25,5 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 		Task<BulkActionResponse> AssignProductsByCategoryId(long categoryId, params string[] skus);
 
 		Task<BulkActionResponse> CreateOrUpdateMedia(params CreateOrUpdateMediaRequest[] media);
-	}
-
-	public static class BulkRepositoryExtensions
-	{
-		public static Task<BulkOperation> AwaitBulkOperations(this IBulkRepository repository,
-			BulkActionResponse response)
-		{
-			return repository.AwaitBulkOperations(response.BulkUuid);
-		}
 	}
 }

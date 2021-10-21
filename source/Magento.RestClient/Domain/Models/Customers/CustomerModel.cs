@@ -23,7 +23,7 @@ namespace Magento.RestClient.Domain.Models.Customers
 
 		public bool IsPersisted { get; private set; }
 
-		public async Task Refresh()
+		public Task Refresh()
 		{
 			var existing = _context.Customers.GetByEmailAddress(this.EmailAddress);
 			if (existing != null)
@@ -38,12 +38,17 @@ namespace Magento.RestClient.Domain.Models.Customers
 			{
 				this.IsPersisted = false;
 			}
+
+			return Task.CompletedTask;
 		}
 
 		public async Task SaveAsync()
 		{
-			var customer = new Customer {
-				Firstname = this.FirstName, Lastname = this.LastName, Email = this.EmailAddress
+			var customer = new Customer
+			{
+				Firstname = this.FirstName,
+				Lastname = this.LastName,
+				Email = this.EmailAddress
 			};
 			if (this.IsPersisted)
 			{

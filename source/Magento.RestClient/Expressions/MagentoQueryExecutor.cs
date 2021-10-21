@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using Magento.RestClient.Data.Models.Search;
 using Magento.RestClient.Expressions.QueryGeneration;
 using Microsoft.Extensions.Caching.Memory;
@@ -68,6 +66,10 @@ namespace Magento.RestClient.Expressions
 				}
 				else
 				{
+					if (result.ErrorException != null)
+					{
+						throw result.ErrorException;
+					}
 					throw new Exception();
 				}
 			});

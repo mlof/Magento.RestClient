@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using FluentValidation;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Catalog.Products;
+using Magento.RestClient.Data.Models.Catalog.Products.Extensions;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Stock;
 using Magento.RestClient.Domain.Abstractions;
+using Magento.RestClient.Domain.Models.Catalog.Exceptions;
 using Magento.RestClient.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -68,7 +67,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public decimal? Price { get; set; }
 
-		public StockItem? StockItem { get; set; }
+		public StockItem StockItem { get; set; }
 
 		public ProductType Type { get; set; }
 
@@ -179,12 +178,13 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public Product GetProduct()
 		{
-			var product = new Product {
+			var product = new Product
+			{
 				Sku = this.Sku,
 				Name = this.Name,
 				Price = this.Price,
 				AttributeSetId = this.AttributeSetId,
-				Visibility = (long) this.Visibility,
+				Visibility = (long)this.Visibility,
 				CustomAttributes = this.CustomAttributes,
 				TypeId = this.Type
 			};
@@ -211,7 +211,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public void SetStock(long quantity)
 		{
-			this.StockItem = new StockItem {IsInStock = quantity > 0, Qty = quantity};
+			this.StockItem = new StockItem { IsInStock = quantity > 0, Qty = quantity };
 		}
 
 		public ConfigurableProductModel GetConfigurableProductModel()
@@ -231,14 +231,14 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			var attribute = await Context.Attributes.GetByCode(attributeCode).ConfigureAwait(false);
 
 			dynamic value = null;
-			if (attribute.Options.Count > 0 && !string.IsNullOrWhiteSpace(inputValue as string))
+			if (attribute != null && attribute.Options.Count > 0 && !string.IsNullOrWhiteSpace(inputValue as string))
 			{
 				var option = attribute.Options.SingleOrDefault(option =>
 					option.Label.Equals(inputValue as string, StringComparison.InvariantCultureIgnoreCase));
 
 				if (option == null)
 				{
-					throw new InvalidCustomAttributeException(attributeCode, attribute.Options, inputValue);
+					throw new InvalidCustomAttributeValueException(attributeCode, attribute.Options, inputValue);
 				}
 
 				value = option.Value;
@@ -248,14 +248,17 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				value = inputValue;
 			}
 
-			if (this.CustomAttributes.Any(attribute => attribute.AttributeCode == attributeCode))
+			if (value != null)
 			{
-				this.CustomAttributes.Single(attribute => attribute.AttributeCode == attributeCode).Value =
-					value;
-			}
-			else
-			{
-				this.CustomAttributes.Add(new CustomAttribute(attributeCode, value));
+				if (this.CustomAttributes.Any(attribute => attribute.AttributeCode == attributeCode))
+				{
+					this.CustomAttributes.Single(attribute => attribute.AttributeCode == attributeCode).Value =
+						value;
+				}
+				else
+				{
+					this.CustomAttributes.Add(new CustomAttribute(attributeCode, value));
+				}
 			}
 
 			return this;
@@ -264,7 +267,8 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public void SetSpecialPrice(DateTime start, DateTime end, decimal price, long storeId = 0)
 		{
-			_specialPrices.Add(new SpecialPrice {
+			_specialPrices.Add(new SpecialPrice
+			{
 				PriceFrom = start,
 				PriceTo = end,
 				Sku = this.Sku,
@@ -273,61 +277,11 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			});
 		}
 
-		public CustomAttribute? GetAttributeById(long optionAttributeId)
+		public async Task<CustomAttribute> GetAttributeById(long optionAttributeId)
 		{
-			var code = Context.Attributes.GetById(optionAttributeId);
+			var code = await Context.Attributes.GetById(optionAttributeId);
 			return this.CustomAttributes.SingleOrDefault(
-				attribute => attribute.AttributeCode == attribute.AttributeCode);
-		}
-	}
-
-	public static class ProductModelExtensions
-	{
-		public static bool ContainsFileName(this IEnumerable<MediaEntry> entries, string
-			filename)
-		{
-			return entries.Any(media => media.Label != filename);
-		}
-
-		public static async Task AddMediaEntryFromUri(this IProductModel productModel, Uri requestUri)
-		{
-			var filename = System.IO.Path.GetFileName(requestUri.AbsolutePath);
-
-			if (!productModel.MediaEntries.ContainsFileName(filename))
-			{
-				var directoryPath = Path.Join(Path.GetTempPath(), "Magento.RestClient", "Products", productModel.Sku,
-					"Images");
-				Directory.CreateDirectory(directoryPath);
-				var filePath = Path.Join(Path.GetTempPath(), "Magento.RestClient", "Products", productModel.Sku,
-					"Images",
-					filename);
-				Log.Information("Downloading {Filename} to {FilePath}", filename, filePath);
-
-				using var httpClient = new WebClient();
-				await httpClient.DownloadFileTaskAsync(requestUri, filePath).ConfigureAwait(false);
-				productModel.AddMediaEntry(filePath);
-			}
-		}
-
-		public static void AddMediaEntry(this IProductModel productModel, FileInfo fileInfo)
-		{
-			if (!productModel.MediaEntries.ContainsFileName(fileInfo.Name))
-			{
-				productModel.AddMediaEntry(
-					new MediaEntry {
-						Label = fileInfo.Name,
-						Disabled = false,
-						MediaType = ProductMediaType.Image,
-						Content = new ProductMediaContent(fileInfo)
-					});
-			}
-		}
-
-		public static void AddMediaEntry(this IProductModel productModel, string fileName)
-		{
-			var fileInfo = new FileInfo(fileName);
-
-			productModel.AddMediaEntry(fileInfo);
+				attribute => attribute.AttributeCode == code.AttributeCode);
 		}
 	}
 }

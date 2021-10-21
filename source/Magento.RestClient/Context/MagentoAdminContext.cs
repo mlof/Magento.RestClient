@@ -1,13 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using FluentValidation.Validators;
-using Magento.RestClient.Abstractions;
+﻿using Magento.RestClient.Abstractions;
 using Magento.RestClient.Configuration;
 using Magento.RestClient.Data.Repositories;
 using Magento.RestClient.Data.Repositories.Abstractions;
-using Magento.RestClient.Exceptions;
 using Magento.RestClient.Exceptions.Authentication;
-using Magento.RestClient.Exceptions.Generic;
 using Microsoft.Extensions.Caching.Memory;
 using RestSharp;
 
@@ -36,7 +31,7 @@ namespace Magento.RestClient.Context
 				this.Client = MagentoRestClientFactory.CreateAdminClient(options.Host, options.Username,
 					options.Password, options.DefaultScope);
 
-				
+
 			}
 			else
 			{
@@ -89,7 +84,7 @@ namespace Magento.RestClient.Context
 		public IAttributeRepository Attributes => new AttributeRepository(this);
 		public IShipmentRepository Shipments => new ShipmentRepository(this);
 
-	
+
 		public override IRestClient Client { get; }
 	};
 }

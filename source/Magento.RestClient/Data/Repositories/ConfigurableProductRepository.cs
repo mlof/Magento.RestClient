@@ -2,13 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
-using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Catalog.Products;
-using Magento.RestClient.Data.Models.EAV.Attributes;
 using Magento.RestClient.Data.Repositories.Abstractions;
-using Magento.RestClient.Exceptions;
-using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
@@ -66,10 +61,9 @@ namespace Magento.RestClient.Data.Repositories
 
 			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
 
-			var key = this.Client.BuildUri(request);
 			return await ExecuteAsync<List<ConfigurableProductOption>>(request);
 
-			
+
 		}
 
 		public Task UpdateOption(string parentSku, long optionId, ConfigurableProductOption option)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using RestSharp;
 using RestSharp.Authenticators;
@@ -22,7 +23,7 @@ namespace Magento.RestClient.Authentication
 		}
 
 		private DateTime? _bearerTokenExpiration;
-		private string? _bearerToken;
+		private string _bearerToken;
 
 		public void Authenticate(IRestClient client, IRestRequest request)
 		{
@@ -31,7 +32,7 @@ namespace Magento.RestClient.Authentication
 				RefreshBearerToken(client.BaseUrl);
 			}
 
-			if (request.Parameters.Any(p => p.Name.Equals("Authorization", StringComparison.OrdinalIgnoreCase)))
+			if (request.Parameters.Any(p => p.Name != null && p.Name.Equals("Authorization", StringComparison.OrdinalIgnoreCase)))
 			{
 				return;
 			}
@@ -39,8 +40,9 @@ namespace Magento.RestClient.Authentication
 			request.AddHeader("Authorization", $"Bearer {_bearerToken}");
 		}
 
-		private void RefreshBearerToken(Uri? clientBaseUrl)
+		private void RefreshBearerToken(Uri clientBaseUrl)
 		{
+			Debug.Assert(clientBaseUrl != null, nameof(clientBaseUrl) + " != null");
 			var c = new RestSharp.RestClient(clientBaseUrl);
 
 			var authenticationRequest = new RestRequest(_path, Method.POST);

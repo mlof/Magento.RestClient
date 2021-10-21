@@ -14,6 +14,14 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 		Task<List<Option>> GetProductAttributeOptions(string attributeCode);
 		Task<int> CreateProductAttributeOption(string attributeCode, Option option);
 		Task<ProductAttribute> GetByCode(string attributeCode);
+		/// <summary>
+		/// Updates an attribute by its code. 
+		/// </summary>
+		/// <remarks>Magento breaks on this as of 2.4.2</remarks>
+		/// <param name="attributeCode"></param>
+		/// <param name="attribute"></param>
+		/// <returns></returns>
+
 		Task<ProductAttribute> Update(string attributeCode, ProductAttribute attribute);
 		Task DeleteProductAttributeOption(string attributeCode, string optionValue);
 		Task<ProductAttribute> GetById(long id);

@@ -4,19 +4,25 @@ using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Data.Models.Catalog.Category;
 using Magento.RestClient.Data.Models.Catalog.Products;
-using Magento.RestClient.Domain.Abstractions;
 
 namespace Magento.RestClient.Domain.Models.Catalog
 {
-	public class CategoryModel : IDomainModel
+	public class CategoryModel : ICategoryModel
 	{
 		private readonly IAdminContext _context;
-		private List<Category> _children;
-		private List<ProductLink> _products;
+		private List<ICategoryModel> _children = new List<ICategoryModel>();
+		private List<ProductLink> _products = new List<ProductLink>();
+
 
 		public CategoryModel(IAdminContext context)
 		{
-			_context = context;
+			this._context = context;
+
+			var root = context.Categories.GetCategoryTree().GetAwaiter().GetResult();
+			this.Id = root.Id;
+
+
+			Refresh().GetAwaiter().GetResult();
 		}
 
 		public CategoryModel(IAdminContext context, long id)
@@ -26,9 +32,21 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			Refresh().GetAwaiter().GetResult();
 		}
 
-		public long ParentId { get; private set; }
+		public CategoryModel(IAdminContext context, string name)
+		{
+			_context = context;
+			this.Name = name;
+			Refresh().GetAwaiter().GetResult();
+		}
 
-		public long Id {
+		public long? ParentId { get; private set; }
+
+		public void SetParentId(long id)
+		{
+			this.ParentId = id;
+		}
+
+		public long? Id {
 			get;
 			private set;
 		}
@@ -38,77 +56,108 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			private set;
 		}
 
-		public IReadOnlyList<Category> Children => _children.AsReadOnly();
+		public IReadOnlyList<ICategoryModel> Children => _children.AsReadOnly();
 
 		public IReadOnlyList<ProductLink> Products => _products.AsReadOnly();
 
-		public bool IsPersisted => this.Id != 0;
+		public bool IsPersisted => this.Id != null && this.Id != 0;
 
 		public async Task Refresh()
 		{
-			var tree = await _context.Categories.GetCategoryTree(this.Id).ConfigureAwait(false);
+			if (this.Id != null)
+			{
+				var tree = await _context.Categories.GetCategoryTree(this.Id).ConfigureAwait(false);
 
-			this.Id = tree.Id;
-			this.ParentId = tree.ParentId;
-			_children = tree.ChildrenData.ToList();
-			var productsResponse = await _context.Categories.GetProducts(this.Id).ConfigureAwait(false);
-			_products = productsResponse.ToList();
+				this.Id = tree.Id;
+				this.Name = tree.Name;
+				this.ParentId = tree.ParentId;
+				_children = tree.ChildrenData.Select(category => new CategoryModel(this._context, category.Id))
+					.ToList<ICategoryModel>();
+				var productsResponse = await _context.Categories.GetProducts(this.Id.Value).ConfigureAwait(false);
+				_products = productsResponse.ToList();
+			}
 		}
 
 		public async Task SaveAsync()
 		{
-			var model = new Category {Name = this.Name};
+			var category = new Category { Name = this.Name, ParentId = this.ParentId, IsActive = this.IsActive };
 			// don't update the root category.
 			if (this.ParentId != 0)
 			{
 				if (this.IsPersisted)
 				{
-					await _context.Categories.UpdateCategory(this.Id, model).ConfigureAwait(false);
+					var id = this.Id;
+					if (id != null)
+					{
+						await _context.Categories.UpdateCategory(id.Value, category).ConfigureAwait(false);
+					}
 				}
 				else
 				{
-					var response = _context.Categories.CreateCategory(model);
+					var response = await _context.Categories.CreateCategory(category);
 					this.Id = response.Id;
 				}
 			}
 
 			foreach (var child in _children)
 			{
-				child.ParentId = this.Id;
-				if (child.Id == 0)
+				if (this.Id != null)
 				{
-					await _context.Categories.CreateCategory(child).ConfigureAwait(false);
+					child.SetParentId(this.Id.Value);
 				}
-				else
-				{
-					await _context.Categories.UpdateCategory(child.Id, child).ConfigureAwait(false);
-				}
+
+				await child.SaveAsync();
 			}
 
-			foreach (var link in _products)
-			{
-				await _context.Categories.AddProduct(this.Id, link).ConfigureAwait(false);
-			}
 
 			await Refresh().ConfigureAwait(false);
 		}
 
 		public Task Delete()
 		{
-			return _context.Categories.DeleteCategoryById(this.Id);
+			var id = this.Id;
+			if (id != null)
+			{
+				return _context.Categories.DeleteCategoryById(id.Value);
+			}
+
+			return Task.CompletedTask;
 		}
 
-		public void AddChild(string name, bool isActive = true)
+		public ICategoryModel GetOrCreateChild(string name)
 		{
-			if (!_children.Any(c => c.Name == name))
+			if (_children.Any(c => c.Name == name))
 			{
-				_children.Add(new Category {Name = name, IsActive = isActive});
+				return _children.SingleOrDefault(model => model.Name == name);
+			}
+			else
+			{
+				var child = new CategoryModel(this._context, name);
+				child.ParentId = this.Id;
+				child.IsActive = true;
+				_children.Add(child);
+
+				return child;
 			}
 		}
 
+		public bool IsActive { get; set; }
+
 		public void AddProduct(string productSku)
 		{
-			_products.Add(new ProductLink {Sku = productSku, CategoryId = this.Id});
+			_products.Add(new ProductLink { Sku = productSku, CategoryId = this.Id.Value });
+		}
+
+		public ICategoryModel this[string name] {
+			get => GetOrCreateChild(name);
+			set {
+				if (_children.Any(model => model.Name == value.Name))
+				{
+					_children.Remove(_children.Single(model => model.Name == value.Name));
+				}
+
+				_children.Add(value);
+			}
 		}
 	}
 }

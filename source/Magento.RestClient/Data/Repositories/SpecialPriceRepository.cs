@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
-using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
-using Magento.RestClient.Domain.Models;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
@@ -19,20 +17,24 @@ namespace Magento.RestClient.Data.Repositories
 		{
 			var request = new RestRequest("products/special-price", Method.POST);
 
-			request.AddJsonBody(new {prices = specialPrices});
+			request.AddJsonBody(new { prices = specialPrices });
 			return ExecuteAsync<List<SpecialPriceResponse>>(request);
 		}
 
 		public async Task DeleteSpecialPrices(params SpecialPrice[] specialPrice)
 		{
 			var request = new RestRequest("products/special-price-delete", Method.POST);
+
+
+
+			await this.ExecuteAsync(request);
 		}
 
 		public Task<List<SpecialPrice>> GetSpecialPrices(params string[] skus)
 		{
 			var request = new RestRequest("products/special-price-information", Method.POST);
 
-			request.AddJsonBody(new {skus});
+			request.AddJsonBody(new { skus });
 
 			return ExecuteAsync<List<SpecialPrice>>(request);
 		}

@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-
-namespace Magento.RestClient.Configuration
+﻿namespace Magento.RestClient.Configuration
 {
-	public class MagentoClientOptions 
+	public class MagentoClientOptions
 	{
 		public MagentoClientOptions()
 		{

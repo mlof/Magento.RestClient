@@ -14,9 +14,6 @@ namespace Magento.RestClient.Data.Models.Catalog.Products
 		[EnumMember(Value = "virtual")] Virtual,
 		[EnumMember(Value = "downloadable")] Downloadable,
 
-		/// <summary>
-		/// 
-		/// </summary>
 		[EnumMember(Value = "bundle")] Bundle
 	}
 }

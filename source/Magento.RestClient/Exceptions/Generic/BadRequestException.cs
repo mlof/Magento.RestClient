@@ -7,5 +7,13 @@ namespace Magento.RestClient.Exceptions.Generic
 		public BadRequestException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
+
+		public BadRequestException() : base()
+		{
+		}
+
+		public BadRequestException(string message) : base(message)
+		{
+		}
 	}
 }

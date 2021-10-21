@@ -9,7 +9,7 @@ namespace Magento.RestClient.Data.Models.Catalog.Category
 	{
 		[JsonProperty("id")] public long Id { get; set; }
 
-		[JsonProperty("parent_id")] public long ParentId { get; set; }
+		[JsonProperty("parent_id")] public long? ParentId { get; set; }
 		[JsonProperty("is_active")] public bool? IsActive { get; set; }
 
 		[JsonProperty("name")] public string Name { get; set; }

@@ -15,6 +15,11 @@ namespace Magento.RestClient.Domain.Models.EAV
 		public string Name { get; }
 		private readonly IAdminContext _context;
 
+
+
+		private readonly List<AttributeModel> _attributes = new List<AttributeModel>();
+
+		public IReadOnlyList<AttributeModel> Attributes => _attributes.AsReadOnly();
 		public AttributeGroupModel(IAdminContext context, long attributeSetId, long id,
 			string name)
 		{
@@ -24,11 +29,6 @@ namespace Magento.RestClient.Domain.Models.EAV
 			this.Id = id;
 			this.Name = name;
 		}
-
-		private readonly List<AttributeModel> _attributes = new List<AttributeModel>();
-
-		public IReadOnlyList<AttributeModel> Attributes => _attributes.AsReadOnly();
-
 		public AttributeGroupModel(IAdminContext context, long attributeSetId,
 			string name)
 		{

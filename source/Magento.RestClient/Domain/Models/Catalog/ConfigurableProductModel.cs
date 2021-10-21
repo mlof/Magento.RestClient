@@ -58,13 +58,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			{
 				child.AttributeSetId = this.AttributeSetId;
 				await child.SaveAsync().ConfigureAwait(false);
-				try
-				{
-					await Context.ConfigurableProducts.CreateChild(Sku, child.Sku).ConfigureAwait(false);
-				}
-				catch
-				{
-				}
+				await Context.ConfigurableProducts.CreateChild(Sku, child.Sku).ConfigureAwait(false);
 			}
 
 
@@ -115,15 +109,12 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				options = await Context.ConfigurableProducts.GetOptions(this.Sku).ConfigureAwait(false);
 			}
 
-			if (options == null)
-			{
-				options = new List<ConfigurableProductOption>();
-			}
-
 			if (options != null)
 			{
+
 				_options = options;
 			}
+
 
 			var attributes = new List<ProductAttribute>();
 			foreach (var option in _options)
@@ -143,16 +134,18 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 				if (!_options.Any(option => option.AttributeId == attribute.AttributeId))
 				{
-					_options.Add(new ConfigurableProductOption {
-							AttributeId = attribute.AttributeId, Label = attribute.DefaultFrontendLabel
-						}
+					_options.Add(new ConfigurableProductOption
+					{
+						AttributeId = attribute.AttributeId,
+						Label = attribute.DefaultFrontendLabel
+					}
 					);
 				}
 			}
 		}
 
 		/// <summary>
-		///     AddChild
+		///     GetOrCreateChild
 		/// </summary>
 		/// <param name="product"></param>
 		/// <exception cref="ConfigurableProductInvalidException"></exception>
@@ -167,7 +160,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 			if (this.Children.Any(child => child.Sku == product.Sku))
 			{
-				//throw new ConfigurableChildAlreadyAttached();
+				throw new ConfigurableChildAlreadyAttachedException();
 			}
 			else
 			{
@@ -183,7 +176,8 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 				if (missingAttributes.Any())
 				{
-					throw new ConfigurableChildInvalidException("Missing attributes") {
+					throw new ConfigurableChildInvalidException("Missing attributes")
+					{
 						MissingAttributes = missingAttributes
 					};
 				}

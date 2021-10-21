@@ -1,7 +1,6 @@
-﻿using Magento.RestClient.Data.Models.Catalog.Products;
-using Magento.RestClient.Data.Models.Stock;
+﻿using Magento.RestClient.Data.Models.Stock;
 
-namespace Magento.RestClient.Extensions
+namespace Magento.RestClient.Data.Models.Catalog.Products.Extensions
 {
 	public static class ProductExtensions
 	{

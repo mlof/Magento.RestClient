@@ -5,8 +5,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Magento.RestClient.Extensions;
 using Magento.RestClient.Search;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Remotion.Linq.Parsing;
 
 namespace Magento.RestClient.Expressions.QueryGeneration
@@ -30,7 +28,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 
 		protected override Expression VisitUnary(UnaryExpression expression)
 		{
-			//_currentFilter.PropertyName = expression.;
 
 			if (expression.NodeType == ExpressionType.Convert)
 			{
@@ -44,7 +41,8 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 		{
 			Visit(expression.Left);
 
-			_currentFilter.Condition = expression.NodeType switch {
+			_currentFilter.Condition = expression.NodeType switch
+			{
 				ExpressionType.Equal => SearchCondition.Equals,
 				ExpressionType.GreaterThan => SearchCondition.GreaterThan,
 				ExpressionType.GreaterThanOrEqual => SearchCondition.GreaterThanOrEqual,
@@ -94,7 +92,7 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			var enumType = typeof(T);
 			var name = Enum.GetName(enumType, type);
 			var enumMemberAttribute =
-				((EnumMemberAttribute[]) enumType.GetField(name).GetCustomAttributes(typeof(EnumMemberAttribute), true))
+				((EnumMemberAttribute[])enumType.GetField(name).GetCustomAttributes(typeof(EnumMemberAttribute), true))
 				.Single();
 			return enumMemberAttribute.Value;
 		}
@@ -111,7 +109,7 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			{
 				if (_currentFilter.PropertyType.IsEnum)
 				{
-					var value = Enum.ToObject(_currentFilter.PropertyType, (int) expression.Value);
+					var value = Enum.ToObject(_currentFilter.PropertyType, (int)expression.Value);
 					var name = value.ToString();
 					if (name != null)
 					{

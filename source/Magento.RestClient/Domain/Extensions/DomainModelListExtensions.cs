@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Magento.RestClient.Domain.Abstractions;
 
-namespace Magento.RestClient.Extensions
+namespace Magento.RestClient.Domain.Extensions
 {
 	public static class DomainModelListExtensions
 	{

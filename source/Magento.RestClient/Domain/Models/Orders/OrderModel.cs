@@ -37,24 +37,23 @@ namespace Magento.RestClient.Domain.Models.Orders
 			_shipments = _context.Shipments.GetByOrderId(this.OrderId);
 		}
 
-		public async Task SaveAsync()
+		public Task SaveAsync()
 		{
+			return Task.CompletedTask;
 		}
 
-		public async Task Delete()
+		public Task Delete()
 		{
 			// don't get me started
 			throw new NotSupportedException();
 		}
 
-		public OrderModel CreateInvoice()
+		public async Task CreateInvoice()
 		{
 			if (!this.IsInvoiced)
 			{
-				_context.Orders.CreateInvoice(this.OrderId);
+				await _context.Orders.CreateInvoice(this.OrderId);
 			}
-
-			return this;
 		}
 
 		public static OrderModel GetExisting(IAdminContext context, long orderId)
@@ -62,11 +61,10 @@ namespace Magento.RestClient.Domain.Models.Orders
 			return new(context, orderId);
 		}
 
-		public async Task<OrderModel> CreateShipment()
+		public async Task CreateShipment()
 		{
 			await _context.Shipments.CreateShipment(this.OrderId).ConfigureAwait(false);
 			await Refresh().ConfigureAwait(false);
-			return this;
 		}
 	}
 }

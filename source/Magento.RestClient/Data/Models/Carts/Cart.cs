@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Customers;
+using Magento.RestClient.Data.Models.Orders;
 using Newtonsoft.Json;
 
 namespace Magento.RestClient.Data.Models.Carts
@@ -26,7 +27,7 @@ namespace Magento.RestClient.Data.Models.Carts
 
 		[JsonProperty("customer")] public Customer Customer { get; set; }
 
-		[JsonProperty("billing_address")] public BillingAddress BillingAddress { get; set; }
+		[JsonProperty("billing_address")] public OrderAddress BillingAddress { get; set; }
 
 		[JsonProperty("orig_order_id")] public long OrigOrderId { get; set; }
 

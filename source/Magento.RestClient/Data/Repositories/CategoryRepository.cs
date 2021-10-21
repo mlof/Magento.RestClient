@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FluentValidation;
 using Magento.RestClient.Abstractions;
-using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Catalog.Category;
 using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Expressions;
-using Magento.RestClient.Extensions;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
@@ -27,7 +23,7 @@ namespace Magento.RestClient.Data.Repositories
 
 		public Task<Category> GetCategoryById(long categoryId)
 		{
-			var request = new RestRequest("categories/{categoryId}", Method.GET) ;
+			var request = new RestRequest("categories/{categoryId}", Method.GET);
 
 			request.AddOrUpdateParameter("categoryId", categoryId, ParameterType.UrlSegment);
 
@@ -36,8 +32,7 @@ namespace Magento.RestClient.Data.Repositories
 
 		public Task<CategoryTree> GetCategoryTree(long? rootCategoryId = null, long? depth = null)
 		{
-			var request = new RestRequest("categories", Method.GET) ;
-			request.SetScope("all");
+			var request = new RestRequest("categories", Method.GET);
 
 			if (rootCategoryId != null)
 			{
@@ -54,7 +49,7 @@ namespace Magento.RestClient.Data.Repositories
 
 		public Task DeleteCategoryById(long categoryId)
 		{
-			var request = new RestRequest("categories/{categoryId}", Method.DELETE) ;
+			var request = new RestRequest("categories/{categoryId}", Method.DELETE);
 
 			request.AddOrUpdateParameter("categoryId", categoryId, ParameterType.UrlSegment);
 
@@ -63,7 +58,13 @@ namespace Magento.RestClient.Data.Repositories
 
 		public async Task MoveCategory(int categoryId, int parentId, int? afterId = null)
 		{
-			throw new NotImplementedException();
+
+			var request = new RestRequest("categories/{categoryId}/move", Method.PUT);
+
+			request.AddUrlSegment("categoryId", categoryId);
+			request.AddJsonBody(new { parentId, afterId });
+
+			await this.Client.ExecuteAsync(request);
 		}
 
 		public Task<List<ProductLink>> GetProducts(long categoryId)
@@ -79,7 +80,7 @@ namespace Magento.RestClient.Data.Repositories
 			var request = new RestRequest("categories/{id}/products", Method.PUT);
 			request.AddOrUpdateParameter("id", categoryId, ParameterType.UrlSegment);
 
-			request.AddJsonBody(new {productLink});
+			request.AddJsonBody(new { productLink });
 			return ExecuteAsync(request);
 		}
 
@@ -94,14 +95,14 @@ namespace Magento.RestClient.Data.Repositories
 
 			var request = new RestRequest("categories", Method.POST);
 
-			request.AddJsonBody(new {category});
+			request.AddJsonBody(new { category });
 			return await ExecuteAsync<Category>(request).ConfigureAwait(false);
 		}
 
 		public Task<Category> UpdateCategory(long categoryId, Category category)
 		{
 			var request = new RestRequest("categories/{id}", Method.PUT);
-			request.AddJsonBody(new {category});
+			request.AddJsonBody(new { category });
 
 			request.AddOrUpdateParameter("id", categoryId, ParameterType.UrlSegment);
 			return ExecuteAsync<Category>(request);

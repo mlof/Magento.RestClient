@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
-using Magento.RestClient.Exceptions;
 using Magento.RestClient.Exceptions.Generic;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -43,7 +42,16 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 
 			if (!response.IsSuccessful)
 			{
-				this.LogRequest(LogEventLevel.Error, response, sw);
+				if (response.StatusCode == HttpStatusCode.NotFound)
+				{
+					this.LogRequest(LogEventLevel.Verbose, response, sw);
+
+				}
+				else
+				{
+					this.LogRequest(LogEventLevel.Error, response, sw);
+
+				}
 
 				if (response.ErrorException is { } and not JsonSerializationException)
 				{
@@ -68,16 +76,6 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 			}
 		}
 
-		private void LogRequest(LogEventLevel level, IRestResponse response, Stopwatch sw)
-		{
-			Logger.Write(level, "{StatusCode}\t{Method}\t{Scope}\t{Elapsed} ms\t{Uri}",
-				response.StatusCode,
-				response.Request.Method,
-				response.Request.Parameters.SingleOrDefault(parameter => parameter.Name == "scope")?.Value,
-				sw.Elapsed.Milliseconds,
-				response.Request.Resource
-			);
-		}
 
 		protected async Task ExecuteAsync(IRestRequest request)
 		{
@@ -105,6 +103,17 @@ namespace Magento.RestClient.Data.Repositories.Abstractions
 					throw MagentoException.Parse(response.Content);
 				}
 			}
+		}
+
+		private void LogRequest(LogEventLevel level, IRestResponse response, Stopwatch sw)
+		{
+			Logger.Write(level, "{StatusCode}\t{Method}\t{Scope}\t{Elapsed} ms\t{Uri}",
+				response.StatusCode,
+				response.Request.Method,
+				response.Request.Parameters.SingleOrDefault(parameter => parameter.Name == "scope")?.Value,
+				sw.Elapsed.Milliseconds,
+				response.Request.Resource
+			);
 		}
 	}
 }

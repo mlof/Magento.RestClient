@@ -3,10 +3,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
+using Magento.RestClient.Abstractions.Abstractions;
+using Magento.RestClient.Abstractions.Domain;
+using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.Bulk;
-using Magento.RestClient.Data.Repositories.Abstractions;
-using Magento.RestClient.Data.Repositories.Requests;
-using Magento.RestClient.Domain.Abstractions;
+using Magento.RestClient.Data.Requests;
 using Serilog;
 
 namespace Magento.RestClient.Extensions

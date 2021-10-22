@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="JsonExts.JsonPath" Version="1.0.1" />
+      <PackageReference Include="MimeTypes" Version="2.2.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+</Project>

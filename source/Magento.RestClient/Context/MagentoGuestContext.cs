@@ -1,4 +1,5 @@
 ﻿using Magento.RestClient.Abstractions;
+using Magento.RestClient.Abstractions.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
 using RestSharp;
 using Serilog;

@@ -1,5 +1,6 @@
 ﻿using Magento.RestClient.Abstractions;
-using Magento.RestClient.Data.Repositories.Abstractions;
+using Magento.RestClient.Abstractions.Abstractions;
+using Magento.RestClient.Abstractions.Repositories;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories

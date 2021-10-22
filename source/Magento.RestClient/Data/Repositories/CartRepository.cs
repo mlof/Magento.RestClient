@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
+using Magento.RestClient.Abstractions.Abstractions;
+using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.Carts;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Customers;
-using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions;
 using RestSharp;
 

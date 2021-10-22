@@ -6,8 +6,9 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FluentValidation;
 using Magento.RestClient.Abstractions;
+using Magento.RestClient.Abstractions.Abstractions;
+using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.Orders;
-using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Expressions;
 using Magento.RestClient.Validators;
 using RestSharp;
@@ -65,6 +66,12 @@ namespace Magento.RestClient.Data.Repositories
 			throw new NotImplementedException();
 		}
 
+		/// <summary>
+		/// CreateInvoice
+		/// </summary>
+		/// <param name="orderId"></param>
+		/// <returns></returns>
+		/// <exception cref="Magento.RestClient.Exceptions.Generic.MagentoException"></exception>
 		public Task CreateInvoice(long orderId)
 		{
 			IRestRequest request = new RestRequest("order/{id}/invoice", Method.POST);

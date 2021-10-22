@@ -1,7 +1,8 @@
 ﻿using Magento.RestClient.Abstractions;
+using Magento.RestClient.Abstractions.Abstractions;
+using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Configuration;
 using Magento.RestClient.Data.Repositories;
-using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Exceptions.Authentication;
 using Microsoft.Extensions.Caching.Memory;
 using RestSharp;
@@ -79,7 +80,7 @@ namespace Magento.RestClient.Context
 		public ICategoryRepository Categories => new CategoryRepository(this);
 		public IInventoryStockRepository InventoryStocks => new InventoryStockRepository(this);
 		public IInventorySourceItemRepository InventorySourceItems => new InventorySourceItemRepository(this);
-		public InventorySourceRepository InventorySources => new InventorySourceRepository(this);
+		public IInventorySourceRepository InventorySources => new InventorySourceRepository(this);
 		public ICartRepository Carts => new CartRepository(this);
 		public IAttributeRepository Attributes => new AttributeRepository(this);
 		public IShipmentRepository Shipments => new ShipmentRepository(this);

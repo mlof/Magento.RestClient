@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Magento.RestClient.Data.Models.Search;
 using Magento.RestClient.Expressions.QueryGeneration;
+using Magento.RestClient.Search.Search;
 using Microsoft.Extensions.Caching.Memory;
 using Remotion.Linq;
 using RestSharp;

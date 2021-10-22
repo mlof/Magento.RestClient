@@ -7,27 +7,23 @@
         <PackageIcon>icons8_magento_96px.png</PackageIcon>
         <PackageIconUrl />
         <UserSecretsId>b3c914ae-6d4c-42f3-b692-933c14ec69cc</UserSecretsId>
-        <DebugType>embedded</DebugType>
-        <Nullable>disable</Nullable>
+
+        
 
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-      <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-      <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JsonExts.JsonPath" Version="1.0.1" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
-        <PackageReference Include="MimeTypes" Version="2.2.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+
         <PackageReference Include="Remotion.Linq" Version="2.2.0" />
 
         <PackageReference Include="AgileObjects.AgileMapper" Version="1.8.0" />
@@ -65,9 +61,22 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="Domain\Exceptions\" />
+        <Folder Include="Exceptions\Cart\" />
+        <Folder Include="Exceptions\ConfigurableProduct\" />
         <Folder Include="Search\Abstractions\" />
         <Folder Include="Search\Extensions\" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Magento.RestClient.Abstractions\Magento.RestClient.Abstractions.csproj">
+          <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+        </ProjectReference>
+
+        <ProjectReference Include="..\Magento.RestClient.Data\Magento.RestClient.Data.csproj">
+          <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+        </ProjectReference>
+        <ProjectReference Include="..\Magento.RestClient.Domain\Magento.RestClient.Domain.csproj">
+          <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+        </ProjectReference>
     </ItemGroup>
 
 </Project>

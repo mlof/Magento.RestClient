@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
+using Magento.RestClient.Abstractions.Abstractions;
+using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Models.EAV.Attributes;
-using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using RestSharp;

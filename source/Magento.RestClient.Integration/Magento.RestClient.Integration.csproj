@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Magento.RestClient.Domain\Magento.RestClient.Domain.csproj" />
     <ProjectReference Include="..\Magento.RestClient\Magento.RestClient.csproj" />
   </ItemGroup>
 

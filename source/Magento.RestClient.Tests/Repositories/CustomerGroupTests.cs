@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
 {
-    public class CustomerGroupTests : AbstractIntegrationTest
+    public class CustomerGroupTests : AbstractAdminTest
     {
         private CustomerGroup _shouldBeCreated = new()
         {

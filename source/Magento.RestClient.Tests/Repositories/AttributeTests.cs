@@ -1,6 +1,6 @@
 namespace Magento.RestClient.Tests.Repositories
 {
-	public class AttributeTests : AbstractIntegrationTest
+	public class AttributeTests : AbstractAdminTest
 	{
 	}
 }

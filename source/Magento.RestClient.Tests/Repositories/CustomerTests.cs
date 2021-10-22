@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
 {
-    public class CustomerTests : AbstractIntegrationTest
+    public class CustomerTests : AbstractAdminTest
     {
         public static Customer ShouldExist => new Customer() {
             Email = "customer@example.org", Firstname = "Example", Lastname = "Customer"

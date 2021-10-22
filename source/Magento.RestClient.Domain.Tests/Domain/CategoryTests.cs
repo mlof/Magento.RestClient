@@ -1,15 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Magento.RestClient.Domain.Extensions;
-using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Domain.Models.Catalog;
-using Magento.RestClient.Tests.Domain.Abstractions;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Domain
 {
-	public class CategoryTests : AbstractDomainObjectTest
+	public class CategoryTests : AbstractAdminTest
 	{
 		private long rootId;
 
@@ -25,7 +22,8 @@ namespace Magento.RestClient.Tests.Domain
 		{
 			var model = new CategoryModel(Context, rootId);
 
-			model.AddChild("TEST CATEGORY");
+			
+			model.GetOrCreateChild("TEST CATEGORY");
 
 			await model.SaveAsync();
 
@@ -42,10 +40,10 @@ namespace Magento.RestClient.Tests.Domain
 
 			var root = new CategoryModel(Context, rootId);
 
-			root.AddChild("TEST CATEGORY");
+			root.GetOrCreateChild("TEST CATEGORY");
 
 			await root.SaveAsync();
-			var cat = root.Children.SingleOrDefault(category => category.Name == "TEST CATEGORY").ToModel(Context);
+			var cat = root.Children.SingleOrDefault(category => category.Name == "TEST CATEGORY");
 
 
 			await cat.SaveAsync();
@@ -57,7 +55,7 @@ namespace Magento.RestClient.Tests.Domain
 		{
 			var model = new CategoryModel(Context, rootId);
 
-			model.AddChild("TEST CATEGORY");
+			model.GetOrCreateChild("TEST CATEGORY");
 
 			
 
@@ -73,7 +71,6 @@ namespace Magento.RestClient.Tests.Domain
 
 			await model.Children
 				.Single(category => category.Name == "TEST CATEGORY")
-				.ToModel(Context)
 				.Delete();
 		}
 	}

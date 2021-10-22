@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
 {
-	public class ConfigurableProductTests : AbstractIntegrationTest
+	public class ConfigurableProductTests : AbstractAdminTest
 	{
 		public string ParentSku = "CONF-PARENT";
 		public string FirstChildSku = "CONF-CHILD-1";

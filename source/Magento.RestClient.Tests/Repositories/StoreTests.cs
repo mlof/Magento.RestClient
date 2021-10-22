@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
 {
-    public class StoreTests : AbstractIntegrationTest
+    public class StoreTests : AbstractAdminTest
     {
         [Test]
         async public Task CanGetWebsites()

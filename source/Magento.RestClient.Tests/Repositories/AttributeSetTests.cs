@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
 {
-	public class AttributeSetTests : AbstractIntegrationTest
+	public class AttributeSetTests : AbstractAdminTest
 	{
 		[SetUp]
 		public void AttributeSetSetup()

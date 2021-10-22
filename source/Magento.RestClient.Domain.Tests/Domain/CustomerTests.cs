@@ -1,13 +1,11 @@
 using System.Threading.Tasks;
 using FluentAssertions;
-using Magento.RestClient.Domain.Models;
 using Magento.RestClient.Domain.Models.Customers;
-using Magento.RestClient.Tests.Domain.Abstractions;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Domain
 {
-	public class CustomerTests : AbstractDomainObjectTest
+	public class CustomerTests : AbstractAdminTest
 	{
 		[Test]
 		async public Task CreateCustomer()

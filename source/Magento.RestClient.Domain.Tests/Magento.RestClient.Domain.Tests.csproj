@@ -30,8 +30,4 @@
     <ProjectReference Include="..\Magento.RestClient\Magento.RestClient.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Constants\" />
-  </ItemGroup>
-
 </Project>

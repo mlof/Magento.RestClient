@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
 {
-	public class CategoryTests : AbstractIntegrationTest
+	public class CategoryTests : AbstractAdminTest
 	{
 		[SetUp]
 		public void SetupCategories()

@@ -22,6 +22,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Domain",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Data", "source\Magento.RestClient.Data\Magento.RestClient.Data.csproj", "{CD035D4E-0DB4-4270-B991-FC3EFE521852}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Tests", "source\Magento.RestClient.Tests\Magento.RestClient.Tests.csproj", "{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Domain.Tests", "source\Magento.RestClient.Domain.Tests\Magento.RestClient.Domain.Tests.csproj", "{2A8CF784-9F43-4CDB-8DF2-A6F5CE61C537}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +82,22 @@ Global
 		{CD035D4E-0DB4-4270-B991-FC3EFE521852}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CD035D4E-0DB4-4270-B991-FC3EFE521852}.Release|x64.ActiveCfg = Release|Any CPU
 		{CD035D4E-0DB4-4270-B991-FC3EFE521852}.Release|x64.Build.0 = Release|Any CPU
+		{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}.Debug|x64.Build.0 = Debug|Any CPU
+		{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}.Release|x64.ActiveCfg = Release|Any CPU
+		{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}.Release|x64.Build.0 = Release|Any CPU
+		{2A8CF784-9F43-4CDB-8DF2-A6F5CE61C537}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A8CF784-9F43-4CDB-8DF2-A6F5CE61C537}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A8CF784-9F43-4CDB-8DF2-A6F5CE61C537}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2A8CF784-9F43-4CDB-8DF2-A6F5CE61C537}.Debug|x64.Build.0 = Debug|Any CPU
+		{2A8CF784-9F43-4CDB-8DF2-A6F5CE61C537}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A8CF784-9F43-4CDB-8DF2-A6F5CE61C537}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A8CF784-9F43-4CDB-8DF2-A6F5CE61C537}.Release|x64.ActiveCfg = Release|Any CPU
+		{2A8CF784-9F43-4CDB-8DF2-A6F5CE61C537}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,16 +4,16 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.EAV.Attributes;
-using Magento.RestClient.Data.Repositories.Abstractions;
 using Magento.RestClient.Extensions;
 
 namespace Magento.RestClient.Tests.Repositories
 {
 	[TestFixture]
-	public class AttributeRepositoryTests : AbstractIntegrationTest
+	public class AttributeRepositoryTests : AbstractAdminTest
 	{
 		private IAttributeRepository attributeRepository;
 		private AttributeSet attributeSet;

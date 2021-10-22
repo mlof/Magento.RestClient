@@ -1,84 +1,23 @@
-# Magento.RestClient
 
-[TOC]
+# Using Magento.RestClient
 
-## Getting Started
 
-Tools: 
-
-* Postman
-* Docker
-* Telerik Fiddler (Classic)
-  * *The new one sucks. Stick with the classic fiddler.* 
-
-### Setting up Docker
-
-For development, you can use the Docker Compose file in /docker/magento. It uses the Bitnami Magento instance. Default credentials are as follows:
-
-```
-Username: user
-Password: bitnami1
-```
-
-If you're developing on Windows with WSL docker backend you may want to run the following commands, or Elasticsearch will *not* boot.
-
-```sh
-wsl -d docker-desktop
-sysctl -w vm.max_map_count=262144
-```
+## Searching
+ 
 
 
 
-
-
-
-
-## Authentication
-
-### Integration
-
-To authenticate as Integration, go to System -> Extensions -> Integrations and add a new Integration. Just give it a name, other values are not required. Custom resource access is not explicitly supported, but might work. Your mileage may vary.
-
-After that, all that remains is to activate the integration.
-
-![magento_integration_activate](img/magento/integration_activate.png)
-
-Take note of the tokens in the next step, as you'll be using them to connect.
-
-![magento_integration_activate](img/magento/integration_tokens.png)
-
-After this, to connect you'll only need the following code:
-```csharp
-var consumerKey = "";
-var consumerSecret = "";
-var accessToken = "";
-var accessTokenSecret = "";
-
-var client = new MagentoClient("http://localhost/rest/V1/");
-this.IntegrationContext = client.AuthenticateAsIntegration(consumerKey, consumerSecret, accessToken, accessTokenSecret);
-```
-
-## Search
-
-
-
-
-
-## Entities
-
-#### Attribute Sets
+## Attribute Sets
 
 You can get attributes for an attribute set. You can get attribute groups for an attribute set. But you can't get which attributes are assigned to a certain attribute group! Well, that is unless you use the Search functionality, but that would require reindexing every time you edit an attribute group.
 
-#### Products
+### Products
 
 ##### Product Attributes & Options
 
 Alright, this one's a doozy. There's no real way to get an option ID for an attribute option through the API, except by getting a product which already has it set! So we have to match based on content, and can't delete options! 
 
 ##### Configurable Products
-
-
 
 
 

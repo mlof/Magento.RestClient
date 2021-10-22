@@ -1,11 +1,9 @@
-﻿using Magento.RestClient.Domain.Models;
-using Magento.RestClient.Domain.Models.Orders;
-using Magento.RestClient.Tests.Domain.Abstractions;
+﻿using Magento.RestClient.Domain.Models.Orders;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Domain
 {
-	class OrderTests : AbstractDomainObjectTest
+	class OrderTests : AbstractAdminTest
 	{
 
 		[Test]

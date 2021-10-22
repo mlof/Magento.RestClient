@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
 {
-    public class ProductTests : AbstractIntegrationTest
+    public class ProductTests : AbstractAdminTest
     {
 
         public Product _shouldExist = new Product() {

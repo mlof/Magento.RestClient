@@ -2,14 +2,57 @@
 # Using Magento.RestClient
 
 
-## Searching
- 
+## Searching entities
 
+The Magento API for searching entities can be incredibly awkward, and I do enjoy using LINQ whenever possible. So I decided it would be a good idea to write a LINQ expression tree parser for Magento. 
+
+Man, was I wrong.
+
+It's not the prettiest bit of code I've written, but it's surprisingly useable, and it looks a little bit like this.
+
+```csharp
+Context.Products.AsQueryable()
+	.Where(product => product.Name.Contains("XPS") && product.Price > 900)
+	.ToList();
+
+```
+
+The following entities are queryable:
+
+* Attribute Sets
+* Categories
+* Customers
+* Inventory Source Items
+* Inventory Sources
+* Inventory Stock
+* Invoices
+* Orders
+* Product Attribute Groups
+* Products
+* Products 
+* Shipments
+
+## Repositories
+> Space is big. Really big. You just won't believe how vastly hugely mind-bogglingly big it is. 
+> I mean, you may think it's a long way down the road to the chemist, but that's just peanuts to space.
+
+Magento 2 has been architected to be as modular as possible. 
+## Domain Models
+
+### Carts
+### Categories
+### Products
+### Customers
+### Attribute Sets
+### Attributes
+### Orders
 
 
 ## Attribute Sets
 
-You can get attributes for an attribute set. You can get attribute groups for an attribute set. But you can't get which attributes are assigned to a certain attribute group! Well, that is unless you use the Search functionality, but that would require reindexing every time you edit an attribute group.
+### Creating an Attribute Set
+
+
 
 ### Products
 

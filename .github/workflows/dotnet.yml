@@ -40,4 +40,4 @@ jobs:
     - name: Pack
       run: dotnet pack --no-build --output publish --configuration Release
     - name: Publish
-      run: dotnet nuget push publish/*.nupkg
+      run: dotnet nuget push --password ${{ secrets.GITHUB_TOKEN }} publish/*.nupkg

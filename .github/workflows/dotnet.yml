@@ -19,7 +19,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
+        source-url: https://nuget.pkg.github.com/mlof/index.json
         dotnet-version: 5.0.x
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.7
       with:
@@ -30,6 +33,11 @@ jobs:
         useConfigFile: true
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore --configuration Release
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Pack
+      run: dotnet pack --no-build --output publish --configuration Release
+    - name: Publish
+      run: dotnet nuget push publish/*.nupkg

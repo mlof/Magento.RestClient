@@ -1,4 +1,6 @@
 # Magento.RestClient
+![Nuget](https://img.shields.io/nuget/v/Magento.RestClient)
+![Nuget](https://img.shields.io/nuget/vpre/Magento.RestClient)
 
 Aiming to be the most complete REST API client for this beast of an ecommerce package. 
 As of 0.6.2, in a state where I would consider it useable! 🎉

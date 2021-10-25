@@ -75,7 +75,7 @@ namespace Magento.RestClient.Data.Repositories
 			return ExecuteAsync(request);
 		}
 
-		public Task AssignCustomer(long cartId, long storeId, int customerId)
+		public Task AssignCustomer(long cartId, long storeId, long customerId)
 		{
 			var request = new RestRequest("carts/{id}", Method.PUT);
 			request.AddOrUpdateParameter("id", cartId, ParameterType.UrlSegment);

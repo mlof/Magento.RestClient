@@ -1,4 +1,5 @@
 * [Getting Started](getting-started/)
 * [Using Magento.RestClient](usage/)
+* [Domain Models](domain-models/)
 * [Things that suck](suck/)
 * [Contributing](contributing/)

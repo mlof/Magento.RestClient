@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Magento.RestClient.Domain.Models.Catalog;
+using Magento.RestClient.Domain.Tests.Abstractions;
 using NUnit.Framework;
 
-namespace Magento.RestClient.Tests.Domain
+namespace Magento.RestClient.Domain.Tests
 {
 	public class CategoryTests : AbstractAdminTest
 	{
@@ -22,7 +23,7 @@ namespace Magento.RestClient.Tests.Domain
 		{
 			var model = new CategoryModel(Context, rootId);
 
-			
+
 			model.GetOrCreateChild("TEST CATEGORY");
 
 			await model.SaveAsync();
@@ -37,19 +38,19 @@ namespace Magento.RestClient.Tests.Domain
 		[Test]
 		async public Task AddProduct()
 		{
-
 			var root = new CategoryModel(Context, rootId);
 
 			root.GetOrCreateChild("TEST CATEGORY");
-
 			await root.SaveAsync();
 			var cat = root.Children.SingleOrDefault(category => category.Name == "TEST CATEGORY");
-
+			var processors = Context.Products
+				.AsQueryable()
+				.Where(product => product.Name.StartsWith("Intel I")
+				                  || product.Name.StartsWith("Ryzen R")).ToList();
 
 			await cat.SaveAsync();
-			
-			
 		}
+
 		[Test]
 		async public Task AddChild_Nested()
 		{
@@ -57,10 +58,8 @@ namespace Magento.RestClient.Tests.Domain
 
 			model.GetOrCreateChild("TEST CATEGORY");
 
-			
 
 			await model.SaveAsync();
-
 		}
 
 		[TearDown]

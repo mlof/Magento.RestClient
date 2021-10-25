@@ -7,10 +7,11 @@ using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Domain.Extensions;
 using Magento.RestClient.Domain.Models.Cart;
 using Magento.RestClient.Domain.Models.Catalog;
+using Magento.RestClient.Domain.Tests.Abstractions;
 using Magento.RestClient.Exceptions.Generic;
 using NUnit.Framework;
 
-namespace Magento.RestClient.Tests.Domain
+namespace Magento.RestClient.Domain.Tests
 {
 	public class CartTests : AbstractAdminTest
 	{
@@ -96,6 +97,7 @@ namespace Magento.RestClient.Tests.Domain
 		[Test]
 		async public Task Cart_AddSimpleProduct_ValidItem()
 		{
+			var customer = Context.Customers.GetByEmailAddress("customer@example.org");
 			var cart = new CartModel(Context);
 			await cart.AddSimpleProduct(this.CartProductSku, 3);
 

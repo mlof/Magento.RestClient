@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Magento.RestClient.Domain.Models.Customers;
+using Magento.RestClient.Domain.Tests.Abstractions;
 using NUnit.Framework;
 
-namespace Magento.RestClient.Tests.Domain
+namespace Magento.RestClient.Domain.Tests
 {
 	public class CustomerTests : AbstractAdminTest
 	{

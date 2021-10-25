@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using Magento.RestClient.Domain.Models.Catalog;
+using Magento.RestClient.Domain.Tests.Abstractions;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace Magento.RestClient.Tests.Domain
+namespace Magento.RestClient.Domain.Tests
 {
 	public class SerializationTests : AbstractAdminTest
 	{

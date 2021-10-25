@@ -6,6 +6,7 @@ using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Domain.Exceptions;
+using Serilog;
 
 namespace Magento.RestClient.Domain.Models.Catalog
 {
@@ -44,10 +45,10 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			await base.SaveAsync().ConfigureAwait(false);
 			if (this.Options.Any() && this.Children.Any())
 			{
-				await SaveOptions();
+				await SaveOptions().ConfigureAwait(false);
 
 
-				await SaveChildren();
+				await SaveChildren().ConfigureAwait(false);
 			}
 
 			await Refresh().ConfigureAwait(false);
@@ -55,11 +56,15 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		async public Task SaveChildren()
 		{
+			var attachedChildren = await Context.ConfigurableProducts.GetConfigurableChildren(this.Sku);
 			foreach (var child in this.Children)
 			{
 				child.AttributeSetId = this.AttributeSetId;
 				await child.SaveAsync().ConfigureAwait(false);
-				await Context.ConfigurableProducts.CreateChild(Sku, child.Sku).ConfigureAwait(false);
+				if (!attachedChildren.Select(product => product.Sku).Contains(child.Sku))
+				{
+					await Context.ConfigurableProducts.CreateChild(Sku, child.Sku).ConfigureAwait(false);
+				}
 			}
 
 
@@ -96,7 +101,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			return this.Children.SelectMany(model => model.CustomAttributes)
 				.Where(productAttribute => productAttribute.AttributeCode == attributecode)
 				.Select(customAttribute => customAttribute.Value).Distinct()
-				.Select(value => new ConfigurableProductValue() { ValueIndex = Convert.ToInt64(value) })
+				.Select(value => new ConfigurableProductValue() {ValueIndex = Convert.ToInt64(value)})
 				.ToList();
 		}
 
@@ -112,7 +117,6 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 			if (options != null)
 			{
-
 				_options = options;
 			}
 
@@ -135,11 +139,9 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 				if (!_options.Any(option => option.AttributeId == attribute.AttributeId))
 				{
-					_options.Add(new ConfigurableProductOption
-					{
-						AttributeId = attribute.AttributeId,
-						Label = attribute.DefaultFrontendLabel
-					}
+					_options.Add(new ConfigurableProductOption {
+							AttributeId = attribute.AttributeId, Label = attribute.DefaultFrontendLabel
+						}
 					);
 				}
 			}
@@ -161,7 +163,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 			if (this.Children.Any(child => child.Sku == product.Sku))
 			{
-				throw new ConfigurableChildAlreadyAttachedException();
+				Log.Warning("Child is already attached");
 			}
 			else
 			{
@@ -177,8 +179,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 				if (missingAttributes.Any())
 				{
-					throw new ConfigurableChildInvalidException("Missing attributes")
-					{
+					throw new ConfigurableChildInvalidException("Missing attributes") {
 						MissingAttributes = missingAttributes
 					};
 				}

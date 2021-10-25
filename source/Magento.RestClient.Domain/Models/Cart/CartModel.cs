@@ -186,7 +186,7 @@ namespace Magento.RestClient.Domain.Models.Cart
 			throw new CartCommittedException(this.Id);
 		}
 
-		public async Task<CartModel> AssignCustomer(int customerId)
+		public async Task<CartModel> AssignCustomer(long customerId)
 		{
 			await _context.Carts.AssignCustomer(this.Id, _model.StoreId, customerId).ConfigureAwait(false);
 

@@ -17,6 +17,6 @@ namespace Magento.RestClient.Abstractions.Repositories
 		Task SetShippingInformation(long cartId, Address shippingAddress, Address billingAddress, string methodCode,
 			string carrierCode);
 
-		Task AssignCustomer(long cartId, long storeId, int customerId);
+		Task AssignCustomer(long cartId, long storeId, long customerId);
 	}
 }

@@ -13,7 +13,6 @@
         <IncludeSymbols>true</IncludeSymbols>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <DebugType>embedded</DebugType>
         <Nullable>disable</Nullable>
         <tags>magento client ecommerce</tags>
 

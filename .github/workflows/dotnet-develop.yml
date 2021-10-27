@@ -19,10 +19,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        source-url: https://nuget.pkg.github.com/mlof/index.json
+        source-url: https://api.nuget.org/v3/index.json
         dotnet-version: 5.0.x
       env:
-        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        NUGET_AUTH_TOKEN: ${{secrets.NUGET_TOKEN}}
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.7
       with:
@@ -39,9 +39,6 @@ jobs:
 
     - name: Pack
       run: dotnet pack --no-build --output publish --configuration Release
-    - name: Publish to Github Packages
-      run: dotnet nuget push -k ${{ secrets.GITHUB_TOKEN }} publish/*.nupkg
     - name: Publish to Nuget
       run: dotnet nuget push -k ${{ secrets.NUGET_TOKEN }} publish/*.nupkg
-      with:
-        source-url: https://api.nuget.org/v3/index.json
+ 

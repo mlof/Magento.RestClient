@@ -42,4 +42,6 @@ jobs:
     - name: Publish to Github Packages
       run: dotnet nuget push -k ${{ secrets.GITHUB_TOKEN }} publish/*.nupkg
     - name: Publish to Nuget
-      run: dotnet nuget push --source https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_TOKEN }} publish/*.nupkg
+      run: dotnet nuget push -k ${{ secrets.NUGET_TOKEN }} publish/*.nupkg
+      with:
+        source-url: https://api.nuget.org/v3/index.json

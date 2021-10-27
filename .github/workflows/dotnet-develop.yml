@@ -40,5 +40,5 @@ jobs:
     - name: Pack
       run: dotnet pack --no-build --output publish --configuration Release
     - name: Publish to Nuget
-      run: dotnet nuget push -k ${{ secrets.NUGET_TOKEN }} publish/*.nupkg
+      run: dotnet nuget push -n -k ${{ secrets.NUGET_TOKEN }} publish/*.nupkg
  

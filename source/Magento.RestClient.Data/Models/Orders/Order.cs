@@ -65,6 +65,7 @@ namespace Magento.RestClient.Data.Models.Orders
 		[JsonProperty("customer_lastname")] public string CustomerLastname { get; set; }
 
 		[JsonProperty("customer_middlename")] public string CustomerMiddlename { get; set; }
+		[JsonProperty("customer_note")] public string CustomerNote { get; set; }
 
 		[JsonProperty("customer_note_notify")] public long CustomerNoteNotify { get; set; }
 

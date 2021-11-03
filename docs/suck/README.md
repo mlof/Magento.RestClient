@@ -21,6 +21,8 @@ When creating an order directly in Magento, it won't calculate things like order
 ### Deleting an order
 You can't delete orders. This *really* helps when unit testing. 🤦‍♂️
 
+### Updating an order
+You'd expect `PUT /rest/V1/orders/{id}`? Think again. `POST /rest/V1/orders/`, with `entity.entity_id` set.
 ### Minimal Order Definition
 Good luck finding an official source on this. It's possible, and even easy, to send in an order which will break the Administration UI. The validation on the Magento side is practically non-existent. 
 
@@ -30,6 +32,8 @@ This is the minimal order you can send to Magento without crashing it (But the s
 {
     "entity": {
         "customer_email": "customer@example.com",
+            "state": "new",
+    "status": "pending",
         "billing_address": {
             "city": "string",
             "country_id": "NL",

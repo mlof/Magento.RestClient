@@ -1,8 +1,10 @@
 ﻿using System.Linq;
-using Magento.RestClient.Abstractions;
+using System.Threading.Tasks;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.Inventory;
+using Magento.RestClient.Expressions;
+using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
 {
@@ -12,24 +14,54 @@ namespace Magento.RestClient.Data.Repositories
 		{
 		}
 
+
+		/// <summary>
+		/// Create
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns></returns>
+		/// <exception cref="Magento.RestClient.Exceptions.Generic.MagentoException">Ignore.</exception>
+		public Task Create(InventorySource source)
+		{
+			var request = new RestRequest("inventory/sources");
+
+			request.AddJsonBody(new {source});
+			request.Method = Method.POST;
+			return ExecuteAsync(request);
+		}
+
+		public Task<InventorySource> GetByCode(string sourceCode)
+		{
+			var request = new RestRequest("inventory/sources/{sourceCode}");
+
+			request.AddUrlSegment("sourceCode", sourceCode);
+
+			request.Method = Method.GET;
+			return ExecuteAsync<InventorySource>(request);
+
+		}
+
+	
+
+		/// <summary>
+		/// Update
+		/// </summary>
+		/// <param name="sourceCode"></param>
+		/// <param name="source"></param>
+		/// <returns></returns>
+		/// <exception cref="Magento.RestClient.Exceptions.Generic.MagentoException">Ignore.</exception>
+		public Task Update(string sourceCode, InventorySource source)
+		{
+			var request = new RestRequest("inventory/sources/{sourceCode}");
+
+			request.AddUrlSegment("sourceCode", sourceCode);
+			request.Method = Method.PUT;
+			return ExecuteAsync(request);
+		}
+
 		public IQueryable<InventorySource> AsQueryable()
 		{
-			throw new System.NotImplementedException();
-		}
-
-		public void Create(InventorySource source)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public InventorySource GetByCode(string sourceCode)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void Update(string sourceCode, InventorySource source)
-		{
-			throw new System.NotImplementedException();
+			return new MagentoQueryable<InventorySource>(Client, "inventory/sources");
 		}
 	}
 }

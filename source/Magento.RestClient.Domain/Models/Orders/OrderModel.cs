@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AgileObjects.AgileMapper;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Domain;
@@ -15,10 +16,10 @@ namespace Magento.RestClient.Domain.Models.Orders
 	{
 		private readonly IAdminContext _context;
 		private List<Invoice> _invoices;
-		private Order _model;
 		private List<Shipment> _shipments;
+		public string? Status { get; set; }
 
-		private OrderModel(IAdminContext context, long orderId)
+		public OrderModel(IAdminContext context, long orderId)
 		{
 			_context = context;
 			this.OrderId = orderId;
@@ -29,18 +30,26 @@ namespace Magento.RestClient.Domain.Models.Orders
 
 		public bool IsInvoiced => _invoices.Any();
 
-		public bool IsPersisted { get; }
+		public bool IsPersisted { get; private set; }
 
 		public async Task Refresh()
 		{
-			_model = await _context.Orders.GetByOrderId(this.OrderId).ConfigureAwait(false);
+
+			var model = await _context.Orders.GetByOrderId(this.OrderId).ConfigureAwait(false);
+			if (model != null)
+			{
+				this.IsPersisted = true;
+			}
+			Mapper.Map(model).Over(this);
+			
 			_invoices = await _context.Invoices.GetByOrderId(this.OrderId).ConfigureAwait(false);
 			_shipments = _context.Shipments.GetByOrderId(this.OrderId);
 		}
 
-		public Task SaveAsync()
+		async public Task SaveAsync()
 		{
-			return Task.CompletedTask;
+			var model = new Order() { EntityId =  OrderId, Status =  this.Status};
+			await _context.Orders.CreateOrder(model).ConfigureAwait(false);
 		}
 
 		public Task Delete()
@@ -53,14 +62,11 @@ namespace Magento.RestClient.Domain.Models.Orders
 		{
 			if (!this.IsInvoiced)
 			{
-				await _context.Orders.CreateInvoice(this.OrderId);
+				await _context.Orders.CreateInvoice(this.OrderId).ConfigureAwait(false);
 			}
 		}
 
-		public static OrderModel GetExisting(IAdminContext context, long orderId)
-		{
-			return new(context, orderId);
-		}
+	
 
 		public async Task CreateShipment()
 		{

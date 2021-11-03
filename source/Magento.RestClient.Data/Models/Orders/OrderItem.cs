@@ -1,4 +1,5 @@
 ﻿using System;
+using Magento.RestClient.Data.Models.Catalog.Products;
 using Newtonsoft.Json;
 
 namespace Magento.RestClient.Data.Models.Orders
@@ -67,7 +68,7 @@ namespace Magento.RestClient.Data.Models.Orders
 
 		[JsonProperty("product_id")] public long ProductId { get; set; }
 
-		[JsonProperty("product_type")] public string ProductType { get; set; }
+		[JsonProperty("product_type")] public ProductType ProductType { get; set; }
 
 		[JsonProperty("qty_canceled")] public long QtyCanceled { get; set; }
 

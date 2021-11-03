@@ -100,7 +100,7 @@ namespace Magento.RestClient.Domain.Models.EAV
 			await this.Validator.ValidateAndThrowAsync(this).ConfigureAwait(false);
 
 			var existing = await _context.Attributes.GetByCode(this.AttributeCode).ConfigureAwait(false);
-
+			
 
 			var attribute = GetAttribute();
 			if (existing != null && _frontendInputChanged)
@@ -130,16 +130,18 @@ namespace Magento.RestClient.Domain.Models.EAV
 				var existingOptions = await _context.Attributes.GetProductAttributeOptions(this.AttributeCode)
 					.ConfigureAwait(false);
 
+				var existingLabels = existingOptions.Select(o => o.Label).ToList();
 
 				foreach (var option in _options)
 				{
-					if (!existingOptions.Select(existingOption => existingOption.Label).Any(s =>
-						s.Equals(option.Label, StringComparison.InvariantCultureIgnoreCase)))
+					if (!existingLabels.Any(s => s.Equals(option.Label.Trim(), StringComparison.InvariantCultureIgnoreCase)))
 					{
 						Log.Information("Creating option {AttributeCode}:{Label}", this.AttributeCode, option.Label);
 						await _context.Attributes.CreateProductAttributeOption(this.AttributeCode, option)
 							.ConfigureAwait(false);
+
 					}
+
 					else if (!_options.Select(o => o.Label).Contains(option.Label) &&
 							 !string.IsNullOrEmpty(option.Value))
 					{

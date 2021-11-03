@@ -20,3 +20,49 @@ There's no real way to get an option ID for an attribute option through the API,
 When creating an order directly in Magento, it won't calculate things like order line prices, shipping costs, etc. Probably useful, if you need to create a backlog of orders in bulk, but not so much if you actually want these things done for you. For this, you'll have to create a cart and jump through hoops. 
 ### Deleting an order
 You can't delete orders. This *really* helps when unit testing. 🤦‍♂️
+
+### Minimal Order Definition
+Good luck finding an official source on this. It's possible, and even easy, to send in an order which will break the Administration UI. The validation on the Magento side is practically non-existent. 
+
+This is the minimal order you can send to Magento without crashing it (But the status will still be fucked!):
+
+```json
+{
+    "entity": {
+        "customer_email": "customer@example.com",
+        "billing_address": {
+            "city": "string",
+            "country_id": "NL",
+            "firstname": "string",
+            "lastname": "string",
+            "postcode": "string",
+            "street": [
+                "string"
+            ],
+            "telephone": "string"
+        },
+        "extension_attributes": {
+            "shipping_assignments": [
+                {
+                    "shipping": {
+                        "address": {
+                            "city": "string",
+                            "country_id": "NL",
+                            "firstname": "string",
+                            "lastname": "string",
+                            "postcode": "string",
+                            "street": [
+                                "string"
+                            ],
+                            "telephone": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "payment": {
+            "method": "checkmo"
+        }
+    }
+}
+```

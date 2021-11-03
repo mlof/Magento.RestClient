@@ -17,16 +17,13 @@ namespace Magento.RestClient.Data.Repositories
 {
 	public class OrderRepository : AbstractRepository, IOrderRepository
 	{
-		private readonly OrderValidator _orderValidator;
 
 		public OrderRepository(IContext context) : base(context)
 		{
-			_orderValidator = new OrderValidator();
 		}
 
 		public async Task<Order> CreateOrder(Order order)
 		{
-			await _orderValidator.ValidateAsync(order, options => options.ThrowOnFailures()).ConfigureAwait(false);
 
 			var request = new RestRequest("orders", Method.POST);
 			request.AddJsonBody(new {entity = order});
@@ -71,7 +68,7 @@ namespace Magento.RestClient.Data.Repositories
 		/// </summary>
 		/// <param name="orderId"></param>
 		/// <returns></returns>
-		/// <exception cref="Magento.RestClient.Exceptions.Generic.MagentoException"></exception>
+		/// <exception cref="Magento.RestClient.Exceptions.Generic.MagentoException">Ignore.</exception>
 		public Task CreateInvoice(long orderId)
 		{
 			IRestRequest request = new RestRequest("order/{id}/invoice", Method.POST);

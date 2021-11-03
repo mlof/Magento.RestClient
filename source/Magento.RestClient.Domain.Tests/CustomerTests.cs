@@ -11,9 +11,12 @@ namespace Magento.RestClient.Domain.Tests
 		[Test]
 		async public Task CreateCustomer()
 		{
-			var customer = new CustomerModel(this.Context, "user@example.org");
-			customer.FirstName = "First Name";
-			customer.LastName = "Last Name";
+			var customer =
+				new CustomerModel(this.Context, "user@example.org") {
+					FirstName = "First Name", 
+					LastName = "Last Name",
+				};
+
 
 			customer.IsPersisted.Should().BeFalse();
 

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AgileObjects.AgileMapper;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Domain;
@@ -30,10 +31,8 @@ namespace Magento.RestClient.Domain.Models.Customers
 			if (existing != null)
 			{
 				this.IsPersisted = true;
-				this.Id = existing.Id;
-				this.EmailAddress = existing.Email;
-				this.FirstName = existing.Firstname;
-				this.LastName = existing.Lastname;
+
+				Mapper.Map(existing).Over(this);
 			}
 			else
 			{
@@ -45,11 +44,8 @@ namespace Magento.RestClient.Domain.Models.Customers
 
 		public async Task SaveAsync()
 		{
-			var customer = new Customer
-			{
-				Firstname = this.FirstName,
-				Lastname = this.LastName,
-				Email = this.EmailAddress
+			var customer = new Customer {
+				Firstname = this.FirstName, Lastname = this.LastName, Email = this.EmailAddress,
 			};
 			if (this.IsPersisted)
 			{

@@ -202,10 +202,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				Visibility = (long)this.Visibility,
 				CustomAttributes = this.CustomAttributes,
 				TypeId = this.Type,
-				Options = this.Options.Select(option => option with
-				{
-					ProductSku = this.Sku
-				}).ToList()
+				Options = this.Options.Select(option => option with { ProductSku = this.Sku }).ToList()
 			};
 			if (this.StockItem != null)
 			{
@@ -312,6 +309,4 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				attribute => attribute.AttributeCode == code.AttributeCode);
 		}
 	}
-
-
 }

@@ -9,6 +9,6 @@ namespace Magento.RestClient.Data.Models.Catalog.Products
 	public enum PriceType
 	{
 		[EnumMember(Value = "fixed")] Fixed,
-		[EnumMember(Value = "dynamic")] Dynamic
+		[EnumMember(Value = "percent")] Percentage
 	}
 }

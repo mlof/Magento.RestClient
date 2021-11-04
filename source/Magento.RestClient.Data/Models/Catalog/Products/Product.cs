@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Dynamic;
 using Magento.RestClient.Data.Models.Common;
 using Newtonsoft.Json;
 
@@ -46,7 +45,7 @@ namespace Magento.RestClient.Data.Models.Catalog.Products
 
 		[JsonProperty("product_links")] public List<dynamic> ProductLinks { get; set; }
 
-		[JsonProperty("options")] public List<dynamic> Options { get; set; }
+		[JsonProperty("options")] public List<ProductOption> Options { get; set; }
 
 		[JsonProperty("media_gallery_entries")]
 		public List<MediaEntry> MediaGalleryEntries { get; set; }

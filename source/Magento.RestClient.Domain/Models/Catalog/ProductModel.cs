@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AgileObjects.AgileMapper;
 using FluentValidation;
-using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Domain;
 using Magento.RestClient.Abstractions.Repositories;
@@ -79,7 +79,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		[JsonIgnore] public bool IsPersisted { get; set; }
 
-	
+
 		/// <summary>
 		/// UrlKey
 		/// </summary>
@@ -101,7 +101,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			set => SetAttribute("description", value).GetAwaiter().GetResult();
 		}
 
-		
+
 		/// <summary>
 		/// ShortDescription
 		/// </summary>
@@ -129,13 +129,9 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			}
 			else
 			{
-				this.Name = existingProduct.Name;
-				this.Price = existingProduct.Price;
+				Mapper.Map(existingProduct).Over(this);
 
-				this.AttributeSetId = existingProduct.AttributeSetId;
 				this.Visibility = Enum.Parse<ProductVisibility>(existingProduct.Visibility.ToString());
-				this.CustomAttributes = existingProduct.CustomAttributes;
-				this.IsPersisted = true;
 				this.Type = existingProduct.TypeId;
 				_specialPrices =
 					await Context.SpecialPrices.GetSpecialPrices(this.Sku).ConfigureAwait(false) ??
@@ -205,7 +201,11 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				AttributeSetId = this.AttributeSetId,
 				Visibility = (long)this.Visibility,
 				CustomAttributes = this.CustomAttributes,
-				TypeId = this.Type
+				TypeId = this.Type,
+				Options = this.Options.Select(option => option with
+				{
+					ProductSku = this.Sku
+				}).ToList()
 			};
 			if (this.StockItem != null)
 			{
@@ -214,6 +214,8 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 			return product;
 		}
+
+		public List<ProductOption> Options { get; set; } = new List<ProductOption>();
 
 		public Task Delete()
 		{
@@ -310,4 +312,6 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				attribute => attribute.AttributeCode == code.AttributeCode);
 		}
 	}
+
+
 }

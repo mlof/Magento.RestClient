@@ -22,7 +22,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 		private readonly IList<string> _removedChildren = new List<string>();
 
 		public IReadOnlyList<ProductModel> Children => _children.AsReadOnly();
-		public IReadOnlyList<ConfigurableProductOption> Options => _options.AsReadOnly();
+		public IReadOnlyList<ConfigurableProductOption> Configurations => _options.AsReadOnly();
 
 		public override sealed async Task Refresh()
 		{
@@ -43,7 +43,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 		{
 			base.Type = ProductType.Configurable;
 			await base.SaveAsync().ConfigureAwait(false);
-			if (this.Options.Any() && this.Children.Any())
+			if (this.Configurations.Any() && this.Children.Any())
 			{
 				await SaveOptions().ConfigureAwait(false);
 

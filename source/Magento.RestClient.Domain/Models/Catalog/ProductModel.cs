@@ -31,8 +31,9 @@ namespace Magento.RestClient.Domain.Models.Catalog
 		/// </summary>
 		/// <param name="context"></param>
 		/// <param name="sku"></param>
+		/// <param name="scope"></param>
 		/// <exception cref="ProductSkuInvalidException"></exception>
-		public ProductModel(IAdminContext context, string sku)
+		public ProductModel(IAdminContext context, string sku, string scope  = "all")
 		{
 			this.Validator = new ProductModelValidator();
 			if (!Regex.Match(sku, "^[\\w-]*$").Success)
@@ -42,7 +43,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 			Context = context;
 			this.Sku = sku;
-			this.Scope = "all";
+			this.Scope = scope;
 			Log.Information("Initializing {Sku}", sku);
 
 			Refresh().GetAwaiter().GetResult();
@@ -64,7 +65,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 		[JsonConverter(typeof(StringEnumConverter))]
 		public ProductVisibility Visibility { get; set; }
 
-		public List<CustomAttribute> CustomAttributes { get; set; }
+		public List<CustomAttribute> CustomAttributes { get; set; } = new List<CustomAttribute>();
 
 		public decimal? Price { get; set; }
 
@@ -129,7 +130,9 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			}
 			else
 			{
-				Mapper.Map(existingProduct).Over(this);
+				var x = Mapper.GetPlanFor(existingProduct).Over<ProductModel>().ToString();
+				Mapper.Map(existingProduct)
+					.Over(this, configurator => configurator.Ignore(model => model.CustomAttributes));
 
 				this.Visibility = Enum.Parse<ProductVisibility>(existingProduct.Visibility.ToString());
 				this.Type = existingProduct.TypeId;
@@ -177,13 +180,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				await Context.SpecialPrices.AddOrUpdateSpecialPrices(specialPrice).ConfigureAwait(false);
 			}
 
-			foreach (var item in this.MediaEntries)
-			{
-				if (item.Id == null)
-				{
-					await Context.ProductMedia.Create(this.Sku, item);
-				}
-			}
+			await SaveMediaEntries();
 
 
 			sw.Stop();
@@ -193,16 +190,15 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public Product GetProduct()
 		{
-			var product = new Product
-			{
+			var product = new Product {
 				Sku = this.Sku,
 				Name = this.Name,
 				Price = this.Price,
 				AttributeSetId = this.AttributeSetId,
-				Visibility = (long)this.Visibility,
+				Visibility = (long) this.Visibility,
 				CustomAttributes = this.CustomAttributes,
 				TypeId = this.Type,
-				Options = this.Options.Select(option => option with { ProductSku = this.Sku }).ToList()
+				Options = this.Options.Select(option => option with {ProductSku = this.Sku}).ToList()
 			};
 			if (this.StockItem != null)
 			{
@@ -229,7 +225,9 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public void SetStock(long quantity)
 		{
-			this.StockItem = new StockItem { IsInStock = quantity > 0, Qty = quantity };
+			Log.Information("Product {Sku}: Setting stock to {Quantity}", this.Sku, quantity);
+
+			this.StockItem = new StockItem {IsInStock = quantity > 0, Qty = quantity};
 		}
 
 		public ConfigurableProductModel GetConfigurableProductModel()
@@ -292,8 +290,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public void SetSpecialPrice(DateTime start, DateTime end, decimal price, long storeId = 0)
 		{
-			_specialPrices.Add(new SpecialPrice
-			{
+			_specialPrices.Add(new SpecialPrice {
 				PriceFrom = start,
 				PriceTo = end,
 				Sku = this.Sku,
@@ -307,6 +304,18 @@ namespace Magento.RestClient.Domain.Models.Catalog
 			var code = await Context.Attributes.GetById(optionAttributeId);
 			return this.CustomAttributes.SingleOrDefault(
 				attribute => attribute.AttributeCode == code.AttributeCode);
+		}
+
+		public void SetPrice(decimal price)
+		{
+			this.Price = price;
+		}
+
+		public Task SaveMediaEntries()
+		{
+			return Context.ProductMedia.CreateBulk(this.Sku,
+				_mediaEntries.Where(entry => entry.Id == null).ToArray()
+			);
 		}
 	}
 }

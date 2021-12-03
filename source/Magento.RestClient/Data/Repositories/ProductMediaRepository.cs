@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
@@ -31,6 +33,15 @@ namespace Magento.RestClient.Data.Repositories
 			return entry;
 		}
 
+		public Task CreateBulk(string sku, MediaEntry[] entry)
+		{
+			var request = new RestRequest("products/bySku/media", Method.POST);
+			request.SetScope("all/async/bulk");
+
+			request.AddJsonBody(entry.Select(mediaEntry => new{sku, entry = mediaEntry}).ToList());
+			return ExecuteAsync(request);
+
+		}
 		public Task<List<MediaEntry>> GetForSku(string sku)
 		{
 			var request = new RestRequest("products/{sku}/media", Method.GET);

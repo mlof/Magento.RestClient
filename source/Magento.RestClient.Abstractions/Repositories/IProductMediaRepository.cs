@@ -11,5 +11,6 @@ namespace Magento.RestClient.Abstractions.Repositories
 		Task<bool> Delete(string sku, long entryId);
 		Task<MediaEntry> Get(string sku, int entryId);
 		Task<MediaEntry> Update(string sku, long entryId, MediaEntry entry);
+		Task CreateBulk(string sku, MediaEntry[] entry);
 	}
 }

@@ -11,5 +11,6 @@ namespace Magento.RestClient.Domain.Models.Catalog
 		void SetParentId(long id);
 
 		public ICategoryModel GetOrCreateChild(string name);
+		void AddProduct(string productSku);
 	}
 }

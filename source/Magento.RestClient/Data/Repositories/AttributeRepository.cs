@@ -9,6 +9,7 @@ using Magento.RestClient.Data.Models.EAV.Attributes;
 using Magento.RestClient.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using RestSharp;
+using Serilog;
 
 namespace Magento.RestClient.Data.Repositories
 {
@@ -85,6 +86,8 @@ namespace Magento.RestClient.Data.Repositories
 
 		async public Task<ProductAttribute> GetByCode(string attributeCode)
 		{
+			Log.Information("Getting product attribute {AttributeCode}", attributeCode);
+
 			var request = new RestRequest("products/attributes/{attributeCode}", Method.GET);
 			request.AddOrUpdateParameter("attributeCode", attributeCode, ParameterType.UrlSegment);
 			request.SetScope("all");

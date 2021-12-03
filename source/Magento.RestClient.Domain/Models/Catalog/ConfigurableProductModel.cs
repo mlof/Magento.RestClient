@@ -12,7 +12,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 {
 	public class ConfigurableProductModel : ProductModel
 	{
-		public ConfigurableProductModel(IAdminContext context, string sku) : base(context, sku)
+		public ConfigurableProductModel(IAdminContext context, string sku, string scope = "all") : base(context, sku, scope)
 		{
 		}
 
@@ -56,6 +56,8 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		async public Task SaveChildren()
 		{
+			Log.Information("Product {Sku}: Saving children", this.Sku);
+
 			var attachedChildren = await Context.ConfigurableProducts.GetConfigurableChildren(this.Sku);
 			foreach (var child in this.Children)
 			{
@@ -78,6 +80,8 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		async public Task SaveOptions()
 		{
+			Log.Information("Product {Sku}: Saving options", this.Sku);
+
 			foreach (var option in _options)
 			{
 				var attribute = await Context.Attributes.GetById(option.AttributeId).ConfigureAwait(false);
@@ -98,6 +102,14 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public List<ConfigurableProductValue> GetOptionValues(string attributecode)
 		{
+			foreach (var d in this.Children.SelectMany(model => model.CustomAttributes)
+				.Where(productAttribute => productAttribute.AttributeCode == attributecode)
+				.Distinct()
+			)
+			{
+				Log.Information("Value Index : {Code} {Index}", d.Value, d.AttributeCode);
+				
+			}
 			return this.Children.SelectMany(model => model.CustomAttributes)
 				.Where(productAttribute => productAttribute.AttributeCode == attributecode)
 				.Select(customAttribute => customAttribute.Value).Distinct()
@@ -107,6 +119,9 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		private async Task RefreshOptions()
 		{
+			Log.Information("Product {Sku}: Getting options", this.Sku);
+
+
 			List<ConfigurableProductOption> options = null;
 
 
@@ -135,10 +150,13 @@ namespace Magento.RestClient.Domain.Models.Catalog
 		{
 			foreach (var attributeCode in attributeCodes)
 			{
+				Log.Information("Product {Sku}: Adding {AttributeCode} as configurable attribute", this.Sku, attributeCode);
+
 				var attribute = await Context.Attributes.GetByCode(attributeCode).ConfigureAwait(false);
 
 				if (!_options.Any(option => option.AttributeId == attribute.AttributeId))
 				{
+
 					_options.Add(new ConfigurableProductOption {
 							AttributeId = attribute.AttributeId, Label = attribute.DefaultFrontendLabel
 						}
@@ -155,6 +173,8 @@ namespace Magento.RestClient.Domain.Models.Catalog
 		/// <exception cref="ConfigurableChildInvalidException"></exception>
 		public void AddChild(ProductModel product)
 		{
+			Log.Information("Product {Sku}: Adding {ProductSku} as child", this.Sku, product.Sku);
+
 			if (!_options.Any())
 			{
 				throw new ConfigurableProductInvalidException(
@@ -185,12 +205,16 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				}
 
 				product.Visibility = ProductVisibility.NotVisibleIndividually;
+				Log.Information("Product {Sku}: Adding child with SKU {AttributeCode} ", this.Sku, product.Sku);
+
 				_children.Add(product);
 			}
 		}
 
 		public void RemoveChild(string sku)
 		{
+			Log.Information("Product {Sku}: Removing child with SKU {AttributeCode} ", this.Sku, sku);
+
 			_removedChildren.Add(sku);
 		}
 	}

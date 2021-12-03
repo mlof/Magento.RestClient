@@ -24,11 +24,12 @@ namespace Magento.RestClient.Domain.Models.EAV
 
 		public List<string> Options {
 			get => _options.Select(option => option.Label).ToList();
-			set => _options = value.Select(s => new Option() { Label = s }).ToList();
+			set => _options = value.Select(s => new Option() {Label = s}).ToList();
 		}
 
 		public AttributeModel(IAdminContext context, string attributeCode, string label = "")
 		{
+
 			_context = context;
 			this.AttributeCode = attributeCode;
 			this.DefaultFrontendLabel = label;
@@ -71,6 +72,7 @@ namespace Magento.RestClient.Domain.Models.EAV
 			ProductAttribute existing = null;
 			if (!string.IsNullOrWhiteSpace(AttributeCode))
 			{
+
 				existing = await _context.Attributes.GetByCode(this.AttributeCode).ConfigureAwait(false);
 			}
 
@@ -100,28 +102,25 @@ namespace Magento.RestClient.Domain.Models.EAV
 			await this.Validator.ValidateAndThrowAsync(this).ConfigureAwait(false);
 
 			var existing = await _context.Attributes.GetByCode(this.AttributeCode).ConfigureAwait(false);
-			
+
 
 			var attribute = GetAttribute();
-			if (existing != null && _frontendInputChanged)
+			if (existing != null && attribute.FrontendInput != existing.FrontendInput)
 			{
 				await _context.Attributes.DeleteProductAttribute(this.AttributeCode).ConfigureAwait(false);
 			}
 
 			if (existing == null)
 			{
-
 				await _context.Attributes.Create(attribute).ConfigureAwait(false);
 			}
 			else
 			{
-
 				Log.Warning("Can't update attributes. Blame magento.");
 
 
 #pragma warning disable S125 // Sections of code should not be commented out
 				// await _context.Attributes.Update(this.AttributeCode, attribute).ConfigureAwait(false);
-
 			}
 #pragma warning restore S125 // Sections of code should not be commented out
 
@@ -134,16 +133,29 @@ namespace Magento.RestClient.Domain.Models.EAV
 
 				foreach (var option in _options)
 				{
-					if (!existingLabels.Any(s => s.Equals(option.Label.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+					if (!existingLabels.Any(s =>
+						s.Equals(option.Label.Trim(), StringComparison.InvariantCultureIgnoreCase)))
 					{
-						Log.Information("Creating option {AttributeCode}:{Label}", this.AttributeCode, option.Label);
-						await _context.Attributes.CreateProductAttributeOption(this.AttributeCode, option)
-							.ConfigureAwait(false);
+						if (!string.IsNullOrWhiteSpace(option.Label))
+						{
 
+							Log.Information("Creating option {AttributeCode}:{Label}", this.AttributeCode,
+								option.Label);
+							try
+							{
+								await _context.Attributes.CreateProductAttributeOption(this.AttributeCode, option)
+									.ConfigureAwait(false);
+
+							}
+							catch
+							{
+
+							}
+						}
 					}
 
 					else if (!_options.Select(o => o.Label).Contains(option.Label) &&
-							 !string.IsNullOrEmpty(option.Value))
+					         !string.IsNullOrEmpty(option.Value))
 					{
 						Log.Information("Deleting option {AttributeCode}:{Label}", this.AttributeCode, option.Label);
 
@@ -172,25 +184,26 @@ namespace Magento.RestClient.Domain.Models.EAV
 
 		public void AddOption(string option)
 		{
-			if (option != null)
+			if (string.IsNullOrWhiteSpace(option))
 			{
-				if (option.Trim().Equals("0"))
-				{
-					_options.Add(new Option { Label = "0 (Zero)" });
+				return;
+			}
 
-					Log.Warning("Magento does not allow 0 as an attribute option value.");
-				}
-				else if (_options.All(o => o.Label != option))
-				{
-					_options.Add(new Option { Label = option });
-				}
+			if (option.Trim().Equals("0"))
+			{
+				_options.Add(new Option {Label = "0 (Zero)"});
+
+				Log.Warning("Magento does not allow 0 as an attribute option value.");
+			}
+			else if (_options.All(o => o.Label != option))
+			{
+				_options.Add(new Option {Label = option});
 			}
 		}
 
 		public ProductAttribute GetAttribute()
 		{
-			return new ProductAttribute(this.AttributeCode)
-			{
+			return new ProductAttribute(this.AttributeCode) {
 				IsRequired = this.Required,
 				IsVisible = this.Visible,
 				DefaultFrontendLabel = this.DefaultFrontendLabel,

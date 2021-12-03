@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Data.Models.Catalog.Category;
 using Magento.RestClient.Data.Models.Catalog.Products;
+using Serilog;
 
 namespace Magento.RestClient.Domain.Models.Catalog
 {
@@ -77,11 +79,16 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				var productsResponse = await _context.Categories.GetProducts(this.Id.Value).ConfigureAwait(false);
 				_products = productsResponse.ToList();
 			}
+			else
+			{
+				_products = new List<ProductLink>();
+			}
 		}
 
 		public async Task SaveAsync()
 		{
-			var category = new Category { Name = this.Name, ParentId = this.ParentId, IsActive = this.IsActive };
+			var category = new Category {Name = this.Name, ParentId = this.ParentId, IsActive = this.IsActive};
+
 			// don't update the root category.
 			if (this.ParentId != 0)
 			{
@@ -108,6 +115,19 @@ namespace Magento.RestClient.Domain.Models.Catalog
 				}
 
 				await child.SaveAsync();
+			}
+
+			var existingProducts = await _context.Categories.GetProducts(this.Id.Value).ConfigureAwait(false);
+
+
+			foreach (var link in _products)
+			{
+				if (existingProducts.All(productLink => productLink.Sku != link.Sku) &&
+				    await _context.Products.GetProductBySku(link.Sku).ConfigureAwait(false) != null)
+				{
+					await _context.Categories.AddProduct(this.Id.Value,
+						link with {CategoryId = this.Id.Value}).ConfigureAwait(false);
+				}
 			}
 
 
@@ -146,7 +166,7 @@ namespace Magento.RestClient.Domain.Models.Catalog
 
 		public void AddProduct(string productSku)
 		{
-			_products.Add(new ProductLink { Sku = productSku, CategoryId = this.Id.Value });
+			_products.Add(new ProductLink {Sku = productSku});
 		}
 
 		public ICategoryModel this[string name] {

@@ -9,7 +9,7 @@ namespace Magento.RestClient.Abstractions.Repositories
 		Task<Product> GetProductBySku(string sku, string scope = "all");
 
 		Task<Product> CreateProduct(Product product, bool saveOptions = true);
-		Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true, string scope = "all");
+		Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true, string? scope = null);
 		Task DeleteProduct(string sku);
 	}
 }

@@ -9,6 +9,7 @@ using Magento.RestClient.Abstractions.Domain;
 using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.EAV.Attributes;
+using Serilog;
 
 namespace Magento.RestClient.Domain.Models.EAV
 {
@@ -76,6 +77,7 @@ namespace Magento.RestClient.Domain.Models.EAV
 				this.Id = r.AttributeSetId.Value;
 
 				var model = await _context.AttributeSets.Get(this.Id).ConfigureAwait(false);
+				Log.Information("Getting attribute set {Id} : {Name}", this.Id, this.Name);
 
 				this.Name = model.AttributeSetName;
 
@@ -85,13 +87,13 @@ namespace Magento.RestClient.Domain.Models.EAV
 					attributesResponse.Select(attribute => new AttributeModel(_context, attribute.AttributeCode))
 						.ToList().AsReadOnly();
 				var attributeGroups =
-					_context.ProductAttributeGroups.AsQueryable().Where(group => group.AttributeSetId == this.Id)
-						.ToList();
+					_context.ProductAttributeGroups.AsQueryable().Where(group => @group.AttributeSetId == this.Id).ToList();
 				_attributeGroups = attributeGroups.Select(group => new AttributeGroupModel(this._context,
 					group.AttributeSetId, group.AttributeGroupId, group.AttributeGroupName)).ToList();
 			}
 			else
 			{
+
 				this.IsPersisted = false;
 
 				this.Attributes = new List<AttributeModel>().AsReadOnly();

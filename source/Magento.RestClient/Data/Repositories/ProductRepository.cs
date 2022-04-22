@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Repositories;
+using Magento.RestClient.Data.Models;
+using Magento.RestClient.Data.Models.Bulk;
 using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Expressions;
 using Magento.RestClient.Extensions;
@@ -28,12 +30,11 @@ namespace Magento.RestClient.Data.Repositories
 
 		public async Task<Product> CreateProduct(Product product, bool saveOptions = true)
 		{
-			var request = new RestRequest("products") {Method = Method.POST};
-			request.SetScope("all");
-			// ReSharper disable once RedundantAnonymousTypePropertyName
-			request.AddJsonBody(new {product = product});
+			var request = GetCreateProductRequest(product, saveOptions);
 			return await ExecuteAsync<Product>(request).ConfigureAwait(false);
 		}
+
+
 
 		public async Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true,
 			string? scope = null)
@@ -52,12 +53,12 @@ namespace Magento.RestClient.Data.Repositories
 			return await ExecuteAsync<Product>(request).ConfigureAwait(false);
 		}
 
-		public async Task DeleteProduct(string sku)
+		public Task DeleteProduct(string sku)
 		{
 			var request = new RestRequest("products/{sku}") {Method = Method.DELETE};
 			request.AddOrUpdateParameter("sku", sku, ParameterType.UrlSegment);
 
-			await ExecuteAsync(request).ConfigureAwait(false);
+			await ExecuteAsync<Product>(request).ConfigureAwait(false);
 		}
 
 		public IQueryable<Product> AsQueryable()

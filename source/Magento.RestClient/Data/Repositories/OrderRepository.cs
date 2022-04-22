@@ -63,6 +63,16 @@ namespace Magento.RestClient.Data.Repositories
 			throw new NotImplementedException();
 		}
 
+        public Task Persist(Order order)
+        {
+
+			IRestRequest request = new RestRequest("orders", Method.POST);
+            request.AddJsonBody(new { entity = order});
+            return ExecuteAsync(request);
+
+
+		}
+
 		/// <summary>
 		/// CreateInvoice
 		/// </summary>

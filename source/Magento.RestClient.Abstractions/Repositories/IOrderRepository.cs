@@ -14,5 +14,6 @@ namespace Magento.RestClient.Abstractions.Repositories
 		Task Unhold(long orderId);
 		Task Refund(long orderId);
 		Task Ship(long orderId);
-	}
+        Task Persist(Order order);
+    }
 }

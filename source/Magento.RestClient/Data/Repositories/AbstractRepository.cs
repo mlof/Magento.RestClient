@@ -106,8 +106,9 @@ namespace Magento.RestClient.Data.Repositories
 				}
 				else
 				{
-					throw MagentoException.Parse(response.Content);
-				}
+					var ex = MagentoException.Parse(response.Content);
+                    throw ex;
+                }
 			}
 		}
 

@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Repositories;
+using Magento.RestClient.Data.Models.Bulk;
 using Magento.RestClient.Data.Models.Catalog.Products;
+using Magento.RestClient.Data.Requests;
+using Magento.RestClient.Extensions;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
@@ -21,6 +25,8 @@ namespace Magento.RestClient.Data.Repositories
 		public Task CreateChild(string parentSku, string childSku)
 		{
 			var request = new RestRequest("configurable-products/{sku}/child", Method.POST);
+			request.SetScope("default");
+
 			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
 			request.AddJsonBody(new { childSku });
 
@@ -29,9 +35,12 @@ namespace Magento.RestClient.Data.Repositories
 
 		public Task DeleteChild(string parentSku, string childSku)
 		{
-			var request = new RestRequest("configurable-products/{sku}/child/{childSku}", Method.DELETE);
+			
+
+			var request = new RestRequest("configurable-products/{sku}/children/{childSku}", Method.DELETE);
+			request.SetScope("default");
 			request.AddOrUpdateParameter("sku", parentSku, ParameterType.UrlSegment);
-			request.AddOrUpdateParameter("childSku", childSku);
+			request.AddOrUpdateParameter("childSku", childSku, ParameterType.UrlSegment);
 
 			return ExecuteAsync(request);
 		}
@@ -78,6 +87,29 @@ namespace Magento.RestClient.Data.Repositories
 			this.Cache.Remove(key);
 
 			return this.Client.ExecuteAsync(request);
+		}
+		public Task<BulkActionResponse> BulkMergeConfigurations(
+			params CreateOrUpdateConfigurationRequest[] configurations)
+		{
+			var request = new RestRequest("configurable-products/bySku/child", Method.POST);
+			request.SetScope("all/async/bulk");
+
+
+			request.AddJsonBody(configurations.ToList());
+
+			return ExecuteAsync<BulkActionResponse>(request);
+		}
+
+		public Task<BulkActionResponse> BulkMergeConfigurableOptions(
+			params ConfigurableProductOptionRequest[] requests)
+		{
+			var request = new RestRequest("configurable-products/bySku/options", Method.POST);
+			request.SetScope("all/async/bulk");
+
+
+			request.AddJsonBody(requests.ToList());
+
+			return ExecuteAsync<BulkActionResponse>(request);
 		}
 
 

@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <ApplicationIcon>icons8_magento.ico</ApplicationIcon>
-        <PackageIcon>icons8_magento_96px.png</PackageIcon>
         <PackageIconUrl />
         <UserSecretsId>b3c914ae-6d4c-42f3-b692-933c14ec69cc</UserSecretsId>
+        <SonarQubeExclude>True</SonarQubeExclude>
 
         
 
@@ -23,6 +23,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+        <PackageReference Include="Polly" Version="7.2.2" />
 
         <PackageReference Include="Remotion.Linq" Version="2.2.0" />
 
@@ -53,13 +54,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-    <ItemGroup>
-
-        <None Include="..\..\resources\icons8_magento_96px.png">
-            <Pack>True</Pack>
-            <PackagePath></PackagePath>
-        </None>
-    </ItemGroup>
+  
     <ItemGroup>
         <Folder Include="Exceptions\Cart\" />
         <Folder Include="Exceptions\ConfigurableProduct\" />

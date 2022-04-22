@@ -1,4 +1,6 @@
-﻿using Magento.RestClient.Abstractions.Repositories;
+﻿using System.Threading.Tasks;
+using Magento.RestClient.Abstractions.Repositories;
+using Magento.RestClient.Data.Models.Catalog.Products;
 
 namespace Magento.RestClient.Abstractions.Abstractions
 {
@@ -7,8 +9,9 @@ namespace Magento.RestClient.Abstractions.Abstractions
 		IProductAttributeGroupRepository ProductAttributeGroups { get; }
 		IStoreRepository Stores { get; }
 		IProductRepository Products { get; }
+		IProductAsyncRepository ProductsAsync { get; }
 		IProductMediaRepository ProductMedia { get; }
-		IConfigurableProductRepository ConfigurableProducts { get; }
+        IConfigurableProductRepository ConfigurableProducts { get; }
 		IOrderRepository Orders { get; }
 		ICustomerRepository Customers { get; }
 		ICustomerGroupRepository CustomerGroups { get; }
@@ -22,8 +25,11 @@ namespace Magento.RestClient.Abstractions.Abstractions
 		ICartRepository Carts { get; }
 		IAttributeRepository Attributes { get; }
 		IShipmentRepository Shipments { get; }
-		IBulkRepository Bulk { get; }
+		IAsyncRepository Async { get; }
 		ISpecialPriceRepository SpecialPrices { get; }
 		IModuleRepository Modules { get; }
 	}
+
+
+
 }

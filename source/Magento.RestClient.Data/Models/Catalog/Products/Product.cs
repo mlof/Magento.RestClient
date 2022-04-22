@@ -34,7 +34,7 @@ namespace Magento.RestClient.Data.Models.Catalog.Products
 
 		[JsonProperty("visibility")] public long Visibility { get; set; }
 
-		[JsonProperty("type_id")] public ProductType TypeId { get; set; }
+		[JsonProperty("type_id")] public ProductType? TypeId { get; set; }
 
 		[JsonProperty("created_at")] public DateTime? CreatedAt { get; set; }
 

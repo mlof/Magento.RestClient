@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Cache;
 using JsonExts.JsonPath;
@@ -47,6 +48,8 @@ namespace Magento.RestClient
 				client.AddDefaultUrlSegment("scope", defaultScope);
 			}
 
+			client.Timeout = Int32.MaxValue;
+			
 			client.UseNewtonsoftJson(jsonSerializerSettings);
 			return client;
 		}

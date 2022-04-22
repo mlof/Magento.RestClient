@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Repositories;
-using Magento.RestClient.Data.Models;
 using Magento.RestClient.Data.Models.Bulk;
 using Magento.RestClient.Data.Models.Catalog.Products;
 using Magento.RestClient.Expressions;
@@ -58,7 +57,16 @@ namespace Magento.RestClient.Data.Repositories
 			var request = new RestRequest("products/{sku}") {Method = Method.DELETE};
 			request.AddOrUpdateParameter("sku", sku, ParameterType.UrlSegment);
 
-			await ExecuteAsync<Product>(request).ConfigureAwait(false);
+			return ExecuteAsync(request);
+		}
+	
+		public IRestRequest GetCreateProductRequest(Product product, bool saveOptions = true)
+		{
+			var request =  new RestRequest("products") { Method = Method.POST };
+			request.SetScope("default");
+			// ReSharper disable once RedundantAnonymousTypePropertyName
+			request.AddJsonBody(new { product = product });
+			return request;
 		}
 
 		public IQueryable<Product> AsQueryable()

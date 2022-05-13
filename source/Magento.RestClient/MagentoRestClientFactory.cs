@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Cache;
 using JsonExts.JsonPath;
@@ -12,18 +13,32 @@ namespace Magento.RestClient
 {
 	public static class MagentoRestClientFactory
 	{
-		public static IRestClient CreateClient(string host, string defaultScope = "default")
+		public static IRestClient CreateClient(string host, string? defaultScope)
 		{
+			RestSharp.RestClient client;
+
 			if (host.EndsWith("/"))
 			{
 				host = host.TrimEnd('/');
 			}
 
-			var baseUrl = $"{host}/rest/{{scope}}/V1/";
-			var client = new RestSharp.RestClient(baseUrl)
+			if (string.IsNullOrWhiteSpace(defaultScope))
 			{
-				CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Revalidate),
-			};
+				client = new RestSharp.RestClient($"{host}/rest/V1/")
+				{
+					CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Revalidate),
+				};
+			}
+			else
+			{
+				client = new RestSharp.RestClient($"{host}/rest/{{scope}}/V1/")
+				{
+					CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Revalidate),
+				};
+
+				client.AddDefaultUrlSegment("scope", string.Empty);
+			}
+
 
 			var jsonSerializerSettings = new JsonSerializerSettings
 			{
@@ -38,21 +53,12 @@ namespace Magento.RestClient
 				},
 			};
 
-			if (string.IsNullOrWhiteSpace(defaultScope))
-			{
-				client.AddDefaultUrlSegment("scope", "default");
-			}
-			else
-			{
-				client.AddDefaultUrlSegment("scope", defaultScope);
-			}
-
 			client.UseNewtonsoftJson(jsonSerializerSettings);
 			return client;
 		}
 
 		public static IRestClient CreateAdminClient(string host, string username, string password,
-			string defaultScope = "default")
+			string? defaultScope)
 		{
 			var client = CreateClient(host, defaultScope);
 			var adminTokenUrl = $"{host}/rest/V1/integration/admin/token";
@@ -67,7 +73,7 @@ namespace Magento.RestClient
 			string consumerSecret,
 			string accessToken,
 			string accessTokenSecret,
-			string defaultScope = "default")
+			string? defaultScope)
 		{
 			var client = CreateClient(host, defaultScope);
 
@@ -82,7 +88,7 @@ namespace Magento.RestClient
 		public static IRestClient CreateCustomerClient(string host,
 			string username,
 			string password,
-			string defaultScope = "default")
+			string? defaultScope)
 		{
 			var customerTokenUrl = host + "/rest/V1/integration/customer/token";
 

@@ -31,5 +31,5 @@ namespace Magento.RestClient.Data.Models.Catalog.Category
 		[JsonProperty("include_in_menu")] public bool IncludeInMenu { get; set; }
 
 		[JsonProperty("custom_attributes")] public List<CustomAttribute> CustomAttributes { get; set; }
-	}
+    }
 }

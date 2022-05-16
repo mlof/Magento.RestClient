@@ -7,7 +7,7 @@ using Magento.RestClient.Data.Models.Catalog.Products;
 
 namespace Magento.RestClient.Abstractions.Repositories
 {
-	public interface ICategoryRepository : IHasQueryable<Category>
+	public interface ICategoryRepository : IHasQueryable<CategoryTree>
 	{
 		public Task<Category> GetCategoryById(long categoryId, string scope = "all");
 		public Task DeleteCategoryById(long categoryId);

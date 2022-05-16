@@ -7,7 +7,6 @@ using Magento.RestClient.Configuration;
 using Magento.RestClient.Context;
 using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Customers;
-using Magento.RestClient.Domain.Models.Customers;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Serilog;
@@ -30,18 +29,8 @@ namespace Magento.RestClient.Tests
 
 			this.Context = new MagentoAdminContext(configuration);
 
-			await SetupCustomer();
 		}
 
-		async private Task SetupCustomer()
-		{
-
-
-			var customer =
-				new CustomerModel(Context, "customer@example.org") {FirstName = "Example", LastName = "Customer"};
-			await customer.SaveAsync();
-
-		}
 
 
 		[TearDown]

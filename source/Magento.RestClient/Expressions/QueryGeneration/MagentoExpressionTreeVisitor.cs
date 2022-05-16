@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -28,7 +29,6 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 
 		protected override Expression VisitUnary(UnaryExpression expression)
 		{
-
 			if (expression.NodeType == ExpressionType.Convert)
 			{
 				Visit(expression.Operand);
@@ -41,8 +41,7 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 		{
 			Visit(expression.Left);
 
-			_currentFilter.Condition = expression.NodeType switch
-			{
+			_currentFilter.Condition = expression.NodeType switch {
 				ExpressionType.Equal => SearchCondition.Equals,
 				ExpressionType.GreaterThan => SearchCondition.GreaterThan,
 				ExpressionType.GreaterThanOrEqual => SearchCondition.GreaterThanOrEqual,
@@ -91,8 +90,10 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 		{
 			var enumType = typeof(T);
 			var name = Enum.GetName(enumType, type);
+			Debug.Assert(enumType != null, nameof(enumType) + " != null");
 			var enumMemberAttribute =
-				((EnumMemberAttribute[])enumType.GetField(name).GetCustomAttributes(typeof(EnumMemberAttribute), true))
+				((EnumMemberAttribute[]) enumType.GetField(name!)!
+					.GetCustomAttributes(typeof(EnumMemberAttribute), true))
 				.Single();
 			return enumMemberAttribute.Value;
 		}
@@ -109,11 +110,11 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			{
 				if (_currentFilter.PropertyType.IsEnum)
 				{
-					var value = Enum.ToObject(_currentFilter.PropertyType, (int)expression.Value);
+					var value = Enum.ToObject(_currentFilter.PropertyType, (int) (expression.Value ?? throw new InvalidOperationException()));
 					var name = value.ToString();
 					if (name != null)
 					{
-						var enumMemberAttribute = _currentFilter.PropertyType.GetField(name)
+						var enumMemberAttribute = (_currentFilter.PropertyType.GetField(name) ?? throw new InvalidOperationException())
 							.GetCustomAttributes(typeof(EnumMemberAttribute)).OfType<EnumMemberAttribute>()
 							.SingleOrDefault();
 						if (enumMemberAttribute != null)

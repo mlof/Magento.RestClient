@@ -50,7 +50,7 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 
                     restRequest.AddParameter(
                         $"searchCriteria[filter_groups][{filterGroupIndex}][filters][{filterIndex}][value]",
-                        filter.Value.ToString(), ParameterType.QueryString);
+                        filter.Value.ToString() ?? throw new InvalidOperationException(), ParameterType.QueryString);
                 }
             }
 

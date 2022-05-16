@@ -32,14 +32,14 @@ namespace Magento.RestClient.Context
         {
             if (options.AuthenticationMethod == AuthenticationMethod.Integration)
             {
-                this._restClient = MagentoRestClientFactory.CreateIntegrationClient(options.Host, options.ConsumerKey,
-                    options.ConsumerSecret, options.AccessToken, options.AccessTokenSecret, options.DefaultScope);
+                this._restClient = MagentoRestClientFactory.CreateIntegrationClient(options.Host!, options.ConsumerKey!,
+                    options.ConsumerSecret!, options.AccessToken!, options.AccessTokenSecret!, options.DefaultScope);
             }
             else if (options.AuthenticationMethod == AuthenticationMethod.Admin)
 
             {
-                this._restClient = MagentoRestClientFactory.CreateAdminClient(options.Host, options.Username,
-                    options.Password, options.DefaultScope);
+                this._restClient = MagentoRestClientFactory.CreateAdminClient(options.Host!, options.Username!,
+                    options.Password!, options.DefaultScope);
 
 
             }

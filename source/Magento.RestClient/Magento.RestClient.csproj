@@ -8,6 +8,7 @@
         <UserSecretsId>b3c914ae-6d4c-42f3-b692-933c14ec69cc</UserSecretsId>
         <SonarQubeExclude>True</SonarQubeExclude>
         <LangVersion>preview</LangVersion>
+        <Nullable>warnings</Nullable>
 
         
 
@@ -68,9 +69,6 @@
         </ProjectReference>
 
         <ProjectReference Include="..\Magento.RestClient.Data\Magento.RestClient.Data.csproj">
-          <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-        </ProjectReference>
-        <ProjectReference Include="..\Magento.RestClient.Domain\Magento.RestClient.Domain.csproj">
           <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
         </ProjectReference>
     </ItemGroup>

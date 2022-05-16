@@ -1,95 +1,96 @@
-﻿using JsonExts.JsonPath;
-using Magento.RestClient.Authentication;
-using Newtonsoft.Json;
+#nullable enable
 using RestSharp;
-using RestSharp.Authenticators;
-using RestSharp.Authenticators.OAuth;
 using RestSharp.Serializers.NewtonsoftJson;
+using JsonExts.JsonPath;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net.Cache;
+using Magento.RestClient.Authentication;
+using Newtonsoft.Json;
+using RestSharp.Authenticators;
+using RestSharp.Authenticators.OAuth;
 
 namespace Magento.RestClient
 {
-    public static class MagentoRestClientFactory
-    {
-        public static RestSharp.RestClient CreateClient(string host, string defaultScope = "default")
-        {
-            if (host.EndsWith("/"))
-            {
-                host = host.TrimEnd('/');
-            }
+	public static class MagentoRestClientFactory
+	{
+		private static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings {
+			NullValueHandling = NullValueHandling.Ignore,
+			Culture = CultureInfo.InvariantCulture,
+			Formatting = Formatting.Indented,
+			DateFormatString = "yyyy-MM-dd hh:mm:ss",
+			DefaultValueHandling = DefaultValueHandling.Ignore,
+			Converters = new List<JsonConverter> {
+				//new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal},
+				new JsonPathObjectConverter()
+			}
+		};
 
-            var baseUrl = $"{host}/rest/{{scope}}/V1/";
-            var client = new RestSharp.RestClient(baseUrl)
-            {
-            };
+		public static RestSharp.RestClient CreateClient(string host, string? defaultScope)
+		{
+			RestSharp.RestClient client;
 
-            var jsonSerializerSettings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                Culture = CultureInfo.InvariantCulture,
-                Formatting = Formatting.Indented,
-                DateFormatString = "yyyy-MM-dd hh:mm:ss",
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                Converters = new List<JsonConverter>
-                {
-                    //new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal},
-                    new JsonPathObjectConverter()
-                },
-            };
+			if (host.EndsWith("/"))
+			{
+				host = host.TrimEnd('/');
+			}
 
-            if (string.IsNullOrWhiteSpace(defaultScope))
-            {
-                client.AddDefaultUrlSegment("scope", "default");
-            }
-            else
-            {
-                client.AddDefaultUrlSegment("scope", defaultScope);
-            }
+			if (string.IsNullOrWhiteSpace(defaultScope))
+			{
+				client = new RestSharp.RestClient($"{host}/rest/V1/") { };
+			}
+			else
+			{
+				client = new RestSharp.RestClient($"{host}/rest/{{scope}}/V1/") { };
 
-            client.UseNewtonsoftJson(jsonSerializerSettings);
-            return client;
-        }
+				client.AddDefaultUrlSegment("scope", string.Empty);
+			}
 
-        public static RestSharp.RestClient CreateAdminClient(string host, string username, string password,
-            string defaultScope = "default")
-        {
-            var client = CreateClient(host, defaultScope);
-            var adminTokenUrl = $"{host}/rest/V1/integration/admin/token";
 
-            client.Authenticator =
-                new MagentoUserAuthenticator(adminTokenUrl, username, password, 4);
-            return client;
-        }
+			client.UseNewtonsoftJson(jsonSerializerSettings);
+			return client;
+		}
 
-        public static RestSharp.RestClient CreateIntegrationClient(string host,
-            string consumerKey,
-            string consumerSecret,
-            string accessToken,
-            string accessTokenSecret,
-            string defaultScope = "default")
-        {
-            var client = CreateClient(host, defaultScope);
+		public static RestSharp.RestClient CreateAdminClient(string host, string username, string password,
+			string? defaultScope)
+		{
+			var client = CreateClient(host, defaultScope);
+			var adminTokenUrl = $"{host}/rest/V1/integration/admin/token";
 
-            client.Authenticator = OAuth1Authenticator.ForProtectedResource(consumerKey,
-                consumerSecret, accessToken,
-                accessTokenSecret, OAuthSignatureMethod.HmacSha256);
+			client.Authenticator =
+				new MagentoUserAuthenticator(adminTokenUrl, username, password, 4);
+			return client;
+		}
 
-            return client;
-        }
+		public static RestSharp.RestClient CreateIntegrationClient(string host,
+			string consumerKey,
+			string consumerSecret,
+			string accessToken,
+			string accessTokenSecret,
+			string? defaultScope = "default")
+		{
+			var client = CreateClient(host, defaultScope);
 
-        public static RestSharp.RestClient CreateCustomerClient(string host,
-            string username,
-            string password,
-            string defaultScope = "default")
-        {
-            var customerTokenUrl = host + "/rest/V1/integration/customer/token";
 
-            var client = CreateClient(host, defaultScope);
-            client.Authenticator =
-                new MagentoUserAuthenticator(customerTokenUrl, username, password, 1);
+			client.Authenticator = OAuth1Authenticator.ForProtectedResource(consumerKey,
+				consumerSecret, accessToken,
+				accessTokenSecret, OAuthSignatureMethod.HmacSha256);
 
-            return client;
-        }
-    }
+			return client;
+		}
+
+		public static RestSharp.RestClient CreateCustomerClient(string host,
+			string username,
+			string password,
+			string defaultScope = "default")
+		{
+			var customerTokenUrl = host + "/rest/V1/integration/customer/token";
+
+			var client = CreateClient(host, defaultScope);
+			client.Authenticator =
+				new MagentoUserAuthenticator(customerTokenUrl, username, password, 1);
+
+			return client;
+		}
+	}
 }

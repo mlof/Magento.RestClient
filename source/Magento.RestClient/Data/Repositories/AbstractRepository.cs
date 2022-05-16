@@ -114,7 +114,8 @@ namespace Magento.RestClient.Data.Repositories
 
         private void LogRequest(LogEventLevel level, RestResponse response, Stopwatch sw)
         {
-            this.Logger.Write(level, "{StatusCode}\t{Method}\t{Scope}\t{Elapsed} ms\t{Uri}",
+	        Debug.Assert(response.Request != null, "response.Request != null");
+	        this.Logger.Write(level, "{StatusCode}\t{Method}\t{Scope}\t{Elapsed} ms\t{Uri}",
                 response.StatusCode,
                 response.Request.Method,
                 response.Request.Parameters.SingleOrDefault(parameter => parameter.Name == "scope")?.Value,

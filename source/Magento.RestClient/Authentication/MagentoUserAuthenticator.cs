@@ -1,18 +1,22 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using RestSharp;
 using RestSharp.Authenticators;
+using RestSharp.Serializers.NewtonsoftJson;
 using Serilog;
 
 namespace Magento.RestClient.Authentication
 {
 	public class MagentoUserAuthenticator : IAuthenticator
 	{
-		private readonly string _password;
 		private readonly int _maximumTokenAgeInHours;
+		private readonly string _password;
 		private readonly string _path;
 		private readonly string _username;
+		private string _bearerToken;
+
+		private DateTime? _bearerTokenExpiration;
 
 		public MagentoUserAuthenticator(string path, string username, string password, int maximumTokenAgeInHours)
 		{
@@ -22,17 +26,15 @@ namespace Magento.RestClient.Authentication
 			_maximumTokenAgeInHours = maximumTokenAgeInHours;
 		}
 
-		private DateTime? _bearerTokenExpiration;
-		private string _bearerToken;
-
-		public void Authenticate(IRestClient client, IRestRequest request)
+		async public ValueTask Authenticate(RestSharp.RestClient client, RestRequest request)
 		{
 			if (!_bearerTokenExpiration.HasValue || _bearerTokenExpiration.Value < DateTime.Now)
 			{
-				RefreshBearerToken(client.BaseUrl);
+				await RefreshBearerToken();
 			}
 
-			if (request.Parameters.Any(p => p.Name != null && p.Name.Equals("Authorization", StringComparison.OrdinalIgnoreCase)))
+			if (request.Parameters.Any(p =>
+				    p.Name != null && p.Name.Equals("Authorization", StringComparison.OrdinalIgnoreCase)))
 			{
 				return;
 			}
@@ -40,15 +42,14 @@ namespace Magento.RestClient.Authentication
 			request.AddHeader("Authorization", $"Bearer {_bearerToken}");
 		}
 
-		private void RefreshBearerToken(Uri clientBaseUrl)
+		async private Task RefreshBearerToken()
 		{
-			Debug.Assert(clientBaseUrl != null, nameof(clientBaseUrl) + " != null");
-			var c = new RestSharp.RestClient(clientBaseUrl);
+			var c = new RestSharp.RestClient();
+			c.UseNewtonsoftJson();
+			var authenticationRequest = new RestRequest(_path, Method.Post);
 
-			var authenticationRequest = new RestRequest(_path, Method.POST);
-
-			authenticationRequest.AddJsonBody(new { username = _username, password = _password });
-			var response = c.Execute<string>(authenticationRequest);
+			authenticationRequest.AddJsonBody(new {username = _username, password = _password});
+			var response = await c.ExecuteAsync<string>(authenticationRequest);
 			_bearerToken = response.Data;
 
 			_bearerTokenExpiration = DateTime.Now.AddHours(_maximumTokenAgeInHours);

@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Data.Models.Bulk
 {
-	public partial class BulkOperation
+	public class BulkOperation
 	{
 		[JsonProperty("operations_list")] public List<OperationItem> OperationsList { get; set; }
 

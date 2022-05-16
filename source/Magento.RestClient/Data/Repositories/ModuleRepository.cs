@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Exceptions.Generic;
@@ -14,7 +13,7 @@ namespace Magento.RestClient.Data.Repositories
 		{
 		}
 
-		public async Task<List<string>> GetModules()
+		async public Task<List<string>> GetModules()
 		{
 			var request = new RestRequest("modules");
 

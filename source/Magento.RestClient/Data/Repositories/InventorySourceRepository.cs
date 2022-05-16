@@ -16,7 +16,7 @@ namespace Magento.RestClient.Data.Repositories
 
 
 		/// <summary>
-		/// Create
+		///     Create
 		/// </summary>
 		/// <param name="source"></param>
 		/// <returns></returns>
@@ -26,7 +26,7 @@ namespace Magento.RestClient.Data.Repositories
 			var request = new RestRequest("inventory/sources");
 
 			request.AddJsonBody(new {source});
-			request.Method = Method.POST;
+			request.Method = Method.Post;
 			return ExecuteAsync(request);
 		}
 
@@ -36,15 +36,13 @@ namespace Magento.RestClient.Data.Repositories
 
 			request.AddUrlSegment("sourceCode", sourceCode);
 
-			request.Method = Method.GET;
+			request.Method = Method.Get;
 			return ExecuteAsync<InventorySource>(request);
-
 		}
 
-	
 
 		/// <summary>
-		/// Update
+		///     Update
 		/// </summary>
 		/// <param name="sourceCode"></param>
 		/// <param name="source"></param>
@@ -55,13 +53,13 @@ namespace Magento.RestClient.Data.Repositories
 			var request = new RestRequest("inventory/sources/{sourceCode}");
 
 			request.AddUrlSegment("sourceCode", sourceCode);
-			request.Method = Method.PUT;
+			request.Method = Method.Put;
 			return ExecuteAsync(request);
 		}
 
 		public IQueryable<InventorySource> AsQueryable()
 		{
-			return new MagentoQueryable<InventorySource>(Client, "inventory/sources");
+			return new MagentoQueryable<InventorySource>(this.Client, "inventory/sources");
 		}
 	}
 }

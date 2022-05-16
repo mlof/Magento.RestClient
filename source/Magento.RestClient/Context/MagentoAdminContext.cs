@@ -1,18 +1,16 @@
-﻿using Magento.RestClient.Abstractions;
-using Magento.RestClient.Abstractions.Abstractions;
+﻿using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Configuration;
 using Magento.RestClient.Data.Repositories;
 using Magento.RestClient.Exceptions.Authentication;
 using Microsoft.Extensions.Caching.Memory;
-using RestSharp;
 
 namespace Magento.RestClient.Context
 {
 	public class MagentoAdminContext : BaseContext, IAdminContext
 	{
 		/// <summary>
-		/// ctor
+		///     ctor
 		/// </summary>
 		/// <param name="options"></param>
 		/// <param name="cache"></param>
@@ -23,16 +21,14 @@ namespace Magento.RestClient.Context
 		{
 			if (options.AuthenticationMethod == AuthenticationMethod.Integration)
 			{
-				this.Client = MagentoRestClientFactory.CreateIntegrationClient(options.Host, options.ConsumerKey,
-					options.ConsumerSecret, options.AccessToken, options.AccessTokenSecret, options.DefaultScope);
+				this.RestClient = MagentoRestClientFactory.CreateIntegrationClient(options.Host!, options.ConsumerKey!,
+					options.ConsumerSecret!, options.AccessToken!, options.AccessTokenSecret!, options.DefaultScope);
 			}
 			else if (options.AuthenticationMethod == AuthenticationMethod.Admin)
 
 			{
-				this.Client = MagentoRestClientFactory.CreateAdminClient(options.Host, options.Username,
-					options.Password, options.DefaultScope);
-
-
+				this.RestClient = MagentoRestClientFactory.CreateAdminClient(options.Host!, options.Username!,
+					options.Password!, options.DefaultScope);
 			}
 			else
 			{
@@ -63,12 +59,20 @@ namespace Magento.RestClient.Context
 		{
 		}
 
-		public IBulkRepository Bulk => new BulkRepository(this);
+
+		public IProductAttributeRepository ProductAttributes => new ProductAttributeRepository(this);
+		public IProductAttributeAsyncRepository ProductAttributeAsync => new ProductAttributeAsyncRepository(this);
+
+		public IAsyncRepository Async => new AsyncRepository(this);
 		public ISpecialPriceRepository SpecialPrices => new SpecialPriceRepository(this);
 		public IModuleRepository Modules => new ModuleRepository(this);
 		public IProductAttributeGroupRepository ProductAttributeGroups => new ProductAttributeGroupRepository(this);
 		public IStoreRepository Stores => new StoreRepository(this);
 		public IProductRepository Products => new ProductRepository(this);
+
+		/// <inheritdoc />
+		public IProductAsyncRepository ProductsAsync => new ProductAsyncRepository(this);
+
 		public IProductMediaRepository ProductMedia => new ProductMediaRepository(this);
 		public IConfigurableProductRepository ConfigurableProducts => new ConfigurableProductRepository(this);
 		public IOrderRepository Orders => new OrderRepository(this);
@@ -85,7 +89,6 @@ namespace Magento.RestClient.Context
 		public IAttributeRepository Attributes => new AttributeRepository(this);
 		public IShipmentRepository Shipments => new ShipmentRepository(this);
 
-
-		public override IRestClient Client { get; }
-	};
+		public RestSharp.RestClient RestClient { get; }
+	}
 }

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.Inventory;
@@ -18,33 +17,33 @@ namespace Magento.RestClient.Data.Repositories
 
 		public IQueryable<InventorySourceItem> AsQueryable()
 		{
-			return new MagentoQueryable<InventorySourceItem>(Client, "inventory/source-items");
+			return new MagentoQueryable<InventorySourceItem>(this.Client, "inventory/source-items");
 		}
 
 		/// <summary>
-		/// Create
+		///     Create
 		/// </summary>
 		/// <param name="items"></param>
 		/// <returns></returns>
 		/// <exception cref="Magento.RestClient.Exceptions.Generic.MagentoException">Ignore.</exception>
 		public Task Create(params InventorySourceItem[] items)
 		{
-			var request = new RestRequest("inventory/source-items") {Method = Method.POST};
+			var request = new RestRequest("inventory/source-items") {Method = Method.Post};
 			request.AddJsonBody(new {sourceItems = items});
 
 			return ExecuteAsync(request);
 		}
 
 		/// <summary>
-		/// Delete
+		///     Delete
 		/// </summary>
 		/// <param name="items"></param>
 		/// <returns></returns>
 		/// <exception cref="Magento.RestClient.Exceptions.Generic.MagentoException">Ignore.</exception>
 		public Task Delete(params InventorySourceItem[] items)
 		{
-			var request = new RestRequest("inventory/source-items") {Method = Method.DELETE};
-			request.AddJsonBody(new { sourceItems = items });
+			var request = new RestRequest("inventory/source-items") {Method = Method.Delete};
+			request.AddJsonBody(new {sourceItems = items});
 
 			return ExecuteAsync(request);
 		}

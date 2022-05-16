@@ -1,14 +1,12 @@
 ﻿using System.Linq;
-using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.EAV.Attributes;
 using Magento.RestClient.Expressions;
-using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
 {
-	internal class ProductAttributeGroupRepository :AbstractRepository,  IProductAttributeGroupRepository
+	internal class ProductAttributeGroupRepository : AbstractRepository, IProductAttributeGroupRepository
 	{
 		public ProductAttributeGroupRepository(IContext context) : base(context)
 		{

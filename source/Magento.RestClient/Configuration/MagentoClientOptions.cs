@@ -5,8 +5,9 @@ namespace Magento.RestClient.Configuration
 	{
 		public MagentoClientOptions()
 		{
-
 		}
+
+
 		public MagentoClientOptions(string host, string username, string password,
 			AuthenticationMethod authenticationMethod, string? defaultScope)
 		{

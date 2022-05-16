@@ -8,7 +8,7 @@ namespace Magento.RestClient.Exceptions.Generic
 		{
 		}
 
-		public EntityNotFoundException() : base()
+		public EntityNotFoundException()
 		{
 		}
 

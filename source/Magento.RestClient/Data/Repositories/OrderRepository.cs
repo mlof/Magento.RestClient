@@ -1,31 +1,23 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FluentValidation;
-using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.Orders;
 using Magento.RestClient.Expressions;
-using Magento.RestClient.Validators;
 using RestSharp;
 
 namespace Magento.RestClient.Data.Repositories
 {
 	public class OrderRepository : AbstractRepository, IOrderRepository
 	{
-
 		public OrderRepository(IContext context) : base(context)
 		{
 		}
 
-		public async Task<Order> CreateOrder(Order order)
+		async public Task<Order> CreateOrder(Order order)
 		{
-
-			var request = new RestRequest("orders", Method.POST);
+			var request = new RestRequest("orders", Method.Post);
 			request.AddJsonBody(new {entity = order});
 
 			return await ExecuteAsync<Order>(request).ConfigureAwait(false);
@@ -33,7 +25,7 @@ namespace Magento.RestClient.Data.Repositories
 
 		public Task<Order> GetByOrderId(long orderId)
 		{
-			IRestRequest request = new RestRequest("orders/{id}", Method.GET);
+			var request = new RestRequest("orders/{id}");
 			request.AddOrUpdateParameter("id", orderId, ParameterType.UrlSegment);
 			return ExecuteAsync<Order>(request);
 		}
@@ -63,15 +55,22 @@ namespace Magento.RestClient.Data.Repositories
 			throw new NotImplementedException();
 		}
 
+		public Task Persist(Order order)
+		{
+			var request = new RestRequest("orders", Method.Post);
+			request.AddJsonBody(new {entity = order});
+			return ExecuteAsync(request);
+		}
+
 		/// <summary>
-		/// CreateInvoice
+		///     CreateInvoice
 		/// </summary>
 		/// <param name="orderId"></param>
 		/// <returns></returns>
 		/// <exception cref="Magento.RestClient.Exceptions.Generic.MagentoException">Ignore.</exception>
 		public Task CreateInvoice(long orderId)
 		{
-			IRestRequest request = new RestRequest("order/{id}/invoice", Method.POST);
+			var request = new RestRequest("order/{id}/invoice", Method.Post);
 			request.AddOrUpdateParameter("id", orderId, ParameterType.UrlSegment);
 			request.AddJsonBody(new {capture = true, notify = true});
 			return ExecuteAsync(request);

@@ -46,6 +46,6 @@ namespace Magento.RestClient.Data.Models.EAV.Attributes
 		///<Summary>Fixed Product Tax </Summary>
 		[EnumMember(Value = "weee")] Weee,
 		[EnumMember(Value = "gallery")] Gallery,
-		[EnumMember(Value = "weight")] Weight,
+		[EnumMember(Value = "weight")] Weight
 	}
 }

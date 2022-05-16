@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Magento.RestClient.Abstractions;
+﻿using System;
+using System.Linq;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.Inventory;
@@ -14,12 +14,12 @@ namespace Magento.RestClient.Data.Repositories
 
 		public IQueryable<InventoryStock> AsQueryable()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public void Create(InventoryStock stock)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

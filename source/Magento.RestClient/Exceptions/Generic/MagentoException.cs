@@ -9,17 +9,20 @@ namespace Magento.RestClient.Exceptions.Generic
 {
 	public class MagentoException : Exception
 	{
-		private MagentoException(string message) : base()
+		private MagentoException(string message) : base(message)
 		{
 		}
 
-		public MagentoException() : base()
+		public MagentoException()
 		{
 		}
 
 		public MagentoException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
+
+		public object Parameters { get; set; }
+
 
 		public static MagentoException Parse(string content)
 		{
@@ -28,17 +31,15 @@ namespace Magento.RestClient.Exceptions.Generic
 			Debug.Assert(c != null, nameof(c) + " != null");
 
 			stringbuilder.Append(c.Message);
-			if (c.Parameters == null)
-			{
-				return new MagentoException(stringbuilder.ToString());
-			}
+
 
 			stringbuilder.AppendLine();
-			stringbuilder.AppendLine("Parameters:");
 
 
 			if (c.Parameters is IEnumerable<string> s)
 			{
+				stringbuilder.AppendLine("Parameters:");
+
 				foreach (var parameter in s)
 				{
 					stringbuilder.AppendLine(parameter);
@@ -46,25 +47,23 @@ namespace Magento.RestClient.Exceptions.Generic
 			}
 			else
 			{
-				if (c.Parameters is not JObject o)
+				if (c.Parameters is JArray array)
 				{
-					return new MagentoException(stringbuilder.ToString());
-				}
-
-				if (o.Type == JTokenType.Object)
-				{
-					stringbuilder.AppendLine(o.ToString());
-				}
-				else if (o.Type == JTokenType.Array)
-				{
-					foreach (var child in o.Children())
+					foreach (var child in array.Children())
 					{
 						stringbuilder.AppendLine(child.ToString());
 					}
 				}
+				else if (c.Parameters is JObject o)
+				{
+					stringbuilder.AppendLine(o.ToString());
+				}
 			}
 
-			return new MagentoException(stringbuilder.ToString());
+			stringbuilder.AppendLine();
+
+
+			return new MagentoException(stringbuilder.ToString()) {Parameters = c.Parameters};
 		}
 
 		internal class MagentoError

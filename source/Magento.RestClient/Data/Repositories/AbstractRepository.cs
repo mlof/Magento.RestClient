@@ -15,23 +15,24 @@ namespace Magento.RestClient.Data.Repositories
 	public abstract class AbstractRepository
 	{
 		private readonly IContext _context;
-		protected IRestClient Client => _context.Client;
-		protected IMemoryCache Cache => _context.Cache;
-
-		protected ILogger Logger => _context.Logger;
 
 		protected AbstractRepository(IContext context)
 		{
 			_context = context;
 		}
 
+		protected RestSharp.RestClient Client => _context.RestClient;
+		protected IMemoryCache Cache => _context.Cache;
+
+		protected ILogger Logger => _context.Logger;
+
 
 		/// <summary>
-		/// Executes the request and parses the results.
+		///     Executes the request and parses the results.
 		/// </summary>
 		/// <param name="request"></param>
 		/// <exception cref="MagentoException"></exception>
-		protected async Task<T> ExecuteAsync<T>(IRestRequest request)
+		async protected Task<T> ExecuteAsync<T>(RestRequest request)
 		{
 			var sw = Stopwatch.StartNew();
 			var response = await this.Client.ExecuteAsync<T>(request).ConfigureAwait(false);
@@ -39,51 +40,43 @@ namespace Magento.RestClient.Data.Repositories
 			sw.Stop();
 
 
-
 			if (!response.IsSuccessful)
 			{
 				if (response.StatusCode == HttpStatusCode.NotFound)
 				{
-					this.LogRequest(LogEventLevel.Verbose, response, sw);
-
+					LogRequest(LogEventLevel.Verbose, response, sw);
 				}
 				else
 				{
-					this.LogRequest(LogEventLevel.Error, response, sw);
-
+					LogRequest(LogEventLevel.Error, response, sw);
 				}
 
 				if (response.ErrorException is { } and not JsonSerializationException)
 				{
 					throw response.ErrorException;
 				}
-				else if (response.StatusCode == HttpStatusCode.NotFound)
+
+				if (response.StatusCode == HttpStatusCode.NotFound)
 				{
 					return default;
 				}
 
-				else
-				{
-					throw MagentoException.Parse(response.Content);
-				}
+				throw MagentoException.Parse(response.Content);
 			}
 
-			else
-			{
-				this.LogRequest(LogEventLevel.Verbose, response, sw);
+			LogRequest(LogEventLevel.Verbose, response, sw);
 
-				return response.Data;
-			}
+			return response.Data;
 		}
 
 
 		/// <summary>
-		/// ExecuteAsync
+		///     ExecuteAsync
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
 		/// <exception cref="MagentoException"></exception>
-		protected async Task ExecuteAsync(IRestRequest request)
+		async protected Task ExecuteAsync(RestRequest request)
 		{
 			var sw = Stopwatch.StartNew();
 			var response = await this.Client.ExecuteAsync
@@ -93,26 +86,26 @@ namespace Magento.RestClient.Data.Repositories
 
 			if (response.IsSuccessful)
 			{
-				this.LogRequest(LogEventLevel.Verbose, response, sw);
+				LogRequest(LogEventLevel.Verbose, response, sw);
 			}
 
 			else
 			{
-				this.LogRequest(LogEventLevel.Error, response, sw);
+				LogRequest(LogEventLevel.Error, response, sw);
 
 				if (response.ErrorException != null && response.ErrorException is not JsonSerializationException)
 				{
 					throw response.ErrorException;
 				}
-				else
-				{
-					throw MagentoException.Parse(response.Content);
-				}
+
+				var ex = MagentoException.Parse(response.Content);
+				throw ex;
 			}
 		}
 
-		private void LogRequest(LogEventLevel level, IRestResponse response, Stopwatch sw)
+		private void LogRequest(LogEventLevel level, RestResponse response, Stopwatch sw)
 		{
+			Debug.Assert(response.Request != null, "response.Request != null");
 			this.Logger.Write(level, "{StatusCode}\t{Method}\t{Scope}\t{Elapsed} ms\t{Uri}",
 				response.StatusCode,
 				response.Request.Method,

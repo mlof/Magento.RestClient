@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Data.Models.Catalog.Products
 {
-	public partial record ConfigurableProductOption
+	public record ConfigurableProductOption
 	{
 		[JsonProperty("id")] public long Id { get; set; }
 

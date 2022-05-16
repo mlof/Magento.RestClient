@@ -16,7 +16,11 @@ namespace Magento.RestClient.Data.Models.Catalog.Products
 		}
 
 		[JsonProperty("title")] public string Title { get; set; }
-		[JsonProperty("price")] public decimal Price { get; set; }
-		[JsonProperty("price_type", DefaultValueHandling = DefaultValueHandling.Include)] public PriceType PriceType { get; set; }
+		[JsonProperty("price")] public decimal? Price { get; set; }
+
+		[JsonProperty("price_type", DefaultValueHandling = DefaultValueHandling.Include)]
+		public PriceType PriceType { get; set; }
+
+		[JsonProperty("sku")] public string? Sku { get; set; }
 	}
 }

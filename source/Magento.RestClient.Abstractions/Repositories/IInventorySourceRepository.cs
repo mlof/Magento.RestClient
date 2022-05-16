@@ -9,6 +9,5 @@ namespace Magento.RestClient.Abstractions.Repositories
 		Task Create(InventorySource source);
 		Task<InventorySource> GetByCode(string sourceCode);
 		Task Update(string sourceCode, InventorySource source);
-
 	}
 }

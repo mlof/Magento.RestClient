@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Data.Models.Catalog.Products;
+using RestSharp;
 
 namespace Magento.RestClient.Abstractions.Repositories
 {
@@ -9,7 +10,9 @@ namespace Magento.RestClient.Abstractions.Repositories
 		Task<Product> GetProductBySku(string sku, string scope = "all");
 
 		Task<Product> CreateProduct(Product product, bool saveOptions = true);
-		Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true, string scope = "all");
+		RestRequest GetCreateProductRequest(Product product, bool saveOptions = true);
+
+		Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true, string? scope = null);
 		Task DeleteProduct(string sku);
 	}
 }

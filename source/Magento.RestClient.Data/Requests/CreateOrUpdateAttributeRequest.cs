@@ -5,10 +5,8 @@ namespace Magento.RestClient.Data.Requests
 {
 	public record CreateOrUpdateAttributeRequest
 	{
-		[JsonProperty("attributeCode")]
-		public string AttributeCode { get; set; }
-		[JsonProperty("attribute")]
+		[JsonProperty("attributeCode")] public string AttributeCode { get; set; }
 
-		public ProductAttribute Attribute { get; set; }
+		[JsonProperty("attribute")] public ProductAttribute Attribute { get; set; }
 	}
 }

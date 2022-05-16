@@ -11,17 +11,17 @@ namespace Magento.RestClient.Expressions
 {
 	public class MagentoQueryExecutor : IQueryExecutor
 	{
-		private readonly IRestClient _client;
-		private readonly RestRequest _restRequest;
 		private readonly IMemoryCache _cache;
+		private readonly RestSharp.RestClient _client;
 		private readonly TimeSpan? _relativeExpiration;
 		private readonly string _resource;
+		private readonly RestRequest _restRequest;
 
-		public MagentoQueryExecutor(IRestClient client, string resource, IMemoryCache cache,
+		public MagentoQueryExecutor(RestSharp.RestClient client, string resource, IMemoryCache cache,
 			TimeSpan? relativeExpiration = null)
 		{
 			_client = client;
-			_relativeExpiration = relativeExpiration ?? (TimeSpan?)TimeSpan.FromSeconds(5);
+			_relativeExpiration = relativeExpiration ?? (TimeSpan?) TimeSpan.FromSeconds(5);
 
 			_resource = resource;
 			_restRequest = new RestRequest(resource);
@@ -51,7 +51,7 @@ namespace Magento.RestClient.Expressions
 			return _cache.GetOrCreate(key, entry => {
 				entry.AbsoluteExpirationRelativeToNow = _relativeExpiration;
 				var result =
-					_client.Execute<SearchResponse<T>>(r);
+					_client.ExecuteAsync<SearchResponse<T>>(r).GetAwaiter().GetResult();
 
 				if (result.IsSuccessful)
 				{
@@ -59,19 +59,16 @@ namespace Magento.RestClient.Expressions
 					{
 						return result.Data.Items;
 					}
-					else
-					{
-						return new List<T>();
-					}
+
+					return new List<T>();
 				}
-				else
+
+				if (result.ErrorException != null)
 				{
-					if (result.ErrorException != null)
-					{
-						throw result.ErrorException;
-					}
-					throw new Exception();
+					throw result.ErrorException;
 				}
+
+				throw new Exception();
 			});
 		}
 	}

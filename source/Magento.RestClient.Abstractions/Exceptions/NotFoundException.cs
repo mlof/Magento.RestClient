@@ -4,7 +4,7 @@ namespace Magento.RestClient.Abstractions.Repositories
 {
 	public class NotFoundException : Exception
 	{
-		public NotFoundException() : base()
+		public NotFoundException()
 		{
 		}
 

@@ -1,19 +1,31 @@
-﻿#nullable enable
+#nullable enable
 using System.Collections.Generic;
 using System.Globalization;
-using System.Net.Cache;
 using JsonExts.JsonPath;
 using Magento.RestClient.Authentication;
 using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
+using RestSharp.Authenticators.OAuth;
 using RestSharp.Serializers.NewtonsoftJson;
 
 namespace Magento.RestClient
 {
 	public static class MagentoRestClientFactory
 	{
-		public static IRestClient CreateClient(string host, string? defaultScope)
+		private readonly static JsonSerializerSettings jsonSerializerSettings = new() {
+			NullValueHandling = NullValueHandling.Ignore,
+			Culture = CultureInfo.InvariantCulture,
+			Formatting = Formatting.Indented,
+			DateFormatString = "yyyy-MM-dd hh:mm:ss",
+			DefaultValueHandling = DefaultValueHandling.Ignore,
+			Converters = new List<JsonConverter> {
+				//new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal},
+				new JsonPathObjectConverter()
+			}
+		};
+
+		public static RestSharp.RestClient CreateClient(string host, string? defaultScope)
 		{
 			RestSharp.RestClient client;
 
@@ -24,40 +36,21 @@ namespace Magento.RestClient
 
 			if (string.IsNullOrWhiteSpace(defaultScope))
 			{
-				client = new RestSharp.RestClient($"{host}/rest/V1/")
-				{
-					CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Revalidate),
-				};
+				client = new RestSharp.RestClient($"{host}/rest/V1/");
 			}
 			else
 			{
-				client = new RestSharp.RestClient($"{host}/rest/{{scope}}/V1/")
-				{
-					CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Revalidate),
-				};
+				client = new RestSharp.RestClient($"{host}/rest/{{scope}}/V1/");
 
 				client.AddDefaultUrlSegment("scope", string.Empty);
 			}
 
 
-			var jsonSerializerSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore,
-				Culture = CultureInfo.InvariantCulture,
-				Formatting = Formatting.Indented,
-				DateFormatString = "yyyy-MM-dd hh:mm:ss",
-				DefaultValueHandling = DefaultValueHandling.Ignore,
-				Converters = new List<JsonConverter> {
-					//new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal},
-					new JsonPathObjectConverter()
-				},
-			};
-
 			client.UseNewtonsoftJson(jsonSerializerSettings);
 			return client;
 		}
 
-		public static IRestClient CreateAdminClient(string host, string username, string password,
+		public static RestSharp.RestClient CreateAdminClient(string host, string username, string password,
 			string? defaultScope)
 		{
 			var client = CreateClient(host, defaultScope);
@@ -68,27 +61,27 @@ namespace Magento.RestClient
 			return client;
 		}
 
-		public static IRestClient CreateIntegrationClient(string host,
+		public static RestSharp.RestClient CreateIntegrationClient(string host,
 			string consumerKey,
 			string consumerSecret,
 			string accessToken,
 			string accessTokenSecret,
-			string? defaultScope)
+			string? defaultScope = "default")
 		{
 			var client = CreateClient(host, defaultScope);
 
+
 			client.Authenticator = OAuth1Authenticator.ForProtectedResource(consumerKey,
 				consumerSecret, accessToken,
-				accessTokenSecret);
+				accessTokenSecret, OAuthSignatureMethod.HmacSha256);
 
-			client.PreAuthenticate = true;
 			return client;
 		}
 
-		public static IRestClient CreateCustomerClient(string host,
+		public static RestSharp.RestClient CreateCustomerClient(string host,
 			string username,
 			string password,
-			string? defaultScope)
+			string defaultScope = "default")
 		{
 			var customerTokenUrl = host + "/rest/V1/integration/customer/token";
 
@@ -96,8 +89,6 @@ namespace Magento.RestClient
 			client.Authenticator =
 				new MagentoUserAuthenticator(customerTokenUrl, username, password, 1);
 
-
-			client.PreAuthenticate = true;
 			return client;
 		}
 	}

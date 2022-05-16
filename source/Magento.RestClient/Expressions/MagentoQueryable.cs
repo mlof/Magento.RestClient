@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using Microsoft.Extensions.Caching.Memory;
 using Remotion.Linq;
 using Remotion.Linq.Parsing.Structure;
-using RestSharp;
 
 namespace Magento.RestClient.Expressions
 {
@@ -22,7 +21,7 @@ namespace Magento.RestClient.Expressions
 		{
 		}
 
-		public MagentoQueryable(IRestClient restClient, string resource, IMemoryCache cache = null,
+		public MagentoQueryable(RestSharp.RestClient restClient, string resource, IMemoryCache cache = null,
 			TimeSpan? relativeExpiration = null) : base(
 			new DefaultQueryProvider(typeof(MagentoQueryable<>),
 				QueryParser.CreateDefault(), new MagentoQueryExecutor(restClient, resource, cache, relativeExpiration)))

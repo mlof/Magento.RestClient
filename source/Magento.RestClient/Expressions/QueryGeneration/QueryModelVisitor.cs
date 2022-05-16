@@ -12,28 +12,28 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 {
 	public class QueryModelVisitor : QueryModelVisitorBase
 	{
+		private readonly QueryPartAggregator _queryPartAggregator;
+
 		public QueryModelVisitor()
 		{
 			_queryPartAggregator = new QueryPartAggregator();
 		}
 
-		private readonly QueryPartAggregator _queryPartAggregator;
-
-		public IRestRequest GetRequest(IRestRequest restRequest)
+		public RestRequest GetRequest(RestRequest restRequest)
 		{
 			restRequest.AddParameter("searchCriteria[currentPage]", 1,
-				ParameterType.QueryStringWithoutEncode);
+				ParameterType.QueryString);
 			restRequest.AddOrUpdateParameter("searchCriteria[pageSize]", _queryPartAggregator.PageSize,
-				ParameterType.QueryStringWithoutEncode);
+				ParameterType.QueryString);
 
 			foreach (var (item, index) in _queryPartAggregator.Orderings.WithIndex())
 			{
 				restRequest.AddParameter(
 					$"searchCriteria[sortOrders][{index}][field]",
-					item.PropertyName, ParameterType.QueryStringWithoutEncode);
+					item.PropertyName, ParameterType.QueryString);
 				restRequest.AddParameter(
 					$"searchCriteria[sortOrders][{index}][direction]",
-					item.Direction == OrderingDirection.Asc ? "ASC" : "DESC", ParameterType.QueryStringWithoutEncode);
+					item.Direction == OrderingDirection.Asc ? "ASC" : "DESC", ParameterType.QueryString);
 			}
 
 			foreach (var (item, filterGroupIndex) in _queryPartAggregator.Filtergroups.WithIndex())
@@ -42,15 +42,15 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 				{
 					restRequest.AddParameter(
 						$"searchCriteria[filter_groups][{filterGroupIndex}][filters][{filterIndex}][field]",
-						filter.PropertyName, ParameterType.QueryStringWithoutEncode);
+						filter.PropertyName, ParameterType.QueryString);
 
 					restRequest.AddParameter(
 						$"searchCriteria[filter_groups][{filterGroupIndex}][filters][{filterIndex}][condition_type]",
-						filter.Condition.GetMagentoCondition(), ParameterType.QueryStringWithoutEncode);
+						filter.Condition.GetMagentoCondition(), ParameterType.QueryString);
 
 					restRequest.AddParameter(
 						$"searchCriteria[filter_groups][{filterGroupIndex}][filters][{filterIndex}][value]",
-						filter.Value, ParameterType.QueryStringWithoutEncode);
+						filter.Value.ToString() ?? throw new InvalidOperationException(), ParameterType.QueryString);
 				}
 			}
 
@@ -82,7 +82,7 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			{
 				if (ordering.Expression is MemberExpression memberExpression)
 				{
-					_queryPartAggregator.Orderings.Add(new OrderClause() {
+					_queryPartAggregator.Orderings.Add(new OrderClause {
 						PropertyName = memberExpression.Member.GetPropertyName(), Direction = ordering.OrderingDirection
 					});
 				}

@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Data.Models.Catalog.Products
 {
-	public partial class ConfigurableProductValue
+	public class ConfigurableProductValue
 	{
 		[JsonProperty("value_index")] public long ValueIndex { get; set; }
 	}

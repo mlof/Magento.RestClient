@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Repositories;
 using Magento.RestClient.Data.Models.Shipping;
@@ -27,7 +23,7 @@ namespace Magento.RestClient.Data.Repositories
 
 		public Task<long> CreateShipment(long orderId)
 		{
-			var request = new RestRequest("order/{orderId}/ship", Method.POST);
+			var request = new RestRequest("order/{orderId}/ship", Method.Post);
 			request.AddOrUpdateParameter("orderId", orderId, ParameterType.UrlSegment);
 
 			return ExecuteAsync<long>(request);

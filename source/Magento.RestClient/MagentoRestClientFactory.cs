@@ -1,20 +1,19 @@
 #nullable enable
-using RestSharp;
-using RestSharp.Serializers.NewtonsoftJson;
-using JsonExts.JsonPath;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Net.Cache;
+using JsonExts.JsonPath;
 using Magento.RestClient.Authentication;
 using Newtonsoft.Json;
+using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Authenticators.OAuth;
+using RestSharp.Serializers.NewtonsoftJson;
 
 namespace Magento.RestClient
 {
 	public static class MagentoRestClientFactory
 	{
-		private static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings {
+		private readonly static JsonSerializerSettings jsonSerializerSettings = new() {
 			NullValueHandling = NullValueHandling.Ignore,
 			Culture = CultureInfo.InvariantCulture,
 			Formatting = Formatting.Indented,
@@ -37,11 +36,11 @@ namespace Magento.RestClient
 
 			if (string.IsNullOrWhiteSpace(defaultScope))
 			{
-				client = new RestSharp.RestClient($"{host}/rest/V1/") { };
+				client = new RestSharp.RestClient($"{host}/rest/V1/");
 			}
 			else
 			{
-				client = new RestSharp.RestClient($"{host}/rest/{{scope}}/V1/") { };
+				client = new RestSharp.RestClient($"{host}/rest/{{scope}}/V1/");
 
 				client.AddDefaultUrlSegment("scope", string.Empty);
 			}

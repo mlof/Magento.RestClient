@@ -12,12 +12,6 @@ namespace Magento.RestClient.Abstractions.Repositories
 		Task<BulkOperation> GetStatus(Guid uuid);
 
 		Task<BulkOperation> AwaitBulkOperations(Guid uuid, TimeSpan? delay = null);
-
-	
-
-
-
-
 	}
 
 	public interface IProductAsyncRepository

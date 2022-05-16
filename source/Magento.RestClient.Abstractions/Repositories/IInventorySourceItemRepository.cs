@@ -6,7 +6,6 @@ namespace Magento.RestClient.Abstractions.Repositories
 {
 	public interface IInventorySourceItemRepository : IHasQueryable<InventorySourceItem>
 	{
-
 		Task Create(params InventorySourceItem[] items);
 		Task Delete(params InventorySourceItem[] items);
 	}

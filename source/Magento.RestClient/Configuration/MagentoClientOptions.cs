@@ -1,12 +1,11 @@
 ﻿#nullable enable
 namespace Magento.RestClient.Configuration
 {
-    public class MagentoClientOptions
-    {
-        public MagentoClientOptions()
-        {
-
-        }
+	public class MagentoClientOptions
+	{
+		public MagentoClientOptions()
+		{
+		}
 
 
 		public MagentoClientOptions(string host, string username, string password,

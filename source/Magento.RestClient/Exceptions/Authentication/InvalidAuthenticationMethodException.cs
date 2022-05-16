@@ -4,7 +4,7 @@ namespace Magento.RestClient.Exceptions.Authentication
 {
 	public class InvalidAuthenticationMethodException : Exception
 	{
-		public InvalidAuthenticationMethodException() : base()
+		public InvalidAuthenticationMethodException()
 		{
 		}
 

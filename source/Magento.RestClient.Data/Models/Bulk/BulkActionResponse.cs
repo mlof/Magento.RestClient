@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Magento.RestClient.Data.Models.Bulk
 {
-	public partial class BulkActionResponse
+	public class BulkActionResponse
 	{
 		[JsonProperty("bulk_uuid")] public Guid BulkUuid { get; set; }
 

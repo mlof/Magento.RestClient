@@ -7,76 +7,69 @@ using Newtonsoft.Json.Linq;
 
 namespace Magento.RestClient.Exceptions.Generic
 {
-    public class MagentoException : Exception
-    {
-        private MagentoException(string message) : base(message)
-        {
-        }
+	public class MagentoException : Exception
+	{
+		private MagentoException(string message) : base(message)
+		{
+		}
 
-        public MagentoException() : base()
-        {
-        }
+		public MagentoException()
+		{
+		}
 
-        public MagentoException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+		public MagentoException(string message, Exception innerException) : base(message, innerException)
+		{
+		}
 
-
-        public static MagentoException Parse(string content)
-        {
-            var stringbuilder = new StringBuilder();
-            var c = JsonConvert.DeserializeObject<MagentoError>(content);
-            Debug.Assert(c != null, nameof(c) + " != null");
-
-            stringbuilder.Append(c.Message);
+		public object Parameters { get; set; }
 
 
-            stringbuilder.AppendLine();
+		public static MagentoException Parse(string content)
+		{
+			var stringbuilder = new StringBuilder();
+			var c = JsonConvert.DeserializeObject<MagentoError>(content);
+			Debug.Assert(c != null, nameof(c) + " != null");
+
+			stringbuilder.Append(c.Message);
 
 
-            if (c.Parameters is IEnumerable<string> s)
-            {
-                stringbuilder.AppendLine("Parameters:");
-
-                foreach (var parameter in s)
-                {
-                    stringbuilder.AppendLine(parameter);
-                }
-            }
-            else
-            {
-
-                if (c.Parameters is JArray array)
-                {
-                    foreach (var child in array.Children())
-                    {
-                        stringbuilder.AppendLine(child.ToString());
-                    }
-
-                }
-                else if (c.Parameters is JObject o)
-                {
-                    stringbuilder.AppendLine(o.ToString());
-
-                }
-                
-            }
-
-            stringbuilder.AppendLine();
+			stringbuilder.AppendLine();
 
 
-            return new MagentoException(stringbuilder.ToString())
-            {
-                Parameters = c.Parameters
-            };
-        }
+			if (c.Parameters is IEnumerable<string> s)
+			{
+				stringbuilder.AppendLine("Parameters:");
 
-        public object Parameters { get; set; }
+				foreach (var parameter in s)
+				{
+					stringbuilder.AppendLine(parameter);
+				}
+			}
+			else
+			{
+				if (c.Parameters is JArray array)
+				{
+					foreach (var child in array.Children())
+					{
+						stringbuilder.AppendLine(child.ToString());
+					}
+				}
+				else if (c.Parameters is JObject o)
+				{
+					stringbuilder.AppendLine(o.ToString());
+				}
+			}
 
-        internal class MagentoError
-        {
-            [JsonProperty("message")] public string Message { get; set; }
-            [JsonProperty("parameters")] public object Parameters { get; set; }
-        }
-    }
+			stringbuilder.AppendLine();
+
+
+			return new MagentoException(stringbuilder.ToString()) {Parameters = c.Parameters};
+		}
+
+		internal class MagentoError
+		{
+			[JsonProperty("message")] public string Message { get; set; }
+			[JsonProperty("parameters")] public object Parameters { get; set; }
+		}
+	}
 }

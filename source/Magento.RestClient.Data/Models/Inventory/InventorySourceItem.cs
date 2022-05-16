@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Magento.RestClient.Data.Models.Inventory
 {

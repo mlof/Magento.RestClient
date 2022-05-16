@@ -1,19 +1,18 @@
-﻿using Magento.RestClient.Abstractions.Abstractions;
+﻿using System.Threading.Tasks;
+using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Data.Models.Catalog.Products;
 using RestSharp;
-using System.Threading.Tasks;
 
 namespace Magento.RestClient.Abstractions.Repositories
 {
-    public interface IProductRepository : IHasQueryable<Product>
-    {
-        Task<Product> GetProductBySku(string sku, string scope = "all");
+	public interface IProductRepository : IHasQueryable<Product>
+	{
+		Task<Product> GetProductBySku(string sku, string scope = "all");
 
-        Task<Product> CreateProduct(Product product, bool saveOptions = true);
-        RestRequest GetCreateProductRequest(Product product, bool saveOptions = true);
+		Task<Product> CreateProduct(Product product, bool saveOptions = true);
+		RestRequest GetCreateProductRequest(Product product, bool saveOptions = true);
 
-        Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true, string? scope = null);
-        Task DeleteProduct(string sku);
-
-    }
+		Task<Product> UpdateProduct(string sku, Product product, bool saveOptions = true, string? scope = null);
+		Task DeleteProduct(string sku);
+	}
 }

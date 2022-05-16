@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Magento.RestClient.Abstractions.Abstractions
 {
@@ -7,6 +6,4 @@ namespace Magento.RestClient.Abstractions.Abstractions
 	{
 		IQueryable<T> AsQueryable();
 	}
-
-
 }

@@ -1,13 +1,12 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using Magento.RestClient.Data.Models.Common;
 using Magento.RestClient.Data.Models.Payments;
 using Newtonsoft.Json;
 
 namespace Magento.RestClient.Data.Models.Orders
 {
-	public record Order 
+	public record Order
 	{
 		[JsonProperty("base_currency_code")] public string? BaseCurrencyCode { get; set; }
 
@@ -135,7 +134,7 @@ namespace Magento.RestClient.Data.Models.Orders
 
 		[JsonProperty("weight")] public long Weight { get; set; }
 
-		[JsonProperty("items")] public List<OrderItem>? Items { get; set; } = new List<OrderItem>();
+		[JsonProperty("items")] public List<OrderItem>? Items { get; set; } = new();
 
 		[JsonProperty("billing_address")] public OrderAddress BillingAddress { get; set; }
 
@@ -143,10 +142,7 @@ namespace Magento.RestClient.Data.Models.Orders
 
 		[JsonProperty("status_histories")] public List<StatusHistory>? StatusHistories { get; set; }
 
-		[JsonProperty("extension_attributes")] 
-		public Dictionary<string, dynamic>? ExtensionAttributes { get; set; } = new Dictionary<string, dynamic>();
-
+		[JsonProperty("extension_attributes")]
+		public Dictionary<string, dynamic>? ExtensionAttributes { get; set; } = new();
 	}
-
-
 }

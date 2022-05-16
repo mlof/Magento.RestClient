@@ -101,7 +101,7 @@ namespace Magento.RestClient.Data.Models.Orders
 		[JsonProperty("tax_percent")] public decimal TaxPercent { get; set; }
 
 		[JsonProperty("updated_at")] public DateTimeOffset UpdatedAt { get; set; }
-        [JsonProperty("parent_item")]
-        public OrderItem ParentItem { get; set; }
-    }
+
+		[JsonProperty("parent_item")] public OrderItem ParentItem { get; set; }
+	}
 }

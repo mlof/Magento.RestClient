@@ -19,6 +19,6 @@ namespace Magento.RestClient.Abstractions.Repositories
 		Task<Category> UpdateCategory(long categoryId, Category category, string scope = "all");
 
 		public Task<CategoryTree> GetCategoryTree(long? rootCategoryId = null, long? depth = null);
-        Task<BulkActionResponse> AddProductAsync(long categoryId, ProductLink link);
-    }
+		Task<BulkActionResponse> AddProductAsync(long categoryId, ProductLink link);
+	}
 }

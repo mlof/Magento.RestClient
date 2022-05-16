@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Magento.RestClient.Abstractions;
 using Magento.RestClient.Abstractions.Abstractions;
 using Magento.RestClient.Abstractions.Domain;
 using Magento.RestClient.Abstractions.Repositories;
@@ -14,7 +13,7 @@ namespace Magento.RestClient.Extensions
 {
 	public static class BulkExtensions
 	{
-		public async static Task<BulkActionResponse> CreateOrUpdate(this IAdminContext context,
+		async public static Task<BulkActionResponse> CreateOrUpdate(this IAdminContext context,
 			IEnumerable<IProductModel> models)
 		{
 			var productModels = models.ToList();
@@ -31,7 +30,7 @@ namespace Magento.RestClient.Extensions
 
 
 			var mediaRequests = productModels.SelectMany(model => model.MediaEntries.Where(entry => entry.Id == null),
-				(model, entry) => new CreateOrUpdateMediaRequest() { Sku = model.Sku, Entry = entry }).ToArray();
+				(model, entry) => new CreateOrUpdateMediaRequest {Sku = model.Sku, Entry = entry}).ToArray();
 			var createOrUpdateMediaResponse =
 				await context.ProductsAsync.PostMediaBySku(mediaRequests).ConfigureAwait(false);
 			await context.Async.AwaitBulkOperations(createOrUpdateMediaResponse).ConfigureAwait(false);

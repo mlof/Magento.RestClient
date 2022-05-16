@@ -1,5 +1,4 @@
 ﻿using System;
-using Magento.RestClient.Abstractions;
 using Magento.RestClient.Configuration;
 using Magento.RestClient.Context;
 using Microsoft.Extensions.DependencyInjection;

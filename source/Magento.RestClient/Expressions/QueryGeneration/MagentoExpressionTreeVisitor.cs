@@ -12,8 +12,8 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 {
 	public class MagentoExpressionTreeVisitor : ThrowingExpressionVisitor
 	{
-		private Filter _currentFilter;
 		private readonly QueryPartAggregator _aggregator;
+		private Filter _currentFilter;
 
 		public MagentoExpressionTreeVisitor(QueryPartAggregator queryPartAggregator)
 		{
@@ -110,11 +110,13 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			{
 				if (_currentFilter.PropertyType.IsEnum)
 				{
-					var value = Enum.ToObject(_currentFilter.PropertyType, (int) (expression.Value ?? throw new InvalidOperationException()));
+					var value = Enum.ToObject(_currentFilter.PropertyType,
+						(int) (expression.Value ?? throw new InvalidOperationException()));
 					var name = value.ToString();
 					if (name != null)
 					{
-						var enumMemberAttribute = (_currentFilter.PropertyType.GetField(name) ?? throw new InvalidOperationException())
+						var enumMemberAttribute = (_currentFilter.PropertyType.GetField(name) ??
+						                           throw new InvalidOperationException())
 							.GetCustomAttributes(typeof(EnumMemberAttribute)).OfType<EnumMemberAttribute>()
 							.SingleOrDefault();
 						if (enumMemberAttribute != null)

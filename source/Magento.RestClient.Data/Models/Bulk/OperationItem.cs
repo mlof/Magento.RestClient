@@ -2,7 +2,7 @@
 
 namespace Magento.RestClient.Data.Models.Bulk
 {
-	public partial class OperationItem
+	public class OperationItem
 	{
 		[JsonProperty("id")] public long Id { get; set; }
 

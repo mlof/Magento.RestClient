@@ -5,7 +5,6 @@ using Newtonsoft.Json.Converters;
 namespace Magento.RestClient.Data.Models.Catalog.Products
 {
 	[JsonConverter(typeof(StringEnumConverter))]
-
 	public enum ProductOptionType
 	{
 		[EnumMember(Value = "field")] Field,
@@ -17,6 +16,6 @@ namespace Magento.RestClient.Data.Models.Catalog.Products
 		[EnumMember(Value = "multiple")] Multiple,
 		[EnumMember(Value = "date")] Date,
 		[EnumMember(Value = "date_time")] DateTime,
-		[EnumMember(Value = "time")] Time,
+		[EnumMember(Value = "time")] Time
 	}
 }

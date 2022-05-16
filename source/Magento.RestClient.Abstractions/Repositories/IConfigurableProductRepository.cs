@@ -18,8 +18,8 @@ namespace Magento.RestClient.Abstractions.Repositories
 
 		public Task<BulkActionResponse> BulkMergeConfigurableOptions(
 			params ConfigurableProductOptionRequest[] requests);
+
 		Task<BulkActionResponse> BulkMergeConfigurations(params
 			CreateOrUpdateConfigurationRequest[] configurations);
-
 	}
 }

@@ -6,9 +6,9 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 	public class QueryPartAggregator
 	{
 		public int PageSize { get; set; } = 0;
-		public IList<IList<Filter>> Filtergroups { get; set; } = new List<IList<Filter>>() {new List<Filter>()};
+		public IList<IList<Filter>> Filtergroups { get; set; } = new List<IList<Filter>> {new List<Filter>()};
 
-		public List<OrderClause> Orderings { get; set; } = new List<OrderClause>();
+		public List<OrderClause> Orderings { get; set; } = new();
 
 		public void CreateNewFilterGroup()
 		{

@@ -19,6 +19,5 @@ namespace Magento.RestClient.Data.Models.Catalog.Products
 		}
 
 		public bool IsVisible { get; set; }
-
 	}
 }

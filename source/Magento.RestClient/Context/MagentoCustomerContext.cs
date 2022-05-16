@@ -4,14 +4,10 @@ using Serilog;
 
 namespace Magento.RestClient.Context
 {
-    public class MagentoCustomerContext : ICustomerContext
-    {
-        public MagentoCustomerContext()
-        {
-        }
-
-        public RestSharp.RestClient RestClient { get; }
-        public IMemoryCache Cache { get; }
-        public ILogger Logger { get; }
-    }
+	public class MagentoCustomerContext : ICustomerContext
+	{
+		public RestSharp.RestClient RestClient { get; }
+		public IMemoryCache Cache { get; }
+		public ILogger Logger { get; }
+	}
 }

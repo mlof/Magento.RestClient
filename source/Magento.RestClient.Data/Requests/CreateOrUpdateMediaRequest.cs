@@ -5,9 +5,8 @@ namespace Magento.RestClient.Data.Requests
 {
 	public record CreateOrUpdateMediaRequest
 	{
-		[JsonProperty("sku")]
-		public string Sku { get; set; }
-		[JsonProperty("entry")]
-		public MediaEntry Entry { get; set; }
+		[JsonProperty("sku")] public string Sku { get; set; }
+
+		[JsonProperty("entry")] public MediaEntry Entry { get; set; }
 	}
 }

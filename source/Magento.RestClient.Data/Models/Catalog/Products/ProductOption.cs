@@ -11,8 +11,10 @@ namespace Magento.RestClient.Data.Models.Catalog.Products
 
 
 		[JsonProperty("sort_order")] public int? SortOrder { get; set; }
-		[JsonProperty("is_require", DefaultValueHandling = DefaultValueHandling.Include)] public bool IsRequired { get; set; }
 
-		[JsonProperty("values")] public List<ProductOptionValue> Values { get; set; } = new List<ProductOptionValue>();
+		[JsonProperty("is_require", DefaultValueHandling = DefaultValueHandling.Include)]
+		public bool IsRequired { get; set; }
+
+		[JsonProperty("values")] public List<ProductOptionValue> Values { get; set; } = new();
 	}
 }

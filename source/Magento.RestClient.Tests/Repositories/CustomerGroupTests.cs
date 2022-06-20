@@ -1,4 +1,4 @@
-using Magento.RestClient.Data.Models.Customers;
+using Magento.RestClient.Modules.Customers.Models;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories

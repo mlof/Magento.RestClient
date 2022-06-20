@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using FluentAssertions;
-using Magento.RestClient.Data.Models.Catalog.Products;
+using Magento.RestClient.Modules.Catalog.Models.Products;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
@@ -26,21 +26,21 @@ namespace Magento.RestClient.Tests.Repositories
         [SetUp]
         public void SetupProducts()
         {
-            this.Context.Products.CreateProduct(_shouldExist);
+            this.MagentoContext.Products.CreateProduct(_shouldExist);
         }
 
         [TearDown]
         public void TeardownProducts()
         {
-            this.Context.Products.DeleteProduct("SKU-SHOULDEXIST");
-            this.Context.Products.DeleteProduct("SKU-SHOULDBEUPDATED");
-            this.Context.Products.DeleteProduct("SKU-SHOULDBECREATED");
+            this.MagentoContext.Products.DeleteProduct("SKU-SHOULDEXIST");
+            this.MagentoContext.Products.DeleteProduct("SKU-SHOULDBEUPDATED");
+            this.MagentoContext.Products.DeleteProduct("SKU-SHOULDBECREATED");
         }
 
         [Test]
-        async public Task GetProductBySku_ProductExists()
+        public async  Task GetProductBySku_ProductExists()
         {
-            var p = await Context.Products.GetProductBySku(_shouldExist.Sku);
+            var p = await MagentoContext.Products.GetProductBySku(_shouldExist.Sku);
 
             p.Should().NotBeNull();
 
@@ -51,13 +51,13 @@ namespace Magento.RestClient.Tests.Repositories
         [Test]
         public void GetProduct_ProductDoesNotExist()
         {
-            var p = Context.Products.GetProductBySku(_shouldNotExist.Sku);
+            var p = MagentoContext.Products.GetProductBySku(_shouldNotExist.Sku);
 
             p.Should().BeNull();
         }
 
         [Test]
-        async public Task CreateProduct_WhenProductIsValid()
+        public async  Task CreateProduct_WhenProductIsValid()
         {
             var shouldBeCreated = new Product()
             {
@@ -66,7 +66,7 @@ namespace Magento.RestClient.Tests.Repositories
                 Name = "Should Be Created",
                 Price = 30
             };
-            var p = await Context.Products.CreateProduct(shouldBeCreated);
+            var p = await MagentoContext.Products.CreateProduct(shouldBeCreated);
 
             
             p.Name.Should().BeEquivalentTo(shouldBeCreated.Name);
@@ -75,13 +75,13 @@ namespace Magento.RestClient.Tests.Repositories
         }
 
         [Test ]
-        async public Task UpdateProduct_WhenProductIsValid()
+        public async  Task UpdateProduct_WhenProductIsValid()
         {
 
             
             var updatedTitle = "Has Been Updated";
             _shouldExist.Name = updatedTitle;
-            var p = await Context.Products.UpdateProduct(_shouldExist.Sku, _shouldExist);
+            var p = await MagentoContext.Products.UpdateProduct(_shouldExist.Sku, _shouldExist);
 
 
             p.Name.Should().BeEquivalentTo(updatedTitle);

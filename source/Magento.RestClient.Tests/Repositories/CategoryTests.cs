@@ -1,6 +1,6 @@
 using System.Linq;
 using FluentAssertions;
-using Magento.RestClient.Data.Models.Catalog.Category;
+using Magento.RestClient.Modules.Catalog.Models.Category;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
@@ -15,19 +15,19 @@ namespace Magento.RestClient.Tests.Repositories
 		[TearDown]
 		public void TeardownCategories()
 		{
-			var category = Context.Categories.AsQueryable().SingleOrDefault(category1 => category1.Name == "Should Be Created");
+			var category = MagentoContext.Categories.AsQueryable().SingleOrDefault(category1 => category1.Name == "Should Be Created");
 
 
 			if (category != null)
 			{
-				Context.Categories.DeleteCategoryById(category.Id);
+				MagentoContext.Categories.DeleteCategoryById(category.Id);
 			}
 		}
 
 		[Test]
 		public void GetCategoryById_CategoryExists()
 		{
-			var c = this.Context.Categories.GetCategoryById(1);
+			var c = this.MagentoContext.Categories.GetCategoryById(1);
 
 
 			c.Should().NotBeNull();
@@ -39,10 +39,10 @@ namespace Magento.RestClient.Tests.Repositories
 		{
 			var shouldBeCreated = new Category() {Name = "Should Be Created", IsActive = true};
 
-			var created = this.Context.Categories.CreateCategory(shouldBeCreated);
+			var created = this.MagentoContext.Categories.CreateCategory(shouldBeCreated);
 
 
-			var category = Context.Categories.AsQueryable().SingleOrDefault(category1 => category1.Name == "Should Be Created");
+			var category = MagentoContext.Categories.AsQueryable().SingleOrDefault(category1 => category1.Name == "Should Be Created");
 			category.Name.Should().BeEquivalentTo(shouldBeCreated.Name);
 			category.IsActive.Should().BeTrue();
 		}
@@ -52,10 +52,10 @@ namespace Magento.RestClient.Tests.Repositories
 		{
 			var shouldBeCreated = new Category() {Name = "Should Be Created", IsActive = true};
 
-			this.Context.Categories.CreateCategory(shouldBeCreated);
+			this.MagentoContext.Categories.CreateCategory(shouldBeCreated);
 
 
-			var category = Context.Categories.AsQueryable().SingleOrDefault(category1 => category1.Name == "Should Be Created");
+			var category = MagentoContext.Categories.AsQueryable().SingleOrDefault(category1 => category1.Name == "Should Be Created");
 			category.Name.Should().BeEquivalentTo(shouldBeCreated.Name);
 			category.IsActive.Should().BeTrue();
 		}
@@ -63,7 +63,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void GetCategoryById_CategoryDoesNotExist()
 		{
-			var c = this.Context.Categories.GetCategoryById(-1);
+			var c = this.MagentoContext.Categories.GetCategoryById(-1);
 
 
 			c.Should().BeNull();

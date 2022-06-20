@@ -1,6 +1,6 @@
-﻿using Magento.RestClient.Abstractions.Repositories;
-using Magento.RestClient.Data.Models.Common;
-using Magento.RestClient.Extensions;
+﻿using Magento.RestClient.Extensions;
+using Magento.RestClient.Modules.EAV;
+using Magento.RestClient.Modules.EAV.Model;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
@@ -11,7 +11,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void CanGetDefaultAttributeSet()
 		{
-			Context.AttributeSets.GetDefaultAttributeSet(EntityType.CatalogProduct);
+			MagentoContext.AttributeSets.GetDefaultAttributeSet(EntityType.CatalogProduct);
 		}
 	}
 }

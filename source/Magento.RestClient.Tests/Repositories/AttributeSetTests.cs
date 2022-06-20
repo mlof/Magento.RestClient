@@ -1,9 +1,8 @@
 using System.Linq;
 using FluentAssertions;
-using Magento.RestClient.Data.Models.Common;
-using Magento.RestClient.Data.Models.EAV.Attributes;
 using Magento.RestClient.Exceptions;
 using Magento.RestClient.Exceptions.Generic;
+using Magento.RestClient.Modules.EAV.Model;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
@@ -19,23 +18,23 @@ namespace Magento.RestClient.Tests.Repositories
 				EntityTypeId = EntityType.CatalogProduct, AttributeSetName = "Laptops"
 			};
 
-			Context.AttributeSets.Create(EntityType.CatalogProduct, defaultProductAttributeSet, laptopAttributeSet);
+			MagentoContext.AttributeSets.Create(EntityType.CatalogProduct, defaultProductAttributeSet, laptopAttributeSet);
 		}
 
 
 		[TearDown]
 		public void AttributeSetTearDown()
 		{
-			var attributeSet = Context.AttributeSets.AsQueryable().SingleOrDefault(attributeSet =>
+			var attributeSet = MagentoContext.AttributeSets.AsQueryable().SingleOrDefault(attributeSet =>
 				attributeSet.AttributeSetName == "Laptops" &&
 				attributeSet.EntityTypeId == EntityType.CatalogProduct);
-			Context.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
+			MagentoContext.AttributeSets.Delete(attributeSet.AttributeSetId.Value);
 		}
 
 		[Test]
 		public void Search_Existing()
 		{
-			var items = Context.AttributeSets.AsQueryable().Where(attributeSet =>
+			var items = MagentoContext.AttributeSets.AsQueryable().Where(attributeSet =>
 				attributeSet.AttributeSetName == "Laptops" &&
 				attributeSet.EntityTypeId == EntityType.CatalogProduct).ToList();
 
@@ -45,7 +44,7 @@ namespace Magento.RestClient.Tests.Repositories
 		[Test]
 		public void Search_NonExistent()
 		{
-			var response = Context.AttributeSets.AsQueryable().Where(set => set.AttributeSetName == "Hamsters").ToList();
+			var response = MagentoContext.AttributeSets.AsQueryable().Where(set => set.AttributeSetName == "Hamsters").ToList();
 			response.Should().HaveCount(0);
 		}
 
@@ -54,7 +53,7 @@ namespace Magento.RestClient.Tests.Repositories
 		public void GetProductAttributes_NonExistent()
 		{
 			Assert.Throws<EntityNotFoundException>(() => {
-				var attributes = Context.Attributes.GetProductAttributes(-1);
+				var attributes = MagentoContext.Attributes.GetProductAttributes(-1);
 			});
 		}
 	}

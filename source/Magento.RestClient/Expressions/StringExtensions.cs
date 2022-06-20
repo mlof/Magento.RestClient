@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Magento.RestClient.Expressions
@@ -20,7 +21,8 @@ namespace Magento.RestClient.Expressions
 				sb.Append(hashBytes[i].ToString("X2"));
 			}
 
-			return sb.ToString();
+			return BitConverter.ToString(hashBytes).ToUpper();
+
 		}
 	}
 }

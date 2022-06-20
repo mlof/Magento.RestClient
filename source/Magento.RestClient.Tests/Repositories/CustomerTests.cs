@@ -1,5 +1,5 @@
 using FluentAssertions;
-using Magento.RestClient.Data.Models.Customers;
+using Magento.RestClient.Modules.Customers.Models;
 using NUnit.Framework;
 
 namespace Magento.RestClient.Tests.Repositories
@@ -13,14 +13,14 @@ namespace Magento.RestClient.Tests.Repositories
         [TearDown]
         public void TeardownCustomers()
         {
-            var c = Context.Customers.GetByEmailAddress("customer@example.org");
-            Context.Customers.DeleteById(c.Id);
+            var c = MagentoContext.Customers.GetByEmailAddress("customer@example.org");
+            MagentoContext.Customers.DeleteById(c.Id);
         }
 
         [Test]
         public void GetByEmail_WithValidEmail()
         {
-            var customer = Context.Customers.GetByEmailAddress("customer@example.org");
+            var customer = MagentoContext.Customers.GetByEmailAddress("customer@example.org");
 
 
             customer.Email.Should().Be("customer@example.org");
@@ -28,7 +28,7 @@ namespace Magento.RestClient.Tests.Repositories
         [Test]
         public void GetByEmail_WithInvalidEmail()
         {
-            var customer = Context.Customers.GetByEmailAddress("doesnotexist@example.org");
+            var customer = MagentoContext.Customers.GetByEmailAddress("doesnotexist@example.org");
 
 
             customer.Should().BeNull();
@@ -39,14 +39,14 @@ namespace Magento.RestClient.Tests.Repositories
         {
             var shouldBeCreated = new Customer();
 
-            //var c = this.Context.Customers.Create(shouldBeCreated, "ThisIsThePassword1");
+            //var c = this.MagentoContext.Customers.Create(shouldBeCreated, "ThisIsThePassword1");
         }
         
 
         [Test]
         public void CanValidateCustomer()
         {
-            var c = this.Context.Customers.Validate(new Customer());
+            var c = this.MagentoContext.Customers.Validate(new Customer());
         }
     }
 }

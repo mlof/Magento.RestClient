@@ -26,7 +26,7 @@ namespace Magento.RestClient.Authentication
 			_maximumTokenAgeInHours = maximumTokenAgeInHours;
 		}
 
-		async public ValueTask Authenticate(RestSharp.RestClient client, RestRequest request)
+		public async  ValueTask Authenticate(RestSharp.RestClient client, RestRequest request)
 		{
 			if (!_bearerTokenExpiration.HasValue || _bearerTokenExpiration.Value < DateTime.Now)
 			{
@@ -42,7 +42,7 @@ namespace Magento.RestClient.Authentication
 			request.AddHeader("Authorization", $"Bearer {_bearerToken}");
 		}
 
-		async private Task RefreshBearerToken()
+		private async  Task RefreshBearerToken()
 		{
 			var c = new RestSharp.RestClient();
 			c.UseNewtonsoftJson();

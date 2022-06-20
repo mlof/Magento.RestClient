@@ -12,12 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient", "source\Magento.RestClient\Magento.RestClient.csproj", "{46816BF7-80C5-4043-81EC-97DA589B845D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.DependencyInjection", "source\Magento.RestClient.DependencyInjection\Magento.RestClient.DependencyInjection.csproj", "{DEB64274-644C-40F1-8FC4-3288F49964B5}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Abstractions", "source\Magento.RestClient.Abstractions\Magento.RestClient.Abstractions.csproj", "{ABD6805A-6148-40DC-988E-8F3CFE1AD08F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Data", "source\Magento.RestClient.Data\Magento.RestClient.Data.csproj", "{CD035D4E-0DB4-4270-B991-FC3EFE521852}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magento.RestClient.Tests", "source\Magento.RestClient.Tests\Magento.RestClient.Tests.csproj", "{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Build", "build\Build.csproj", "{F2B3AFE4-DB6E-415D-BC9F-BDCF5AAEB6D3}"
@@ -38,30 +32,6 @@ Global
 		{46816BF7-80C5-4043-81EC-97DA589B845D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46816BF7-80C5-4043-81EC-97DA589B845D}.Release|x64.ActiveCfg = Release|Any CPU
 		{46816BF7-80C5-4043-81EC-97DA589B845D}.Release|x64.Build.0 = Release|Any CPU
-		{DEB64274-644C-40F1-8FC4-3288F49964B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DEB64274-644C-40F1-8FC4-3288F49964B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DEB64274-644C-40F1-8FC4-3288F49964B5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{DEB64274-644C-40F1-8FC4-3288F49964B5}.Debug|x64.Build.0 = Debug|Any CPU
-		{DEB64274-644C-40F1-8FC4-3288F49964B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DEB64274-644C-40F1-8FC4-3288F49964B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DEB64274-644C-40F1-8FC4-3288F49964B5}.Release|x64.ActiveCfg = Release|Any CPU
-		{DEB64274-644C-40F1-8FC4-3288F49964B5}.Release|x64.Build.0 = Release|Any CPU
-		{ABD6805A-6148-40DC-988E-8F3CFE1AD08F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABD6805A-6148-40DC-988E-8F3CFE1AD08F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABD6805A-6148-40DC-988E-8F3CFE1AD08F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{ABD6805A-6148-40DC-988E-8F3CFE1AD08F}.Debug|x64.Build.0 = Debug|Any CPU
-		{ABD6805A-6148-40DC-988E-8F3CFE1AD08F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABD6805A-6148-40DC-988E-8F3CFE1AD08F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABD6805A-6148-40DC-988E-8F3CFE1AD08F}.Release|x64.ActiveCfg = Release|Any CPU
-		{ABD6805A-6148-40DC-988E-8F3CFE1AD08F}.Release|x64.Build.0 = Release|Any CPU
-		{CD035D4E-0DB4-4270-B991-FC3EFE521852}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD035D4E-0DB4-4270-B991-FC3EFE521852}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD035D4E-0DB4-4270-B991-FC3EFE521852}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{CD035D4E-0DB4-4270-B991-FC3EFE521852}.Debug|x64.Build.0 = Debug|Any CPU
-		{CD035D4E-0DB4-4270-B991-FC3EFE521852}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD035D4E-0DB4-4270-B991-FC3EFE521852}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD035D4E-0DB4-4270-B991-FC3EFE521852}.Release|x64.ActiveCfg = Release|Any CPU
-		{CD035D4E-0DB4-4270-B991-FC3EFE521852}.Release|x64.Build.0 = Release|Any CPU
 		{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FB0C720-37D4-4A85-9AE3-FBF148AB5806}.Debug|x64.ActiveCfg = Debug|Any CPU

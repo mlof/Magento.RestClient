@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
+using AgileObjects.NetStandardPolyfills;
 using Magento.RestClient.Extensions;
 using Magento.RestClient.Search;
 using Remotion.Linq.Parsing;
@@ -97,6 +98,11 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 				.Single();
 			return enumMemberAttribute.Value;
 		}
+		public static bool IsNullableEnum(Type t)
+		{
+			Type u = Nullable.GetUnderlyingType(t);
+			return (u != null) && u.IsEnum;
+		}
 
 		protected override Expression VisitConstant(ConstantExpression expression)
 		{
@@ -108,14 +114,25 @@ namespace Magento.RestClient.Expressions.QueryGeneration
 			}
 			else
 			{
-				if (_currentFilter.PropertyType.IsEnum)
+				if (_currentFilter.PropertyType.IsEnum || IsNullableEnum(_currentFilter.PropertyType))
 				{
-					var value = Enum.ToObject(_currentFilter.PropertyType,
+
+					Type enumType = null;
+					if (_currentFilter.PropertyType.IsNullableType())
+					{
+						
+						enumType = Nullable.GetUnderlyingType(_currentFilter.PropertyType);
+					}
+					else
+					{
+						enumType = _currentFilter.PropertyType;
+					}
+					var value = Enum.ToObject(enumType!,
 						(int) (expression.Value ?? throw new InvalidOperationException()));
 					var name = value.ToString();
 					if (name != null)
 					{
-						var enumMemberAttribute = (_currentFilter.PropertyType.GetField(name) ??
+						var enumMemberAttribute = (enumType!.GetField(name) ??
 						                           throw new InvalidOperationException())
 							.GetCustomAttributes(typeof(EnumMemberAttribute)).OfType<EnumMemberAttribute>()
 							.SingleOrDefault();

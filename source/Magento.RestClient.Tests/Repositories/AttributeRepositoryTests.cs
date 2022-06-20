@@ -4,11 +4,11 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Magento.RestClient.Abstractions.Repositories;
-using Magento.RestClient.Data.Models.Catalog.Products;
-using Magento.RestClient.Data.Models.Common;
-using Magento.RestClient.Data.Models.EAV.Attributes;
 using Magento.RestClient.Extensions;
+using Magento.RestClient.Modules.Catalog.Models.Products;
+using Magento.RestClient.Modules.EAV;
+using Magento.RestClient.Modules.EAV.Abstractions;
+using Magento.RestClient.Modules.EAV.Model;
 
 namespace Magento.RestClient.Tests.Repositories
 {
@@ -22,11 +22,11 @@ namespace Magento.RestClient.Tests.Repositories
 		private long attributeSetId => attributeSet.AttributeSetId.Value;
 
 		[SetUp]
-		async public Task SetupAttributes()
+		public async  Task SetupAttributes()
 		{
 			this.attributeSetName = "AttributeTestSet";
-			this.attributeRepository = this.Context.Attributes;
-			this.attributeSet = await this.Context.AttributeSets.Create(EntityType.CatalogProduct, 4,
+			this.attributeRepository = this.MagentoContext.Attributes;
+			this.attributeSet = await this.MagentoContext.AttributeSets.Create(EntityType.CatalogProduct, 4,
 				new AttributeSet() {AttributeSetName = attributeSetName});
 		}
 
@@ -35,18 +35,18 @@ namespace Magento.RestClient.Tests.Repositories
 		[TearDown]
 		public void TeardownAttributes()
 		{
-			var id = Context.AttributeSets.AsQueryable().SingleOrDefault(set =>
+			var id = MagentoContext.AttributeSets.AsQueryable().SingleOrDefault(set =>
 					set.AttributeSetName == attributeSetName && set.EntityTypeId == EntityType.CatalogProduct)?
 				.AttributeSetId;
-			this.Context.AttributeSets.Delete(id.Value);
-			this.Context.Attributes.DeleteProductAttribute(attributeCode);
+			this.MagentoContext.AttributeSets.Delete(id.Value);
+			this.MagentoContext.Attributes.DeleteProductAttribute(attributeCode);
 		}
 
 
 		[Test]
-		async public Task GetProductAttributes_NewAttributeSet_HasDefaultAttributes()
+		public async  Task GetProductAttributes_NewAttributeSet_HasDefaultAttributes()
 		{
-			var defaultAttributeSet = Context.AttributeSets.GetDefaultAttributeSet(EntityType.CatalogProduct);
+			var defaultAttributeSet = MagentoContext.AttributeSets.GetDefaultAttributeSet(EntityType.CatalogProduct);
 			var defaultAttributes = await attributeRepository.GetProductAttributes(
 				defaultAttributeSet.AttributeSetId.Value);
 			// Act
@@ -62,7 +62,7 @@ namespace Magento.RestClient.Tests.Repositories
 		}
 
 		[Test]
-		async public Task Create_ValidAttribute()
+		public async  Task Create_ValidAttribute()
 		{
 			// Arrange
 			ProductAttribute attribute = new ProductAttribute(this.attributeCode);
@@ -74,11 +74,11 @@ namespace Magento.RestClient.Tests.Repositories
 
 			// Assert
 
-			var assert = Context.AttributeSets.Get(result.AttributeId);
+			var assert = MagentoContext.AttributeSets.Get(result.AttributeId);
 		}
 
 		[Test]
-		async public Task DeleteProductAttribute()
+		public async  Task DeleteProductAttribute()
 		{
 			// Arrange
 
@@ -95,7 +95,7 @@ namespace Magento.RestClient.Tests.Repositories
 
 			// Assert
 
-			var assert = Context.AttributeSets.Get(result.AttributeId);
+			var assert = MagentoContext.AttributeSets.Get(result.AttributeId);
 			assert.Should().BeNull();
 			Assert.Fail();
 		}

@@ -1,8 +1,7 @@
 using System.Linq;
 using FluentAssertions;
 using FluentValidation;
-using Magento.RestClient.Data.Models.Customers;
-using Magento.RestClient.Data.Models.Orders;
+using Magento.RestClient.Modules.Order.Models;
 using Magento.RestClient.Search;
 using NUnit.Framework;
 
@@ -22,7 +21,7 @@ namespace Magento.RestClient.Tests.Repositories
         [Test]
         public void SearchOrders_WithDefaultSettings()
         {
-            var orderResponse = Context.Orders.AsQueryable().ToList();
+            var orderResponse = MagentoContext.Orders.AsQueryable().ToList();
 
 
         }
@@ -36,7 +35,7 @@ namespace Magento.RestClient.Tests.Repositories
 
 
             Assert.Throws<ValidationException>(() => {
-                Context.Orders.CreateOrder(invalidOrder);
+                MagentoContext.Orders.CreateOrder(invalidOrder);
             });
         }
     }

@@ -1,7 +1,7 @@
 ﻿#nullable enable
 namespace Magento.RestClient.Configuration
 {
-	public class MagentoClientOptions
+	public class MagentoClientOptions 
 	{
 		public MagentoClientOptions()
 		{
